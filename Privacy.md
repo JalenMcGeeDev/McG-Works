@@ -194,8 +194,7 @@ If you are in the European Union or California, you have additional rights:
 
 If you have questions, concerns, or requests regarding this privacy policy or your personal data:
 
-**Email:** privacy@datedecider.com  
-**Support:** support@datedecider.com
+**Email:** jalenmcgee20@gmail.com
 
 For data deletion requests, account issues, or privacy inquiries, please contact us directly through the app or via email.
 
