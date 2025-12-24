@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rime Support</title>
+  <meta name="description" content="Support and help for the Rime mobile app" />
+  <style>
+    :root {
+      --bg: #0b1220;
+      --card: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --border: #1f2a44;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(180deg, #050913, var(--bg));
+      color: var(--fg);
+      line-height: 1.6;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 56px 20px 72px;
+    }
+
+    header {
+      padding: 28px;
+      background: rgba(15,23,42,0.85);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    section {
+      background: rgba(15,23,42,0.75);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 1.25rem;
+    }
+
+    ul {
+      margin: 10px 0 0 20px;
+    }
+
+    li {
+      margin: 6px 0;
+    }
+
+    .contact-box {
+      background: rgba(2,6,23,0.6);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 12px;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 32px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <header>
+      <h1>Rime Support</h1>
+      <p class="subtitle">
+        Help, support, and account assistance for the Rime mobile app
+      </p>
+    </header>
+
+    <section>
+      <h2>Contact Support</h2>
+      <p>
+        If you need help with Rime, have a question, or want to report an issue,
+        please contact us using the information below.
+      </p>
+
+      <div class="contact-box">
+        <p>
+          <strong>Email:</strong>
+          <a href="mailto:support@datedecider.com">support@datedecider.com</a>
+        </p>
+        <p>
+          <strong>Privacy & Data Requests:</strong>
+          <a href="mailto:privacy@datedecider.com">privacy@datedecider.com</a>
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Common Topics</h2>
+      <ul>
+        <li>Account creation and login issues</li>
+        <li>SMS verification problems</li>
+        <li>Relationship and partner invites</li>
+        <li>Date matches and ratings</li>
+        <li>Location and venue suggestions</li>
+        <li>Bug reports and app crashes</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Account & Data Deletion</h2>
+      <p>
+        You may request deletion of your Rime account and associated personal data
+        at any time.
+      </p>
+      <p>
+        To request account deletion, email
+        <a href="mailto:privacy@datedecider.com">privacy@datedecider.com</a>
+        from the email address associated with your account.
+      </p>
+    </section>
+
+    <section>
+      <h2>Privacy Policy</h2>
+      <p>
+        You can review our full privacy policy here:
+      </p>
+      <p>
+        <a href="../privacy" rel="noopener">
+          View Rime Privacy Policy
+        </a>
+      </p>
+    </section>
+
+    <footer>
+      © <span id="year"></span> Rime
+    </footer>
+  </main>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
