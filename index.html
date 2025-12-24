@@ -1,1 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>McG Works</title>
 
+  <style>
+    :root {
+      --bg: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --card: #111827;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #020617, #0f172a);
+      color: var(--fg);
+      line-height: 1.6;
+    }
+
+    header {
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    nav a {
+      color: var(--muted);
+      margin-left: 1.5rem;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    nav a:hover {
+      color: var(--accent);
+    }
+
+    .hero {
+      max-width: 1100px;
+      margin: 6rem auto;
+      padding: 0 2rem;
+      text-align: center;
+    }
+
+    .hero h
