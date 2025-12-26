@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jalen's Woodshop - Handcrafted Wood Projects</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #f5f1e8 0%, #e8dcc8 100%);
+            color: #3a3a3a;
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #5d4e37 0%, #4a3f2e 100%);
+            color: #f5f1e8;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-top: 2rem;
+        }
+
+        .item-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .item-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+
+        .item-image {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            background: #e8dcc8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .item-details {
+            padding: 1.5rem;
+        }
+
+        .item-name {
+            font-size: 1.5rem;
+            color: #5d4e37;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .item-description {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .item-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .item-price {
+            font-size: 1.8rem;
+            color: #5d4e37;
+            font-weight: bold;
+        }
+
+        .purchase-btn {
+            background: linear-gradient(135deg, #8b7355 0%, #6d5a44 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.8rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .purchase-btn:hover {
+            background: linear-gradient(135deg, #6d5a44 0%, #5d4e37 100%);
+            transform: scale(1.05);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 2.5rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .modal h2 {
+            color: #5d4e37;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #5d4e37;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e8dcc8;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #8b7355;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #8b7355 0%, #6d5a44 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #6d5a44 0%, #5d4e37 100%);
+            transform: scale(1.02);
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .items-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                margin: 20% auto;
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🪵 Jalen's Woodshop</h1>
+        <p>Handcrafted with care, built to last</p>
+    </header>
+
+    <div class="container">
+        <div class="items-grid" id="itemsGrid"></div>
+    </div>
+
+    <div id="purchaseModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Request to Purchase</h2>
+            <form id="purchaseForm">
+                <input type="hidden" id="itemName" name="itemName">
+                <input type="hidden" id="itemPrice" name="itemPrice">
+                
+                <div class="form-group">
+                    <label for="customerName">Your Name *</label>
+                    <input type="text" id="customerName" name="customerName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="customerEmail">Email *</label>
+                    <input type="email" id="customerEmail" name="customerEmail" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="customerPhone">Phone Number</label>
+                    <input type="tel" id="customerPhone" name="customerPhone">
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Message (Optional)</label>
+                    <textarea id="message" name="message" rows="4" placeholder="Any special requests or questions..."></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">Submit Request</button>
+                <div class="success-message" id="successMessage">
+                    Thank you! Your request has been sent successfully.
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // EDIT YOUR ITEMS HERE - Easy to manage!
+        // ============================================
+        const items = [
+            {
+                name: "Rustic Coffee Table",
+                description: "Beautiful handcrafted coffee table made from reclaimed oak. Features natural wood grain and a smooth finish.",
+                price: 350,
+                image: "🪑" // You can replace with image URL later
+            },
+            {
+                name: "Cutting Board Set",
+                description: "Set of 3 premium cutting boards in various sizes. Made from maple and walnut with food-safe finish.",
+                price: 75,
+                image: "🔪"
+            },
+            {
+                name: "Wall Mounted Shelf",
+                description: "Elegant floating shelf perfect for any room. Sturdy construction with hidden mounting hardware.",
+                price: 120,
+                image: "📚"
+            },
+            {
+                name: "Wooden Box",
+                description: "Decorative wooden box with brass hinges. Perfect for jewelry, keepsakes, or desk organization.",
+                price: 45,
+                image: "📦"
+            },
+            {
+                name: "Custom Desk Organizer",
+                description: "Multi-compartment desk organizer to keep your workspace tidy. Made from cherry wood.",
+                price: 65,
+                image: "✏️"
+            },
+            {
+                name: "Serving Tray",
+                description: "Large serving tray with handles. Perfect for entertaining guests or breakfast in bed.",
+                price: 85,
+                image: "🍽️"
+            }
+        ];
+        // ============================================
+
+        const modal = document.getElementById('purchaseModal');
+        const closeBtn = document.querySelector('.close');
+        const form = document.getElementById('purchaseForm');
+        const successMessage = document.getElementById('successMessage');
+
+        function displayItems() {
+            const grid = document.getElementById('itemsGrid');
+            grid.innerHTML = items.map((item, index) => `
+                <div class="item-card" onclick="openPurchaseModal('${item.name}', ${item.price})">
+                    <div class="item-image">${item.image}</div>
+                    <div class="item-details">
+                        <h3 class="item-name">${item.name}</h3>
+                        <p class="item-description">${item.description}</p>
+                        <div class="item-footer">
+                            <span class="item-price">$${item.price}</span>
+                            <button class="purchase-btn" onclick="event.stopPropagation(); openPurchaseModal('${item.name}', ${item.price})">
+                                Request Purchase
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openPurchaseModal(itemName, itemPrice) {
+            document.getElementById('itemName').value = itemName;
+            document.getElementById('itemPrice').value = itemPrice;
+            document.querySelector('.modal h2').textContent = `Request to Purchase: ${itemName}`;
+            modal.style.display = 'block';
+        }
+
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
+            form.reset();
+            successMessage.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+                form.reset();
+                successMessage.style.display = 'none';
+            }
+        }
+
+        form.onsubmit = function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
+            
+            const subject = `Purchase Request: ${data.itemName}`;
+            const body = `
+New Purchase Request
+
+Item: ${data.itemName}
+Price: $${data.itemPrice}
+
+Customer Information:
+Name: ${data.customerName}
+Email: ${data.customerEmail}
+Phone: ${data.customerPhone || 'Not provided'}
+
+Message:
+${data.message || 'No additional message'}
+            `.trim();
+
+            const mailtoLink = `mailto:jalen@mcg-works.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoLink;
+
+            successMessage.style.display = 'block';
+            
+            setTimeout(() => {
+                modal.style.display = 'none';
+                form.reset();
+                successMessage.style.display = 'none';
+            }, 3000);
+        };
+
+        displayItems();
+    </script>
+</body>
+</html>
