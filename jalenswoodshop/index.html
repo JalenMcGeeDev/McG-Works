@@ -43,6 +43,13 @@
             padding: 3rem 2rem;
         }
 
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.5rem;
+            color: #5d4e37;
+        }
+
         .items-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -73,6 +80,12 @@
             align-items: center;
             justify-content: center;
             font-size: 4rem;
+        }
+
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .item-details {
@@ -120,6 +133,12 @@
         .purchase-btn:hover {
             background: linear-gradient(135deg, #6d5a44 0%, #5d4e37 100%);
             transform: scale(1.05);
+        }
+
+        .purchase-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .modal {
@@ -221,14 +240,28 @@
             transition: all 0.3s ease;
         }
 
-        .submit-btn:hover {
+        .submit-btn:hover:not(:disabled) {
             background: linear-gradient(135deg, #6d5a44 0%, #5d4e37 100%);
             transform: scale(1.02);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
         }
 
         .success-message {
             background: #d4edda;
             color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
             padding: 1rem;
             border-radius: 8px;
             margin-top: 1rem;
@@ -258,14 +291,16 @@
     </header>
 
     <div class="container">
+        <div class="loading" id="loading">Loading items...</div>
         <div class="items-grid" id="itemsGrid"></div>
     </div>
 
     <div id="purchaseModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Request to Purchase</h2>
+            <h2 id="modalTitle">Request to Purchase</h2>
             <form id="purchaseForm">
+                <input type="hidden" id="itemId" name="itemId">
                 <input type="hidden" id="itemName" name="itemName">
                 <input type="hidden" id="itemPrice" name="itemPrice">
                 
@@ -289,86 +324,88 @@
                     <textarea id="message" name="message" rows="4" placeholder="Any special requests or questions..."></textarea>
                 </div>
 
-                <button type="submit" class="submit-btn">Submit Request</button>
+                <button type="submit" class="submit-btn" id="submitBtn">Submit Request</button>
                 <div class="success-message" id="successMessage">
                     Thank you! Your request has been sent successfully.
+                </div>
+                <div class="error-message" id="errorMessage">
+                    Sorry, there was an error submitting your request. Please try again.
                 </div>
             </form>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // ============================================
-        // EDIT YOUR ITEMS HERE - Easy to manage!
+        // PASTE YOUR SUPABASE CREDENTIALS HERE
         // ============================================
-        const items = [
-            {
-                name: "Rustic Coffee Table",
-                description: "Beautiful handcrafted coffee table made from reclaimed oak. Features natural wood grain and a smooth finish.",
-                price: 350,
-                image: "🪑" // You can replace with image URL later
-            },
-            {
-                name: "Cutting Board Set",
-                description: "Set of 3 premium cutting boards in various sizes. Made from maple and walnut with food-safe finish.",
-                price: 75,
-                image: "🔪"
-            },
-            {
-                name: "Wall Mounted Shelf",
-                description: "Elegant floating shelf perfect for any room. Sturdy construction with hidden mounting hardware.",
-                price: 120,
-                image: "📚"
-            },
-            {
-                name: "Wooden Box",
-                description: "Decorative wooden box with brass hinges. Perfect for jewelry, keepsakes, or desk organization.",
-                price: 45,
-                image: "📦"
-            },
-            {
-                name: "Custom Desk Organizer",
-                description: "Multi-compartment desk organizer to keep your workspace tidy. Made from cherry wood.",
-                price: 65,
-                image: "✏️"
-            },
-            {
-                name: "Serving Tray",
-                description: "Large serving tray with handles. Perfect for entertaining guests or breakfast in bed.",
-                price: 85,
-                image: "🍽️"
-            }
-        ];
+        const SUPABASE_URL = 'https://awccquoyscijmtqtibgr.supabase.co';  // e.g., 'https://xxxxx.supabase.co'
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3Y2NxdW95c2Npam10cXRpYmdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4MDI0MDUsImV4cCI6MjA4MjM3ODQwNX0.zUBCXRah_oK8P_Q-1sFwZ5altAFUfZMOdBdY-tuXWrE';  // The long string starting with 'eyJ...'
         // ============================================
+
+        // Initialize Supabase client
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const modal = document.getElementById('purchaseModal');
         const closeBtn = document.querySelector('.close');
         const form = document.getElementById('purchaseForm');
         const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loading');
+        const itemsGrid = document.getElementById('itemsGrid');
 
-        function displayItems() {
-            const grid = document.getElementById('itemsGrid');
-            grid.innerHTML = items.map((item, index) => `
-                <div class="item-card" onclick="openPurchaseModal('${item.name}', ${item.price})">
-                    <div class="item-image">${item.image}</div>
-                    <div class="item-details">
-                        <h3 class="item-name">${item.name}</h3>
-                        <p class="item-description">${item.description}</p>
-                        <div class="item-footer">
-                            <span class="item-price">$${item.price}</span>
-                            <button class="purchase-btn" onclick="event.stopPropagation(); openPurchaseModal('${item.name}', ${item.price})">
-                                Request Purchase
-                            </button>
+        // Fetch and display items from Supabase
+        async function loadItems() {
+            try {
+                const { data, error } = await supabase
+                    .from('items')
+                    .select('*')
+                    .eq('available', true)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                loading.style.display = 'none';
+
+                if (data.length === 0) {
+                    itemsGrid.innerHTML = '<p style="text-align: center; color: #666;">No items available at the moment. Check back soon!</p>';
+                    return;
+                }
+
+                itemsGrid.innerHTML = data.map(item => {
+                    const imageContent = item.image_url && item.image_url.startsWith('http') 
+                        ? `<img src="${item.image_url}" alt="${item.name}">`
+                        : `<div style="font-size: 4rem;">${item.image_url || '🪵'}</div>`;
+
+                    return `
+                        <div class="item-card" onclick="openPurchaseModal(${item.id}, '${item.name.replace(/'/g, "\\'")}', ${item.price})">
+                            <div class="item-image">${imageContent}</div>
+                            <div class="item-details">
+                                <h3 class="item-name">${item.name}</h3>
+                                <p class="item-description">${item.description || ''}</p>
+                                <div class="item-footer">
+                                    <span class="item-price">$${parseFloat(item.price).toFixed(2)}</span>
+                                    <button class="purchase-btn" onclick="event.stopPropagation(); openPurchaseModal(${item.id}, '${item.name.replace(/'/g, "\\'")}', ${item.price})">
+                                        Request Purchase
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            `).join('');
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('Error loading items:', error);
+                loading.textContent = 'Error loading items. Please refresh the page.';
+            }
         }
 
-        function openPurchaseModal(itemName, itemPrice) {
+        function openPurchaseModal(itemId, itemName, itemPrice) {
+            document.getElementById('itemId').value = itemId;
             document.getElementById('itemName').value = itemName;
             document.getElementById('itemPrice').value = itemPrice;
-            document.querySelector('.modal h2').textContent = `Request to Purchase: ${itemName}`;
+            document.getElementById('modalTitle').textContent = `Request to Purchase: ${itemName}`;
             modal.style.display = 'block';
         }
 
@@ -376,6 +413,7 @@
             modal.style.display = 'none';
             form.reset();
             successMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
         }
 
         window.onclick = function(event) {
@@ -383,44 +421,62 @@
                 modal.style.display = 'none';
                 form.reset();
                 successMessage.style.display = 'none';
+                errorMessage.style.display = 'none';
             }
         }
 
-        form.onsubmit = function(e) {
+        form.onsubmit = async function(e) {
             e.preventDefault();
             
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+
             const formData = new FormData(form);
-            const data = Object.fromEntries(formData);
-            
-            const subject = `Purchase Request: ${data.itemName}`;
-            const body = `
-New Purchase Request
+            const orderData = {
+                item_id: parseInt(formData.get('itemId')),
+                item_name: formData.get('itemName'),
+                item_price: parseFloat(formData.get('itemPrice')),
+                customer_name: formData.get('customerName'),
+                customer_email: formData.get('customerEmail'),
+                customer_phone: formData.get('customerPhone') || null,
+                message: formData.get('message') || null,
+                status: 'pending'
+            };
 
-Item: ${data.itemName}
-Price: $${data.itemPrice}
+            try {
+                const { data, error } = await supabase
+                    .from('orders')
+                    .insert([orderData])
+                    .select();
 
-Customer Information:
-Name: ${data.customerName}
-Email: ${data.customerEmail}
-Phone: ${data.customerPhone || 'Not provided'}
+                if (error) throw error;
 
-Message:
-${data.message || 'No additional message'}
-            `.trim();
+                // Show success message
+                successMessage.style.display = 'block';
+                submitBtn.textContent = 'Submit Request';
+                
+                // Reset form and close modal after 2 seconds
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    form.reset();
+                    successMessage.style.display = 'none';
+                    submitBtn.disabled = false;
+                }, 2000);
 
-            const mailtoLink = `mailto:jalen@mcg-works.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            window.location.href = mailtoLink;
-
-            successMessage.style.display = 'block';
-            
-            setTimeout(() => {
-                modal.style.display = 'none';
-                form.reset();
-                successMessage.style.display = 'none';
-            }, 3000);
+            } catch (error) {
+                console.error('Error submitting order:', error);
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = 'Error: ' + (error.message || 'Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Request';
+            }
         };
 
-        displayItems();
+        // Load items when page loads
+        loadItems();
     </script>
 </body>
 </html>
