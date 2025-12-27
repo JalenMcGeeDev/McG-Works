@@ -337,17 +337,19 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ============================================
-        // STEP 1: PASTE YOUR SUPABASE CREDENTIALS HERE (ONLY ONCE!)
-        // ============================================
-        const SUPABASE_URL = 'https://awccquoyscijmtqtibgr.supabase.co';  // e.g., 'https://xxxxx.supabase.co'
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3Y2NxdW95c2Npam10cXRpYmdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4MDI0MDUsImV4cCI6MjA4MjM3ODQwNX0.zUBCXRah_oK8P_Q-1sFwZ5altAFUfZMOdBdY-tuXWrE';  // The long string starting with 'eyJ...'
-        // ============================================
-        // DO NOT ADD CREDENTIALS ANYWHERE ELSE IN THIS FILE
-        // ============================================
+        // ═══════════════════════════════════════════════════════════════
+        // 🔧 CONFIGURATION - FILL IN YOUR SUPABASE DETAILS BELOW
+        // ═══════════════════════════════════════════════════════════════
+        // Get these from: Supabase Dashboard → Settings → API
+        
+        const SUPABASE_URL = 'https://awccquoyscijmtqtibgr.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3Y2NxdW95c2Npam10cXRpYmdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4MDI0MDUsImV4cCI6MjA4MjM3ODQwNX0.zUBCXRah_oK8P_Q-1sFwZ5altAFUfZMOdBdY-tuXWrE';
+        
+        // ═══════════════════════════════════════════════════════════════
+        // ⚠️  DO NOT EDIT ANYTHING BELOW THIS LINE
+        // ═══════════════════════════════════════════════════════════════
 
-        // Initialize Supabase client (this should only appear ONCE)
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const modal = document.getElementById('purchaseModal');
         const closeBtn = document.querySelector('.close');
@@ -358,10 +360,9 @@
         const loading = document.getElementById('loading');
         const itemsGrid = document.getElementById('itemsGrid');
 
-        // Fetch and display items from Supabase
         async function loadItems() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await sb
                     .from('items')
                     .select('*')
                     .eq('available', true)
@@ -430,7 +431,6 @@
         form.onsubmit = async function(e) {
             e.preventDefault();
             
-            // Disable submit button
             submitBtn.disabled = true;
             submitBtn.textContent = 'Submitting...';
             errorMessage.style.display = 'none';
@@ -449,18 +449,16 @@
             };
 
             try {
-                const { data, error } = await supabase
+                const { data, error } = await sb
                     .from('orders')
                     .insert([orderData])
                     .select();
 
                 if (error) throw error;
 
-                // Show success message
                 successMessage.style.display = 'block';
                 submitBtn.textContent = 'Submit Request';
                 
-                // Reset form and close modal after 2 seconds
                 setTimeout(() => {
                     modal.style.display = 'none';
                     form.reset();
@@ -477,7 +475,6 @@
             }
         };
 
-        // Load items when page loads
         loadItems();
     </script>
 </body>
