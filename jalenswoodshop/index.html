@@ -338,13 +338,15 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // ============================================
-        // PASTE YOUR SUPABASE CREDENTIALS HERE
+        // STEP 1: PASTE YOUR SUPABASE CREDENTIALS HERE (ONLY ONCE!)
         // ============================================
-        const SUPABASE_URL = 'https://awccquoyscijmtqtibgr.supabase.co';  // e.g., 'https://xxxxx.supabase.co'
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3Y2NxdW95c2Npam10cXRpYmdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4MDI0MDUsImV4cCI6MjA4MjM3ODQwNX0.zUBCXRah_oK8P_Q-1sFwZ5altAFUfZMOdBdY-tuXWrE';  // The long string starting with 'eyJ...'
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';  // e.g., 'https://xxxxx.supabase.co'
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';  // The long string starting with 'eyJ...'
+        // ============================================
+        // DO NOT ADD CREDENTIALS ANYWHERE ELSE IN THIS FILE
         // ============================================
 
-        // Initialize Supabase client
+        // Initialize Supabase client (this should only appear ONCE)
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const modal = document.getElementById('purchaseModal');
