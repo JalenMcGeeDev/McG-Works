@@ -360,6 +360,24 @@
         const loading = document.getElementById('loading');
         const itemsGrid = document.getElementById('itemsGrid');
 
+        // Get public URL for images stored in Supabase Storage
+        function getImageUrl(imagePath) {
+            if (!imagePath) return null;
+            
+            // If it's already a full URL, return as is
+            if (imagePath.startsWith('http')) return imagePath;
+            
+            // If it's an emoji or very short string, return as is
+            if (imagePath.length < 10) return imagePath;
+            
+            // Get public URL from Supabase Storage bucket 'item-images'
+            const { data } = sb.storage
+                .from('item-images')
+                .getPublicUrl(imagePath);
+            
+            return data.publicUrl;
+        }
+
         async function loadItems() {
             try {
                 const { data, error } = await sb
@@ -378,9 +396,21 @@
                 }
 
                 itemsGrid.innerHTML = data.map(item => {
-                    const imageContent = item.image_url && item.image_url.startsWith('http') 
-                        ? `<img src="${item.image_url}" alt="${item.name}">`
-                        : `<div style="font-size: 4rem;">${item.image_url || '🪵'}</div>`;
+                    // Get image from either image_path (new) or image_url (old) column
+                    const imagePath = item.image_path || item.image_url;
+                    const imageUrl = getImageUrl(imagePath);
+                    
+                    let imageContent;
+                    if (!imageUrl) {
+                        // No image - show default emoji
+                        imageContent = '<div style="font-size: 4rem;">🪵</div>';
+                    } else if (imageUrl.startsWith('http')) {
+                        // It's a full URL - show as image
+                        imageContent = `<img src="${imageUrl}" alt="${item.name}">`;
+                    } else {
+                        // It's an emoji or short text - show as text
+                        imageContent = `<div style="font-size: 4rem;">${imageUrl}</div>`;
+                    }
 
                     return `
                         <div class="item-card" onclick="openPurchaseModal(${item.id}, '${item.name.replace(/'/g, "\\'")}', ${item.price})">
