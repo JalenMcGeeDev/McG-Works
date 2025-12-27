@@ -3,479 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jalen's Woodshop - Handcrafted Wood Projects</title>
+    <title>Test - Jalen's Woodshop</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Georgia', serif;
+            font-family: Georgia, serif;
             background: linear-gradient(135deg, #f5f1e8 0%, #e8dcc8 100%);
-            color: #3a3a3a;
-            line-height: 1.6;
-        }
-
-        header {
-            background: linear-gradient(135deg, #5d4e37 0%, #4a3f2e 100%);
-            color: #f5f1e8;
-            padding: 3rem 2rem;
+            padding: 2rem;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-
-        header h1 {
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
-            letter-spacing: 2px;
-        }
-
-        header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-
-        .container {
-            max-width: 1400px;
+        h1 { color: #5d4e37; margin-bottom: 2rem; }
+        .test-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 600px;
             margin: 0 auto;
-            padding: 3rem 2rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-
-        .loading {
-            text-align: center;
-            padding: 3rem;
-            font-size: 1.5rem;
-            color: #5d4e37;
-        }
-
-        .items-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 2.5rem;
-            margin-top: 2rem;
-        }
-
-        .item-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-        }
-
-        .item-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-        }
-
-        .item-image {
-            width: 100%;
-            height: 280px;
-            object-fit: cover;
-            background: #e8dcc8;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-        }
-
-        .item-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .item-details {
-            padding: 1.5rem;
-        }
-
-        .item-name {
-            font-size: 1.5rem;
-            color: #5d4e37;
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-        }
-
-        .item-description {
-            color: #666;
-            margin-bottom: 1rem;
-            line-height: 1.5;
-        }
-
-        .item-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 1rem;
-        }
-
-        .item-price {
-            font-size: 1.8rem;
-            color: #5d4e37;
-            font-weight: bold;
-        }
-
-        .purchase-btn {
-            background: linear-gradient(135deg, #8b7355 0%, #6d5a44 100%);
-            color: white;
-            border: none;
-            padding: 0.8rem 1.8rem;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .purchase-btn:hover {
-            background: linear-gradient(135deg, #6d5a44 0%, #5d4e37 100%);
-            transform: scale(1.05);
-        }
-
-        .purchase-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .modal-content {
-            background: white;
-            margin: 5% auto;
-            padding: 2.5rem;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateY(-50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 2rem;
-            font-weight: bold;
-            cursor: pointer;
-            line-height: 1;
-        }
-
-        .close:hover {
-            color: #000;
-        }
-
-        .modal h2 {
-            color: #5d4e37;
-            margin-bottom: 1.5rem;
-            font-size: 1.8rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #5d4e37;
-            font-weight: bold;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid #e8dcc8;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-family: inherit;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #8b7355;
-        }
-
-        .submit-btn {
-            background: linear-gradient(135deg, #8b7355 0%, #6d5a44 100%);
+        button {
+            background: #8b7355;
             color: white;
             border: none;
             padding: 1rem 2rem;
             border-radius: 25px;
             cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: bold;
-            width: 100%;
-            transition: all 0.3s ease;
+            font-size: 1rem;
+            margin: 1rem;
         }
-
-        .submit-btn:hover:not(:disabled) {
-            background: linear-gradient(135deg, #6d5a44 0%, #5d4e37 100%);
-            transform: scale(1.02);
-        }
-
-        .submit-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        .success-message {
-            background: #d4edda;
-            color: #155724;
-            padding: 1rem;
-            border-radius: 8px;
+        button:hover { background: #6d5a44; }
+        .result {
             margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 5px;
             display: none;
         }
-
-        .error-message {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-top: 1rem;
-            display: none;
-        }
-
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 2rem;
-            }
-
-            .items-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .modal-content {
-                margin: 20% auto;
-                padding: 1.5rem;
-            }
-        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
     </style>
 </head>
 <body>
-    <header>
-        <h1>🪵 Jalen's Woodshop</h1>
-        <p>Handcrafted with care, built to last</p>
-    </header>
-
-    <div class="container">
-        <div class="loading" id="loading">Loading items...</div>
-        <div class="items-grid" id="itemsGrid"></div>
-    </div>
-
-    <div id="purchaseModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 id="modalTitle">Request to Purchase</h2>
-            <form id="purchaseForm">
-                <input type="hidden" id="itemId" name="itemId">
-                <input type="hidden" id="itemName" name="itemName">
-                <input type="hidden" id="itemPrice" name="itemPrice">
-                
-                <div class="form-group">
-                    <label for="customerName">Your Name *</label>
-                    <input type="text" id="customerName" name="customerName" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="customerEmail">Email *</label>
-                    <input type="email" id="customerEmail" name="customerEmail" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="customerPhone">Phone Number</label>
-                    <input type="tel" id="customerPhone" name="customerPhone">
-                </div>
-
-                <div class="form-group">
-                    <label for="message">Message (Optional)</label>
-                    <textarea id="message" name="message" rows="4" placeholder="Any special requests or questions..."></textarea>
-                </div>
-
-                <button type="submit" class="submit-btn" id="submitBtn">Submit Request</button>
-                <div class="success-message" id="successMessage">
-                    Thank you! Your request has been sent successfully.
-                </div>
-                <div class="error-message" id="errorMessage">
-                    Sorry, there was an error submitting your request. Please try again.
-                </div>
-            </form>
-        </div>
+    <h1>🪵 Testing Jalen's Woodshop</h1>
+    <div class="test-box">
+        <h2>Basic Functionality Test</h2>
+        <p>This tests if your HTML/JavaScript is working</p>
+        
+        <button onclick="testBasic()">Test 1: Basic JavaScript</button>
+        <button onclick="testSupabaseLibrary()">Test 2: Supabase Library</button>
+        <button onclick="testConnection()">Test 3: Database Connection</button>
+        
+        <div id="result" class="result"></div>
+        
+        <hr style="margin: 2rem 0;">
+        
+        <h3>Instructions:</h3>
+        <ol style="text-align: left; max-width: 500px; margin: 0 auto;">
+            <li>Click "Test 1" - Should say "JavaScript works!"</li>
+            <li>Click "Test 2" - Should say "Supabase library loaded"</li>
+            <li>For Test 3, first add your credentials below in the code</li>
+        </ol>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ═══════════════════════════════════════════════════════════════
-        // 🔧 CONFIGURATION - FILL IN YOUR SUPABASE DETAILS BELOW
-        // ═══════════════════════════════════════════════════════════════
-        // Get these from: Supabase Dashboard → Settings → API
-        
+        // ADD YOUR CREDENTIALS HERE FOR TEST 3
         const SUPABASE_URL = 'https://awccquoyscijmtqtibgr.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3Y2NxdW95c2Npam10cXRpYmdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4MDI0MDUsImV4cCI6MjA4MjM3ODQwNX0.zUBCXRah_oK8P_Q-1sFwZ5altAFUfZMOdBdY-tuXWrE';
-        
-        // ═══════════════════════════════════════════════════════════════
-        // ⚠️  DO NOT EDIT ANYTHING BELOW THIS LINE
-        // ═══════════════════════════════════════════════════════════════
 
-        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const result = document.getElementById('result');
 
-        const modal = document.getElementById('purchaseModal');
-        const closeBtn = document.querySelector('.close');
-        const form = document.getElementById('purchaseForm');
-        const successMessage = document.getElementById('successMessage');
-        const errorMessage = document.getElementById('errorMessage');
-        const submitBtn = document.getElementById('submitBtn');
-        const loading = document.getElementById('loading');
-        const itemsGrid = document.getElementById('itemsGrid');
+        function testBasic() {
+            result.className = 'result success';
+            result.style.display = 'block';
+            result.textContent = '✅ Test 1 PASSED: JavaScript works!';
+        }
 
-        async function loadItems() {
-            try {
-                const { data, error } = await sb
-                    .from('items')
-                    .select('*')
-                    .eq('available', true)
-                    .order('created_at', { ascending: false });
-
-                if (error) throw error;
-
-                loading.style.display = 'none';
-
-                if (data.length === 0) {
-                    itemsGrid.innerHTML = '<p style="text-align: center; color: #666;">No items available at the moment. Check back soon!</p>';
-                    return;
-                }
-
-                itemsGrid.innerHTML = data.map(item => {
-                    const imageContent = item.image_url && item.image_url.startsWith('http') 
-                        ? `<img src="${item.image_url}" alt="${item.name}">`
-                        : `<div style="font-size: 4rem;">${item.image_url || '🪵'}</div>`;
-
-                    return `
-                        <div class="item-card" onclick="openPurchaseModal(${item.id}, '${item.name.replace(/'/g, "\\'")}', ${item.price})">
-                            <div class="item-image">${imageContent}</div>
-                            <div class="item-details">
-                                <h3 class="item-name">${item.name}</h3>
-                                <p class="item-description">${item.description || ''}</p>
-                                <div class="item-footer">
-                                    <span class="item-price">$${parseFloat(item.price).toFixed(2)}</span>
-                                    <button class="purchase-btn" onclick="event.stopPropagation(); openPurchaseModal(${item.id}, '${item.name.replace(/'/g, "\\'")}', ${item.price})">
-                                        Request Purchase
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            } catch (error) {
-                console.error('Error loading items:', error);
-                loading.textContent = 'Error loading items. Please refresh the page.';
+        function testSupabaseLibrary() {
+            if (typeof window.supabase !== 'undefined') {
+                result.className = 'result success';
+                result.style.display = 'block';
+                result.textContent = '✅ Test 2 PASSED: Supabase library loaded successfully!';
+            } else {
+                result.className = 'result error';
+                result.style.display = 'block';
+                result.textContent = '❌ Test 2 FAILED: Supabase library not loaded. Check your internet connection.';
             }
         }
 
-        function openPurchaseModal(itemId, itemName, itemPrice) {
-            document.getElementById('itemId').value = itemId;
-            document.getElementById('itemName').value = itemName;
-            document.getElementById('itemPrice').value = itemPrice;
-            document.getElementById('modalTitle').textContent = `Request to Purchase: ${itemName}`;
-            modal.style.display = 'block';
-        }
-
-        closeBtn.onclick = function() {
-            modal.style.display = 'none';
-            form.reset();
-            successMessage.style.display = 'none';
-            errorMessage.style.display = 'none';
-        }
-
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = 'none';
-                form.reset();
-                successMessage.style.display = 'none';
-                errorMessage.style.display = 'none';
+        async function testConnection() {
+            if (SUPABASE_URL === 'https://awccquoyscijmtqtibgr.supabase.co') {
+                result.className = 'result error';
+                result.style.display = 'block';
+                result.textContent = '❌ Please add your Supabase URL and Key in the code first!';
+                return;
             }
-        }
-
-        form.onsubmit = async function(e) {
-            e.preventDefault();
-            
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Submitting...';
-            errorMessage.style.display = 'none';
-            successMessage.style.display = 'none';
-
-            const formData = new FormData(form);
-            const orderData = {
-                item_id: parseInt(formData.get('itemId')),
-                item_name: formData.get('itemName'),
-                item_price: parseFloat(formData.get('itemPrice')),
-                customer_name: formData.get('customerName'),
-                customer_email: formData.get('customerEmail'),
-                customer_phone: formData.get('customerPhone') || null,
-                message: formData.get('message') || null,
-                status: 'pending'
-            };
 
             try {
-                const { data, error } = await sb
-                    .from('orders')
-                    .insert([orderData])
-                    .select();
-
-                if (error) throw error;
-
-                successMessage.style.display = 'block';
-                submitBtn.textContent = 'Submit Request';
+                const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                const { data, error } = await sb.from('items').select('count');
                 
-                setTimeout(() => {
-                    modal.style.display = 'none';
-                    form.reset();
-                    successMessage.style.display = 'none';
-                    submitBtn.disabled = false;
-                }, 2000);
-
+                if (error) throw error;
+                
+                result.className = 'result success';
+                result.style.display = 'block';
+                result.textContent = '✅ Test 3 PASSED: Successfully connected to Supabase!';
             } catch (error) {
-                console.error('Error submitting order:', error);
-                errorMessage.style.display = 'block';
-                errorMessage.textContent = 'Error: ' + (error.message || 'Please try again.');
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Submit Request';
+                result.className = 'result error';
+                result.style.display = 'block';
+                result.textContent = '❌ Test 3 FAILED: ' + error.message;
             }
-        };
-
-        loadItems();
+        }
     </script>
 </body>
 </html>
