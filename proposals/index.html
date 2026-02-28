@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>McG Works — Proposals</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      display: grid;
+      place-items: center;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #111;
+      color: #fff;
+    }
+    .gate {
+      width: 90%;
+      max-width: 480px;
+      padding: 40px 32px;
+      border-radius: 16px;
+      background: #1f2937;
+      border: 1px solid #374151;
+      text-align: center;
+    }
+    .gate h1 {
+      margin: 0 0 6px;
+      font-size: 32px;
+      letter-spacing: -0.5px;
+    }
+    .gate .subtitle {
+      margin: 0 0 32px;
+      font-size: 15px;
+      opacity: 0.6;
+    }
+    .gate label {
+      display: block;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.5;
+      margin-bottom: 8px;
+    }
+    .code-input {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 20px;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-align: center;
+      border: 2px solid #374151;
+      border-radius: 10px;
+      background: #111827;
+      color: #fff;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .code-input:focus {
+      border-color: #3b82f6;
+    }
+    .code-input.error {
+      border-color: #ef4444;
+      animation: shake 0.4s ease;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+    .submit-btn {
+      margin-top: 16px;
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      background: #3b82f6;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .submit-btn:hover { background: #2563eb; }
+    .submit-btn:active { background: #1d4ed8; }
+    .error-msg {
+      margin-top: 14px;
+      font-size: 14px;
+      color: #ef4444;
+      min-height: 20px;
+    }
+    .footer {
+      margin-top: 28px;
+      font-size: 12px;
+      opacity: 0.35;
+    }
+  </style>
+</head>
+<body>
+  <div class="gate">
+    <h1>McG Works</h1>
+    <p class="subtitle">Client Proposal Portal</p>
+
+    <label for="accessCode">Enter your access code</label>
+    <input
+      type="text"
+      id="accessCode"
+      class="code-input"
+      placeholder="XXXX-XXXX"
+      autocomplete="off"
+      spellcheck="false"
+      autofocus
+    />
+    <button class="submit-btn" id="submitBtn">View Proposal</button>
+    <p class="error-msg" id="errorMsg"></p>
+
+    <p class="footer">Code provided by McG Works</p>
+  </div>
+
+  <script>
+    /**
+     * EDGE FUNCTION CONFIG
+     * --------------------
+     * Replace with your Supabase project's Edge Function URL.
+     * Format: https://<project-ref>.supabase.co/functions/v1
+     */
+    const FUNCTIONS_BASE = 'https://awccquoyscijmtqtibgr.supabase.co/functions/v1';
+
+    // SHA-256 helper using Web Crypto API
+    async function sha256(message) {
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    const codeInput = document.getElementById('accessCode');
+    const submitBtn = document.getElementById('submitBtn');
+    const errorMsg = document.getElementById('errorMsg');
+
+    async function handleSubmit() {
+      const raw = codeInput.value.trim().toUpperCase();
+      if (!raw) {
+        showError('Please enter your access code.');
+        return;
+      }
+
+      if (FUNCTIONS_BASE === 'YOUR_SUPABASE_FUNCTIONS_URL') {
+        showError('Portal not configured yet.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Checking…';
+
+      const hash = await sha256(raw);
+
+      try {
+        const res = await fetch(FUNCTIONS_BASE + '/verify-code', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code_hash: hash })
+        });
+        const result = await res.json();
+
+        if (result.valid && result.proposal_path) {
+          sessionStorage.setItem('mcg_proposal_access', hash);
+          window.location.href = result.proposal_path + '/';
+        } else {
+          showError('Invalid code. Please check and try again.');
+        }
+      } catch {
+        showError('Connection error. Please try again.');
+      }
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'View Proposal';
+    }
+
+    function showError(msg) {
+      errorMsg.textContent = msg;
+      codeInput.classList.add('error');
+      setTimeout(() => codeInput.classList.remove('error'), 400);
+    }
+
+    submitBtn.addEventListener('click', handleSubmit);
+    codeInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') handleSubmit();
+      errorMsg.textContent = '';
+    });
+  </script>
+</body>
+</html>
