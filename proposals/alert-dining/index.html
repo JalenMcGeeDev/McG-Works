@@ -275,6 +275,15 @@
     .indicator.red { background: #ef4444; }
     .indicator.yellow { background: #eab308; }
     .indicator.green { background: #22c55e; }
+    td.indicator-label {
+      white-space: nowrap;
+      width: 1%;
+    }
+    td.indicator-label .indicator {
+      vertical-align: middle;
+      position: relative;
+      top: -1px;
+    }
 
     /* ---------- Callout ---------- */
     .callout {
@@ -646,7 +655,7 @@
         <span class="section-number">Section 1</span>
         <h2>Executive Summary</h2>
         <p>Alert Dining is a mobile-ready platform that helps people with food allergies make safer, more informed choices when dining out. Users create a personal allergy profile from the "Top 14" allergens, and the app displays participating restaurants and menus with personalized risk indicators (<span class="indicator red"></span>red / <span class="indicator yellow"></span>yellow / <span class="indicator green"></span>green) for each menu item.</p>
-        <p>Restaurants subscribe to be listed and manage their menu and allergen data. Diners access the platform for free (with ads) or upgrade to a premium tier (no ads). A later phase adds allergy translation cards that can be downloaded and saved offline for travel use.</p>
+        <p>Restaurants subscribe to be listed and manage their menu and allergen data. Diners access the platform for free (with ads) or upgrade to a premium tier (no ads). A later phase adds allergy translation cards — downloadable, shareable, and saveable to Apple Wallet or Google Wallet — for offline travel use.</p>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Stakeholder</th><th>Value Delivered</th></tr></thead>
@@ -711,7 +720,7 @@
             <div class="flow-num">2</div>
             <div class="flow-body">
               <h4>Discover Restaurants</h4>
-              <p>App detects location (with permission). Diner sees a list of participating restaurants sorted by distance. Can also search by name.</p>
+              <p>App detects location (with permission) and uses Google Places API to surface nearby participating restaurants sorted by distance. Can also search by name.</p>
             </div>
           </div>
           <div class="flow-step">
@@ -746,7 +755,7 @@
             <div class="flow-num">7</div>
             <div class="flow-body">
               <h4>Generate Translation Card (Phase 3)</h4>
-              <p>Diner generates a downloadable allergy translation card from their profile in up to 2 languages for offline travel use.</p>
+              <p>Diner generates an allergy translation card from their profile in up to 10 languages. Cards can be downloaded, shared, or saved directly to Apple Wallet / Google Wallet for instant offline access while traveling.</p>
             </div>
           </div>
         </div>
@@ -764,7 +773,7 @@
             <div class="flow-num">2</div>
             <div class="flow-body">
               <h4>Complete Restaurant Profile</h4>
-              <p>Admin enters business name, address, hours, phone, and website. Selects a subscription tier and sets up billing via Stripe.</p>
+              <p>Admin searches for their restaurant via Google Places API to auto-populate business name, address, hours, phone, and website. Reviews and confirms details, then selects a subscription tier and sets up billing via Stripe.</p>
             </div>
           </div>
           <div class="flow-step">
@@ -902,7 +911,7 @@
             <div class="flow-num">13</div>
             <div class="flow-body">
               <h4>Allergen List Management</h4>
-              <p>Admin manages the master list of recognized allergens (Top 14 definitions, regional variations, additions over time). Changes cascade to all tagging interfaces.</p>
+              <p>Admin manages the master list of recognized allergens. Changes cascade to all tagging interfaces.</p>
             </div>
           </div>
           <div class="flow-step">
@@ -926,7 +935,7 @@
               <tr><td><strong>Phase 0 — Requirements + Prototype</strong></td><td>Requirements workshop, prototype, backlog, technical plan (1–2 wks)</td></tr>
               <tr><td><strong>Phase 1 — MVP Build</strong></td><td>Diner app (React Native, iOS + Android), restaurant portal, admin tools, monetization, basic report flow (6–10 wks)</td></tr>
               <tr><td><strong>Phase 2 — Trust + Feedback</strong></td><td>Ratings, enhanced report flow with moderation queue, admin moderation upgrades, analytics dashboard (4–6 wks)</td></tr>
-              <tr><td><strong>Phase 3 — Translation Cards</strong></td><td>Allergy card generator, 2 languages, downloadable/shareable format (4–6 wks)</td></tr>
+              <tr><td><strong>Phase 3 — Translation Cards + Wallet Passes</strong></td><td>Allergy card generator, top 10 languages, downloadable/shareable format, Apple Wallet &amp; Google Wallet pass integration (4–6 wks)</td></tr>
             </tbody>
           </table>
         </div>
@@ -952,14 +961,15 @@
         <div class="card">
           <ul>
             <li>Auto-detect location (with permission); fallback to manual search</li>
-            <li>List restaurants by distance; search by name</li>
+            <li>Google Places API powers nearby restaurant discovery and search by name</li>
+            <li>List restaurants by distance with Google-sourced location data</li>
           </ul>
         </div>
 
         <p class="sub-heading">Menu Browsing</p>
         <div class="card">
           <ul>
-            <li>Restaurant detail page: name, address, hours, contact, verified badge</li>
+            <li>Restaurant detail page: name, address, hours, contact, verified badge (core details sourced via Google Places API)</li>
             <li>Menu items displayed with <span class="indicator green"></span>Green / <span class="indicator yellow"></span>Yellow / <span class="indicator red"></span>Red indicator personalized to user</li>
             <li>Item detail view: allergen match explanation, cross-contact warnings, restaurant notes</li>
             <li>Persistent disclaimer: "Information is self-reported by restaurant. Confirm with staff."</li>
@@ -988,7 +998,7 @@
         <p class="sub-heading">Profile &amp; Menu Management</p>
         <div class="card">
           <ul>
-            <li>Business name, address, hours, phone, website, subscription tier</li>
+            <li>Business name, address, hours, phone, website auto-populated via Google Places API; subscription tier</li>
             <li>Menu item CRUD: name, description, category (optional), allergen checkboxes</li>
             <li>Optional item-level notes (e.g., preparation warnings)</li>
             <li>"Last updated" timestamp on menu and individual items</li>
@@ -1063,7 +1073,7 @@
         </div>
 
         <h3>The Top 14 Allergens (Baseline)</h3>
-        <p>The MVP launches with the following widely recognized allergens. Regional definitions and any additions will be confirmed during the Phase 0 requirements workshop.</p>
+        <p>The MVP launches with the following widely recognized allergens. Any additions will be confirmed during the Phase 0 requirements workshop.</p>
         <div class="card">
           <ul>
             <li>Milk</li>
@@ -1086,9 +1096,9 @@
           <table>
             <thead><tr><th>Indicator</th><th>Trigger Condition</th></tr></thead>
             <tbody>
-              <tr><td><span class="indicator red"></span> <strong>RED</strong></td><td>Item directly contains a user allergen, OR restaurant flagged high-risk cross-contact relevant to user allergens</td></tr>
-              <tr><td><span class="indicator yellow"></span> <strong>YELLOW</strong></td><td>Ambiguous or possible cross-contact; restaurant indicated shared environment risk</td></tr>
-              <tr><td><span class="indicator green"></span> <strong>GREEN</strong></td><td>No known allergen match based on current restaurant self-reported data</td></tr>
+              <tr><td class="indicator-label"><span class="indicator red"></span> <strong>RED</strong></td><td>Item directly contains a user allergen, OR restaurant flagged high-risk cross-contact relevant to user allergens</td></tr>
+              <tr><td class="indicator-label"><span class="indicator yellow"></span> <strong>YELLOW</strong></td><td>Ambiguous or possible cross-contact; restaurant indicated shared environment risk</td></tr>
+              <tr><td class="indicator-label"><span class="indicator green"></span> <strong>GREEN</strong></td><td>No known allergen match based on current restaurant self-reported data</td></tr>
             </tbody>
           </table>
         </div>
@@ -1147,7 +1157,7 @@
               <tr><td><strong>Restaurant / Admin Portal</strong></td><td>Modern web app (same codebase or companion app)</td></tr>
               <tr><td><strong>Backend &amp; API</strong></td><td>Secure REST API + managed database + role-based authentication</td></tr>
               <tr><td><strong>Payments</strong></td><td>Stripe (restaurant subscriptions + diner premium)</td></tr>
-              <tr><td><strong>Location</strong></td><td>Distance-based restaurant list; manual search fallback</td></tr>
+              <tr><td><strong>Location &amp; Places</strong></td><td>Google Places API — restaurant search, location data, and profile auto-population; manual search fallback</td></tr>
               <tr><td><strong>Analytics</strong></td><td>Privacy-safe event tracking (provider selected in Phase 0)</td></tr>
             </tbody>
           </table>
@@ -1173,7 +1183,7 @@
               <tr><td><strong>Phase 1 — MVP Build (Milestone 1)</strong></td><td>$2,775 — due at Phase 1 kickoff</td></tr>
               <tr><td><strong>Phase 1 — MVP Build (Milestone 2)</strong></td><td>$2,775 — due at Phase 1 midpoint (prototype approved)</td></tr>
               <tr><td><strong>Phase 2 — Trust + Feedback</strong></td><td>$925 — due at Phase 2 kickoff</td></tr>
-              <tr><td><strong>Phase 3 — Translation Cards</strong></td><td>$925 — due at Phase 3 kickoff</td></tr>
+              <tr><td><strong>Phase 3 — Translation Cards + Wallet Passes</strong></td><td>$925 — due at Phase 3 kickoff</td></tr>
               <tr><td><strong>Total</strong></td><td><strong>$9,250</strong></td></tr>
             </tbody>
           </table>
@@ -1212,24 +1222,14 @@
           <ul>
             <li>Allergy translation card generator from diner profile</li>
             <li>Downloadable / shareable mobile-friendly card format</li>
-            <li>Up to 2 languages (English + 1 additional selected in Phase 0)</li>
-          </ul>
-        </div>
-
-        <h3>What Is Not Included at This Price</h3>
-        <div class="card">
-          <p>The following items are excluded from the $9,250 fixed price and can be added as upgrades after launch:</p>
-          <ul>
-            <li>Apple Wallet / Google Wallet pass integration (true digital wallet passes)</li>
-            <li>Advanced restaurant analytics dashboards (cohort insights, custom reports)</li>
-            <li>Automated restaurant verification (domain verification, document automation)</li>
-            <li>Ad network integration beyond simple placements</li>
-            <li>POS/menu integrations or automated menu imports at scale</li>
+            <li>Apple Wallet pass (.pkpass) and Google Wallet pass (JWT) generation — diners save their allergy card directly to their phone's wallet for instant offline access</li>
+            <li>Server-side pass updates when a diner changes their allergen profile</li>
+            <li>Top 10 languages (English + 9 additional — specific languages confirmed in Phase 0)</li>
           </ul>
         </div>
 
         <div class="callout info">
-          <strong>Ongoing infrastructure costs:</strong> The $9,250 covers all design and development. After launch, the client is responsible for ongoing infrastructure costs including hosting/database services, Stripe transaction fees, App Store / Google Play developer accounts ($99/yr and $25 one-time respectively), and any ad network or analytics provider fees. Estimated ongoing costs will be outlined during Phase 0.
+          <strong>Ongoing infrastructure costs:</strong> The $9,250 covers all design and development. After launch, the client is responsible for ongoing infrastructure costs including hosting/database services, Stripe transaction fees, Google Places API usage fees, App Store / Google Play developer accounts ($99/yr and $25 one-time respectively), Apple Developer account for Wallet pass signing, Google Cloud project for Wallet API, and any ad network or analytics provider fees. Estimated ongoing costs will be outlined during Phase 0.
         </div>
       </div>
 
@@ -1278,7 +1278,7 @@
             <li>Minor feature enhancements and UI improvements</li>
             <li>Bug fixes and OS compatibility updates</li>
             <li>Changes to red/yellow/green indicator rules or disclaimer text</li>
-            <li>Adding additional languages to translation cards</li>
+            <li>Adding languages beyond the included top 10 to translation cards</li>
             <li>Restaurant onboarding assistance and content updates</li>
             <li>Basic analytics adjustments or reporting changes</li>
           </ul>
@@ -1293,22 +1293,22 @@
         <h3>13.1 Assumptions</h3>
         <div class="card">
           <ul>
-            <li>MVP starts with the Top 14 allergens (regional definitions confirmed in Phase 0)</li>
+            <li>MVP starts with the Top 14 allergens</li>
             <li>Restaurants tag allergens by category, not full ingredient lists</li>
             <li>Risk display uses red / yellow / green only (not percentage scores)</li>
-            <li>Phase 3 translation cards are downloadable files, not Apple/Google Wallet passes</li>
+            <li>Phase 3 translation cards include Apple Wallet and Google Wallet pass generation (requires Apple Developer account and Google Cloud project with Wallet API enabled — client-provided)</li>
           </ul>
         </div>
 
         <h3>13.2 Open Decisions (to finalize in Phase 0)</h3>
         <div class="card">
           <ul>
-            <li>Confirm Top 14 allergen list and regional definitions</li>
+            <li>Confirm Top 14 allergen list</li>
             <li>Verification method: manual approval, domain email, or hybrid</li>
             <li>Ad approach: simple in-house banners or lightweight ad network</li>
             <li>Restaurant tier pricing and diner premium pricing</li>
             <li>Whether basic reviews ship in Phase 1 or Phase 2</li>
-            <li>Additional language for Phase 3 translation cards</li>
+            <li>Confirm top 10 languages for Phase 3 translation cards</li>
           </ul>
         </div>
       </div>
