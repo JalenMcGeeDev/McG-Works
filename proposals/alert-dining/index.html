@@ -320,6 +320,22 @@
       margin-top: 4px;
     }
 
+    /* ---------- Proposal Note ---------- */
+    .proposal-note {
+      margin-top: 40px;
+      padding: 20px 24px;
+      background: rgba(59,130,246,0.06);
+      border: 1px solid rgba(59,130,246,0.25);
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+    }
+    .proposal-note strong {
+      color: #93c5fd;
+    }
+
     /* ---------- CTA ---------- */
     .cta-section {
       text-align: center;
@@ -589,7 +605,7 @@
           <span class="label">Total Investment</span>
         </div>
         <div class="hero-stat">
-          <span class="value">14–24 wks</span>
+          <span class="value">15–24 wks</span>
           <span class="label">Delivery Timeline</span>
         </div>
         <div class="hero-stat">
@@ -668,7 +684,7 @@
             <thead><tr><th>Role</th><th>Description</th></tr></thead>
             <tbody>
               <tr><td><strong>Diner (Free)</strong></td><td>Browses restaurants and menus with allergen risk indicators; sees ads</td></tr>
-              <tr><td><strong>Diner (Premium)</strong></td><td>Same as Free; no ads; access to additional profile features</td></tr>
+              <tr><td><strong>Diner (Premium)</strong></td><td>Same as Free; no ads</td></tr>
               <tr><td><strong>Restaurant Admin</strong></td><td>Creates listing, manages menu items, allergen tags, and kitchen questionnaire</td></tr>
               <tr><td><strong>Alert Dining Team</strong></td><td>Approves restaurants, manages billing, moderates content, monitors platform</td></tr>
             </tbody>
@@ -908,8 +924,8 @@
             <thead><tr><th>Phase</th><th>Summary</th></tr></thead>
             <tbody>
               <tr><td><strong>Phase 0 — Requirements + Prototype</strong></td><td>Requirements workshop, prototype, backlog, technical plan (1–2 wks)</td></tr>
-              <tr><td><strong>Phase 1 — MVP Build</strong></td><td>Diner app (mobile-ready web), restaurant portal, admin tools, monetization (6–10 wks)</td></tr>
-              <tr><td><strong>Phase 2 — Trust + Feedback</strong></td><td>Ratings, report flow, admin moderation upgrades, analytics dashboard (4–6 wks)</td></tr>
+              <tr><td><strong>Phase 1 — MVP Build</strong></td><td>Diner app (React Native, iOS + Android), restaurant portal, admin tools, monetization, basic report flow (6–10 wks)</td></tr>
+              <tr><td><strong>Phase 2 — Trust + Feedback</strong></td><td>Ratings, enhanced report flow with moderation queue, admin moderation upgrades, analytics dashboard (4–6 wks)</td></tr>
               <tr><td><strong>Phase 3 — Translation Cards</strong></td><td>Allergy card generator, 2 languages, downloadable/shareable format (4–6 wks)</td></tr>
             </tbody>
           </table>
@@ -1045,6 +1061,27 @@
             <li>Menu item allergen tags (restaurant-entered per item)</li>
           </ul>
         </div>
+
+        <h3>The Top 14 Allergens (Baseline)</h3>
+        <p>The MVP launches with the following widely recognized allergens. Regional definitions and any additions will be confirmed during the Phase 0 requirements workshop.</p>
+        <div class="card">
+          <ul>
+            <li>Milk</li>
+            <li>Eggs</li>
+            <li>Peanuts</li>
+            <li>Tree nuts</li>
+            <li>Wheat</li>
+            <li>Soy</li>
+            <li>Fish</li>
+            <li>Shellfish (crustaceans)</li>
+            <li>Sesame</li>
+            <li>Mustard</li>
+            <li>Celery</li>
+            <li>Lupin</li>
+            <li>Mollusks</li>
+            <li>Sulfites</li>
+          </ul>
+        </div>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Indicator</th><th>Trigger Condition</th></tr></thead>
@@ -1070,11 +1107,12 @@
           <table>
             <thead><tr><th>Area</th><th>Requirement</th></tr></thead>
             <tbody>
-              <tr><td><strong>Platforms</strong></td><td>iOS + Android (mobile-ready web app); web portal for restaurants and admin</td></tr>
+              <tr><td><strong>Platforms</strong></td><td>iOS + Android via React Native (submitted to App Store and Google Play); web portal for restaurants and admin</td></tr>
               <tr><td><strong>Security</strong></td><td>Secure authentication, role-based access control, encryption at rest for sensitive fields</td></tr>
               <tr><td><strong>Audit</strong></td><td>Full audit logging for all restaurant menu edits and admin actions</td></tr>
               <tr><td><strong>Performance</strong></td><td>Fast menu load times with caching; stable location handling with manual fallback</td></tr>
               <tr><td><strong>Monitoring</strong></td><td>Production error reporting and uptime monitoring from launch</td></tr>
+              <tr><td><strong>Data Privacy</strong></td><td>Allergy profiles are health-adjacent personal data. All user data stored securely with encryption at rest; no data shared with third parties without consent. Privacy policy and terms of service included at launch. GDPR-aware data handling practices for any EU-based users.</td></tr>
             </tbody>
           </table>
         </div>
@@ -1091,6 +1129,7 @@
             <li>"Verified" badge confirms identity verification only — not a medical safety certification</li>
             <li>"Report inaccurate info" flow available to all diners (Phase 1 basic, Phase 2 enhanced)</li>
             <li>Admin audit log provides traceability for all content changes</li>
+            <li><strong>Intellectual property:</strong> Upon receipt of final payment, full ownership of all custom-built code, designs, and platform IP transfers to the client. McG Works retains no rights to the delivered codebase.</li>
           </ul>
         </div>
       </div>
@@ -1104,7 +1143,7 @@
           <table>
             <thead><tr><th>Layer</th><th>Approach</th></tr></thead>
             <tbody>
-              <tr><td><strong>Diner App</strong></td><td>React Native — single codebase compiled to native iOS + Android; submitted to App Store and Google Play</td></tr>
+              <tr><td><strong>Diner App</strong></td><td>React Native — single codebase for iOS + Android; submitted to App Store and Google Play</td></tr>
               <tr><td><strong>Restaurant / Admin Portal</strong></td><td>Modern web app (same codebase or companion app)</td></tr>
               <tr><td><strong>Backend &amp; API</strong></td><td>Secure REST API + managed database + role-based authentication</td></tr>
               <tr><td><strong>Payments</strong></td><td>Stripe (restaurant subscriptions + diner premium)</td></tr>
@@ -1153,7 +1192,8 @@
         <div class="card">
           <h3>Phase 1 &mdash; $5,550</h3>
           <ul>
-            <li>Diner mobile-ready web app (account, profile, discovery, menu, indicators, disclaimers)</li>
+            <li>Diner mobile app — React Native, submitted to App Store + Google Play (account, profile, discovery, menu, indicators, disclaimers)</li>
+            <li>Basic "report inaccurate info" flow for diners to flag menu or allergen issues</li>
             <li>Restaurant portal (signup, verification, profile, menu CRUD, allergen tagging, kitchen questionnaire)</li>
             <li>Alert Dining admin portal (approval queue, restaurant management, billing oversight, basic moderation)</li>
             <li>Monetization: Stripe restaurant subscriptions + diner premium tier</li>
@@ -1163,8 +1203,8 @@
           <h3>Phase 2 &mdash; $925</h3>
           <ul>
             <li>Basic diner ratings (Recommend / Neutral / Not Recommend)</li>
-            <li>Diner report flow (inaccurate menu / allergen info)</li>
-            <li>Admin moderation queue for reports with resolution tracking</li>
+            <li>Enhanced report flow with categorized issue types and status updates for the reporting diner</li>
+            <li>Admin moderation queue for reports with resolution tracking and escalation workflows</li>
           </ul>
         </div>
         <div class="card">
@@ -1180,13 +1220,16 @@
         <div class="card">
           <p>The following items are excluded from the $9,250 fixed price and can be added as upgrades after launch:</p>
           <ul>
-            <li>Fully native iOS + Android apps published to App Store / Play Store</li>
             <li>Apple Wallet / Google Wallet pass integration (true digital wallet passes)</li>
             <li>Advanced restaurant analytics dashboards (cohort insights, custom reports)</li>
             <li>Automated restaurant verification (domain verification, document automation)</li>
             <li>Ad network integration beyond simple placements</li>
             <li>POS/menu integrations or automated menu imports at scale</li>
           </ul>
+        </div>
+
+        <div class="callout info">
+          <strong>Ongoing infrastructure costs:</strong> The $9,250 covers all design and development. After launch, the client is responsible for ongoing infrastructure costs including hosting/database services, Stripe transaction fees, App Store / Google Play developer accounts ($99/yr and $25 one-time respectively), and any ad network or analytics provider fees. Estimated ongoing costs will be outlined during Phase 0.
         </div>
       </div>
 
@@ -1198,6 +1241,21 @@
         <h3>Post-Launch Warranty (Included)</h3>
         <div class="card">
           <p>McG Works includes a <strong>14-day post-launch warranty</strong> covering critical bug fixes related to the delivered scope at no additional cost. This covers: bugs that prevent core features from functioning, broken flows from the initial launch build, and fixes needed to restore agreed-upon functionality.</p>
+        </div>
+
+        <h3>Cancellation &amp; Termination</h3>
+        <div class="card">
+          <ul>
+            <li>Either party may terminate the engagement with written notice.</li>
+            <li>Payments already made for completed or in-progress phases are non-refundable.</li>
+            <li>Remaining unpaid phases can be cancelled at any time with no further obligation.</li>
+            <li>Upon cancellation, all completed work product and source code for paid phases is delivered to the client.</li>
+          </ul>
+        </div>
+
+        <h3>Phase Acceptance</h3>
+        <div class="card">
+          <p>Each phase concludes with a <strong>5-business-day acceptance window</strong>. The client reviews all deliverables and either approves or provides specific written feedback. If no response is received within the window, the phase is considered accepted. Feedback is limited to items within the agreed scope for that phase — new feature requests are handled as on-demand work.</p>
         </div>
 
         <h3>On-Demand Changes</h3>
@@ -1296,6 +1354,11 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- ========== PROPOSAL NOTE ========== -->
+      <div class="proposal-note">
+        <strong>Please Note:</strong> This proposal is for informational and planning purposes only. A final PDF version of the agreement will be provided for review and signature by both parties before the engagement begins.
       </div>
 
       <!-- ========== CTA ========== -->
