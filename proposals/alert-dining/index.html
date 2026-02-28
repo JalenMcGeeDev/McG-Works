@@ -3,6 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>Alert Dining — Proposal | McG Works</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; }
@@ -565,8 +568,10 @@
   <div class="access-denied" id="accessDenied">
     <div>
       <h1>Access Required</h1>
-      <p>You need a valid access code to view this proposal.</p>
+      <p id="accessMsg">You need a valid access code to view this proposal.</p>
       <a href="/proposals/">Enter Access Code &rarr;</a>
+      <br><br>
+      <button id="retryBtn" style="display:none;padding:10px 24px;font-size:14px;border:1px solid #374151;border-radius:8px;background:#1f2937;color:#fff;cursor:pointer;" onclick="init()">Retry Verification</button>
     </div>
   </div>
 
@@ -1370,23 +1375,43 @@
     const storedCode = sessionStorage.getItem('mcg_proposal_access');
 
     async function init() {
-      if (FUNCTIONS_BASE === 'YOUR_SUPABASE_FUNCTIONS_URL' || !storedCode) return;
+      if (FUNCTIONS_BASE === 'YOUR_SUPABASE_FUNCTIONS_URL') return;
+      if (!storedCode) {
+        console.warn('[McG] No access code in session.');
+        return;
+      }
 
       try {
+        console.log('[McG] Verifying access…');
         const res = await fetch(FUNCTIONS_BASE + '/verify-code', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ code: storedCode })
         });
+
+        if (!res.ok) {
+          const errText = await res.text();
+          console.error('[McG] Verify response not ok:', res.status, errText);
+          document.getElementById('accessMsg').textContent = 'Verification failed (' + res.status + '). Try again or re-enter your code.';
+          document.getElementById('retryBtn').style.display = 'inline-block';
+          return;
+        }
+
         const result = await res.json();
 
         if (result.valid && result.proposal_path === PROPOSAL_ID) {
           document.getElementById('accessDenied').style.display = 'none';
           document.getElementById('proposalContent').classList.add('visible');
           initComments();
+        } else {
+          console.warn('[McG] Verification mismatch:', result);
+          document.getElementById('accessMsg').textContent = 'Code not recognised for this proposal. Please re-enter.';
+          document.getElementById('retryBtn').style.display = 'inline-block';
         }
-      } catch {
-        // Access denied on network error
+      } catch (err) {
+        console.error('[McG] Verification error:', err);
+        document.getElementById('accessMsg').textContent = 'Connection error. Please check your network and try again.';
+        document.getElementById('retryBtn').style.display = 'inline-block';
       }
     }
 
