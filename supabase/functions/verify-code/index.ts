@@ -14,11 +14,11 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { code_hash } = await req.json()
+    const { code } = await req.json()
 
-    if (!code_hash || typeof code_hash !== 'string') {
+    if (!code || typeof code !== 'string') {
       return new Response(
-        JSON.stringify({ valid: false, error: 'Missing code_hash' }),
+        JSON.stringify({ valid: false, error: 'Missing code' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
@@ -29,10 +29,11 @@ Deno.serve(async (req) => {
       Deno.env.get('SERVICE_ROLE_KEY')!
     )
 
+    // Case-insensitive match against plaintext code
     const { data, error } = await supabase
       .from('proposal_codes')
       .select('proposal_path, client_name')
-      .eq('code_hash', code_hash)
+      .ilike('code', code)
       .eq('is_active', true)
       .maybeSingle()
 

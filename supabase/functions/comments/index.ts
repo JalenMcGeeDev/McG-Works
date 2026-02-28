@@ -24,11 +24,11 @@ Deno.serve(async (req) => {
 
     // ---- GET COMMENTS ----
     if (action === 'list') {
-      const { proposal_id, code_hash } = body
+      const { proposal_id, code } = body
 
-      if (!proposal_id || !code_hash) {
+      if (!proposal_id || !code) {
         return new Response(
-          JSON.stringify({ error: 'Missing proposal_id or code_hash' }),
+          JSON.stringify({ error: 'Missing proposal_id or code' }),
           { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         )
       }
@@ -37,7 +37,7 @@ Deno.serve(async (req) => {
       const { data: codeData } = await supabase
         .from('proposal_codes')
         .select('proposal_path')
-        .eq('code_hash', code_hash)
+        .ilike('code', code)
         .eq('proposal_path', proposal_id)
         .eq('is_active', true)
         .maybeSingle()
@@ -70,9 +70,9 @@ Deno.serve(async (req) => {
 
     // ---- POST COMMENT ----
     if (action === 'create') {
-      const { proposal_id, code_hash, parent_id, author_name, is_mcg, mcg_passphrase, content } = body
+      const { proposal_id, code, parent_id, author_name, is_mcg, mcg_passphrase, content } = body
 
-      if (!proposal_id || !code_hash || !author_name || !content) {
+      if (!proposal_id || !code || !author_name || !content) {
         return new Response(
           JSON.stringify({ error: 'Missing required fields' }),
           { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -83,7 +83,7 @@ Deno.serve(async (req) => {
       const { data: codeData } = await supabase
         .from('proposal_codes')
         .select('proposal_path')
-        .eq('code_hash', code_hash)
+        .ilike('code', code)
         .eq('proposal_path', proposal_id)
         .eq('is_active', true)
         .maybeSingle()

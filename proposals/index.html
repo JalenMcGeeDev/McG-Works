@@ -129,14 +129,6 @@
      */
     const FUNCTIONS_BASE = 'https://awccquoyscijmtqtibgr.supabase.co/functions/v1';
 
-    // SHA-256 helper using Web Crypto API
-    async function sha256(message) {
-      const msgBuffer = new TextEncoder().encode(message);
-      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
     const codeInput = document.getElementById('accessCode');
     const submitBtn = document.getElementById('submitBtn');
     const errorMsg = document.getElementById('errorMsg');
@@ -156,18 +148,16 @@
       submitBtn.disabled = true;
       submitBtn.textContent = 'Checking…';
 
-      const hash = await sha256(raw);
-
       try {
         const res = await fetch(FUNCTIONS_BASE + '/verify-code', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code_hash: hash })
+          body: JSON.stringify({ code: raw })
         });
         const result = await res.json();
 
         if (result.valid && result.proposal_path) {
-          sessionStorage.setItem('mcg_proposal_access', hash);
+          sessionStorage.setItem('mcg_proposal_access', raw);
           window.location.href = result.proposal_path + '/';
         } else {
           showError('Invalid code. Please check and try again.');

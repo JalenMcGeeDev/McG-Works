@@ -1367,16 +1367,16 @@
     const FUNCTIONS_BASE = 'https://awccquoyscijmtqtibgr.supabase.co/functions/v1';
     const PROPOSAL_ID    = 'alert-dining';
 
-    const storedHash = sessionStorage.getItem('mcg_proposal_access');
+    const storedCode = sessionStorage.getItem('mcg_proposal_access');
 
     async function init() {
-      if (FUNCTIONS_BASE === 'YOUR_SUPABASE_FUNCTIONS_URL' || !storedHash) return;
+      if (FUNCTIONS_BASE === 'YOUR_SUPABASE_FUNCTIONS_URL' || !storedCode) return;
 
       try {
         const res = await fetch(FUNCTIONS_BASE + '/verify-code', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code_hash: storedHash })
+          body: JSON.stringify({ code: storedCode })
         });
         const result = await res.json();
 
@@ -1399,7 +1399,7 @@
       const res = await fetch(FUNCTIONS_BASE + '/comments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action, proposal_id: PROPOSAL_ID, code_hash: storedHash, ...extra })
+        body: JSON.stringify({ action, proposal_id: PROPOSAL_ID, code: storedCode, ...extra })
       });
       return res.json();
     }

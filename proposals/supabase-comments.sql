@@ -13,15 +13,15 @@
 -- 1. Create the codes table
 CREATE TABLE proposal_codes (
   id            UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  code_hash     TEXT NOT NULL UNIQUE,
+  code          TEXT NOT NULL UNIQUE,
   proposal_path TEXT NOT NULL,
   client_name   TEXT,
   is_active     BOOLEAN DEFAULT TRUE,
   created_at    TIMESTAMPTZ DEFAULT now()
 );
 
--- 2. Index for fast hash lookups
-CREATE INDEX idx_codes_hash ON proposal_codes(code_hash);
+-- 2. Index for fast code lookups
+CREATE INDEX idx_codes_code ON proposal_codes(code);
 
 -- 3. Enable Row Level Security
 ALTER TABLE proposal_codes ENABLE ROW LEVEL SECURITY;
@@ -29,11 +29,10 @@ ALTER TABLE proposal_codes ENABLE ROW LEVEL SECURITY;
 -- 4. No public access — only Edge Functions (using service_role key) can read this table
 --    The anon key has ZERO access to proposal codes
 
--- 5. Seed the first proposal code
---    Code: ALERT-DINING → SHA-256 hash below
-INSERT INTO proposal_codes (code_hash, proposal_path, client_name)
+-- 5. Seed the first proposal code (plaintext, case-insensitive matching)
+INSERT INTO proposal_codes (code, proposal_path, client_name)
 VALUES (
-  'a8d15abce51b311003457f0876061f5e42e86debe4c6cc28fe20ebac99601913',
+  'ALERT-DINING',
   'alert-dining',
   'Alert Dining'
 );
@@ -42,14 +41,13 @@ VALUES (
 -- HOW TO ADD A NEW PROPOSAL CODE
 -- =============================================
 -- 1. Pick a code (e.g. "ACME-2026")
--- 2. Hash it:  echo -n "ACME-2026" | sha256sum
--- 3. Run this SQL in Supabase:
+-- 2. Run this SQL in Supabase:
 --
---    INSERT INTO proposal_codes (code_hash, proposal_path, client_name)
---    VALUES ('<paste-hash-here>', 'acme-2026', 'Acme Corp');
+--    INSERT INTO proposal_codes (code, proposal_path, client_name)
+--    VALUES ('ACME-2026', 'acme-2026', 'Acme Corp');
 --
--- 4. Create the folder: proposals/acme-2026/index.html
--- 5. To deactivate a code:
+-- 3. Create the folder: proposals/acme-2026/index.html
+-- 4. To deactivate a code:
 --    UPDATE proposal_codes SET is_active = false WHERE client_name = 'Acme Corp';
 -- =============================================
 
