@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Delete Your Account — Find</title>
+  <style>
+    :root {
+      --bg: #FFFFFF;
+      --bg-secondary: #F7F5F2;
+      --text: #1A1A1A;
+      --text-secondary: #6B6B6B;
+      --accent: #D4714E;
+      --border: #E8E5E0;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1A1A1A;
+        --bg-secondary: #242220;
+        --text: #F0EDE8;
+        --text-secondary: #9B9B9B;
+        --accent: #E8945F;
+        --border: #3A3835;
+      }
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 24px 20px 60px;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+    h2 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-top: 32px;
+      margin-bottom: 12px;
+      color: var(--accent);
+    }
+    p, li {
+      font-size: 15px;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    ul, ol {
+      padding-left: 20px;
+      margin-bottom: 16px;
+    }
+    li { margin-bottom: 6px; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+    .callout {
+      background: var(--bg-secondary);
+      border-left: 3px solid var(--accent);
+      padding: 16px 20px;
+      border-radius: 6px;
+      margin: 20px 0;
+    }
+    .callout p { margin-bottom: 0; }
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      margin-top: 20px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 15px;
+      font-family: inherit;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-secondary);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+    }
+    textarea { resize: vertical; min-height: 80px; }
+    .submit-btn {
+      display: inline-block;
+      margin-top: 24px;
+      padding: 14px 32px;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: inherit;
+      color: #FFFFFF;
+      background: #C0392B;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .submit-btn:hover { background: #A93226; }
+    .footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Delete Your Account &amp; Data</h1>
+<p class="subtitle">Request permanent deletion of your Find account</p>
+
+<p>We respect your right to control your personal data. You can delete your Find account and all associated data at any time. This page explains what gets deleted and how to request it.</p>
+
+<hr class="divider" />
+
+<h2>Delete from the App (Fastest)</h2>
+<div class="callout">
+  <p>The quickest way to delete your account is directly in the app:<br />
+  Open Find &rarr; <strong>Profile</strong> &rarr; <strong>Delete Account</strong>.<br />
+  Your account and all data will be removed immediately.</p>
+</div>
+
+<h2>What Gets Deleted</h2>
+<p>When your account is deleted, the following data is permanently and irreversibly removed from our systems:</p>
+<ul>
+  <li>Your profile information (name, phone number, avatar, interests)</li>
+  <li>All chat messages you've sent (stranger chats and friend chats)</li>
+  <li>Your Find ratings and reading history</li>
+  <li>Friend connections and pending invitations</li>
+  <li>Message reactions and votes</li>
+  <li>Push notification tokens</li>
+</ul>
+<p>This action cannot be undone. Once deleted, your data cannot be recovered.</p>
+
+<h2>Can't Access the App?</h2>
+<p>If you are unable to delete your account through the app, you can submit a deletion request below. We will verify your identity and process the request within <strong>30 days</strong>.</p>
+
+<form id="deletion-form">
+  <label for="phone">Phone Number (associated with your account) *</label>
+  <input type="tel" id="phone" name="phone" required placeholder="+1 (555) 123-4567" autocomplete="tel" />
+
+  <label for="name">Name on Account</label>
+  <input type="text" id="name" name="name" placeholder="Your name as it appears in Find" autocomplete="name" />
+
+  <label for="reason">Reason for Deletion (optional)</label>
+  <select id="reason" name="reason">
+    <option value="">— Select a reason —</option>
+    <option value="no-longer-using">I no longer use the app</option>
+    <option value="privacy">Privacy concerns</option>
+    <option value="too-many-notifications">Too many notifications</option>
+    <option value="created-new-account">I created a new account</option>
+    <option value="other">Other</option>
+  </select>
+
+  <label for="comments">Additional Comments (optional)</label>
+  <textarea id="comments" name="comments" placeholder="Anything else you'd like us to know"></textarea>
+
+  <button type="submit" class="submit-btn">Submit Deletion Request</button>
+</form>
+
+<hr class="divider" />
+
+<h2>Questions?</h2>
+<p>If you have questions about data deletion or your privacy, please contact us at <a href="mailto:support@find.app">support@find.app</a>.</p>
+<p>You can also review our <a href="privacy-policy.html">Privacy Policy</a> and <a href="terms-of-service.html">Terms of Service</a> for more information about how we handle your data.</p>
+
+<div class="footer">
+  &copy; 2026 Find. All rights reserved.
+</div>
+
+<script>
+  document.getElementById('deletion-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    var phone = document.getElementById('phone').value.trim();
+    if (!phone) { alert('Please enter the phone number associated with your account.'); return; }
+
+    var name = document.getElementById('name').value.trim();
+    var reason = document.getElementById('reason').value;
+    var comments = document.getElementById('comments').value.trim();
+
+    var subject = encodeURIComponent('Account Deletion Request');
+    var body = 'I would like to request the deletion of my Find account and all associated data.\n\n'
+      + 'Phone number: ' + phone + '\n'
+      + (name ? 'Name on account: ' + name + '\n' : '')
+      + (reason ? 'Reason: ' + reason + '\n' : '')
+      + (comments ? 'Comments: ' + comments + '\n' : '');
+
+    window.location.href = 'mailto:support@find.app?subject=' + subject + '&body=' + encodeURIComponent(body);
+  });
+</script>
+
+</body>
+</html>
