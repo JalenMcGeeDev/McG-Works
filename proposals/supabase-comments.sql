@@ -29,13 +29,11 @@ ALTER TABLE proposal_codes ENABLE ROW LEVEL SECURITY;
 -- 4. No public access — only Edge Functions (using service_role key) can read this table
 --    The anon key has ZERO access to proposal codes
 
--- 5. Seed the first proposal code (plaintext, case-insensitive matching)
+-- 5. Seed the proposal codes (plaintext, case-insensitive matching)
 INSERT INTO proposal_codes (code, proposal_path, client_name)
-VALUES (
-  'ALERT-DINING',
-  'alert-dining',
-  'Alert Dining'
-);
+VALUES 
+  ('ALERT-DINING', 'alert-dining', 'Alert Dining'),
+  ('TASTE-OF-BLK', 'taste-of-blk', 'Taste of BLK');
 
 -- =============================================
 -- HOW TO ADD A NEW PROPOSAL CODE

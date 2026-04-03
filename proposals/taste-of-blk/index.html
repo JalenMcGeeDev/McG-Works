@@ -1,0 +1,1525 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Taste of BLK - Proposal | McG Works</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #0b0f14;
+      color: #e2e8f0;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---------- Access denied overlay ---------- */
+    .access-denied {
+      display: grid;
+      place-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+    .access-denied h1 { font-size: 28px; margin-bottom: 8px; color: #fff; }
+    .access-denied p { opacity: 0.6; margin-bottom: 24px; }
+    .access-denied a {
+      color: #3b82f6;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .access-denied a:hover { text-decoration: underline; }
+
+    /* ---------- Proposal wrapper ---------- */
+    .proposal { display: none; }
+    .proposal.visible { display: block; }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      text-align: center;
+      padding: 72px 24px 48px;
+      background: linear-gradient(180deg, #111827 0%, #0b0f14 100%);
+      border-bottom: 1px solid #1e293b;
+    }
+    .hero .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding: 5px 14px;
+      border-radius: 20px;
+      background: #1e3a5f;
+      color: #60a5fa;
+      margin-bottom: 16px;
+    }
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 44px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -1px;
+    }
+    .hero .tagline {
+      font-size: 18px;
+      opacity: 0.5;
+      margin: 0 0 32px;
+    }
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+    .hero-stat {
+      text-align: center;
+    }
+    .hero-stat .value {
+      display: block;
+      font-size: 28px;
+      font-weight: 800;
+      color: #3b82f6;
+    }
+    .hero-stat .label {
+      font-size: 13px;
+      opacity: 0.5;
+      margin-top: 2px;
+    }
+
+    /* ---------- Confidential banner ---------- */
+    .confidential {
+      max-width: 860px;
+      margin: 28px auto 0;
+      padding: 14px 20px;
+      background: #1c1917;
+      border: 1px solid #44403c;
+      border-radius: 10px;
+      font-size: 13px;
+      color: #d6d3d1;
+      text-align: center;
+    }
+    .confidential span { margin-right: 6px; }
+
+    /* ---------- TOC ---------- */
+    .toc {
+      max-width: 860px;
+      margin: 32px auto;
+      padding: 24px 28px;
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 12px;
+    }
+    .toc h3 {
+      margin: 0 0 12px;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.5;
+    }
+    .toc ol {
+      margin: 0;
+      padding-left: 20px;
+      columns: 2;
+      column-gap: 32px;
+    }
+    .toc li {
+      font-size: 14px;
+      padding: 3px 0;
+      break-inside: avoid;
+    }
+    .toc a {
+      color: #93c5fd;
+      text-decoration: none;
+    }
+    .toc a:hover { text-decoration: underline; }
+
+    /* ---------- Content container ---------- */
+    .content {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ---------- Sections ---------- */
+    .section {
+      margin-top: 40px;
+    }
+    .section-number {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #3b82f6;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 6px;
+    }
+    .section h2 {
+      margin: 0 0 20px;
+      font-size: 26px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .section h3 {
+      margin: 28px 0 12px;
+      font-size: 19px;
+      font-weight: 600;
+      color: #f1f5f9;
+    }
+    .section p {
+      margin: 0 0 14px;
+      font-size: 15px;
+      opacity: 0.85;
+    }
+
+    /* ---------- Cards ---------- */
+    .card {
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-bottom: 16px;
+    }
+    .card h3 {
+      margin: 0 0 12px;
+      font-size: 18px;
+      color: #fff;
+    }
+    .card p, .card ul {
+      font-size: 15px;
+      opacity: 0.85;
+      margin: 0;
+    }
+    .card ul {
+      padding-left: 18px;
+      margin-top: 8px;
+    }
+    .card ul li { padding: 2px 0; }
+
+    /* ---------- Tables ---------- */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 16px 0;
+      border-radius: 10px;
+      border: 1px solid #374151;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    thead th {
+      text-align: left;
+      padding: 12px 16px;
+      background: #1e293b;
+      color: #94a3b8;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #374151;
+    }
+    tbody td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #1e293b;
+      vertical-align: top;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #1e293b44; }
+    td strong { color: #fff; }
+
+    /* ---------- Flow steps ---------- */
+    .flow-step {
+      display: flex;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid #1e293b;
+    }
+    .flow-step:last-child { border-bottom: none; }
+    .flow-num {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #1e3a5f;
+      color: #60a5fa;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .flow-body h4 {
+      margin: 0 0 4px;
+      font-size: 15px;
+      color: #fff;
+    }
+    .flow-body p {
+      margin: 0;
+      font-size: 14px;
+      opacity: 0.7;
+    }
+
+    /* ---------- Callout ---------- */
+    .callout {
+      padding: 16px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      margin: 16px 0;
+      line-height: 1.6;
+    }
+    .callout.warning {
+      background: #1c1917;
+      border: 1px solid #44403c;
+      color: #fbbf24;
+    }
+    .callout.info {
+      background: #0c1929;
+      border: 1px solid #1e3a5f;
+      color: #93c5fd;
+    }
+
+    /* ---------- Pricing highlight ---------- */
+    .pricing-hero {
+      text-align: center;
+      padding: 32px;
+      background: linear-gradient(135deg, #1e3a5f 0%, #1e293b 100%);
+      border: 1px solid #2563eb;
+      border-radius: 14px;
+      margin-bottom: 24px;
+    }
+    .pricing-hero .amount {
+      font-size: 48px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .pricing-hero .amount-label {
+      font-size: 15px;
+      opacity: 0.6;
+      margin-top: 4px;
+    }
+
+    /* ---------- Proposal Note ---------- */
+    .proposal-note {
+      margin-top: 40px;
+      padding: 20px 24px;
+      background: rgba(59,130,246,0.06);
+      border: 1px solid rgba(59,130,246,0.25);
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+    }
+    .proposal-note strong {
+      color: #93c5fd;
+    }
+
+    /* ---------- CTA ---------- */
+    .cta-section {
+      text-align: center;
+      padding: 48px 24px;
+      margin-top: 40px;
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 14px;
+    }
+    .cta-section h2 {
+      margin: 0 0 8px;
+      font-size: 26px;
+      color: #fff;
+    }
+    .cta-section p {
+      margin: 0;
+      font-size: 15px;
+      opacity: 0.6;
+    }
+
+    /* ---------- Sub-section headings ---------- */
+    .sub-heading {
+      font-size: 16px;
+      font-weight: 700;
+      color: #94a3b8;
+      margin: 24px 0 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ---------- Comments ---------- */
+    .comment-form-wrap {
+      margin: 20px 0 28px;
+    }
+    .comment-form, .reply-form {
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .reply-form {
+      margin-top: 12px;
+      background: #1a2332;
+    }
+    .comment-form-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .comment-input {
+      flex: 1;
+      min-width: 160px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-family: inherit;
+      border: 1px solid #374151;
+      border-radius: 8px;
+      background: #111827;
+      color: #fff;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .comment-input:focus { border-color: #3b82f6; }
+    .mcg-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .mcg-toggle input[type="checkbox"] {
+      accent-color: #3b82f6;
+      width: 16px;
+      height: 16px;
+    }
+    .mcg-toggle-label {
+      font-size: 13px;
+      color: #94a3b8;
+      white-space: nowrap;
+    }
+    .mcg-key-row {
+      margin-bottom: 10px;
+    }
+    .mcg-key-row .comment-input {
+      max-width: 260px;
+    }
+    .comment-textarea {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 14px;
+      font-family: inherit;
+      border: 1px solid #374151;
+      border-radius: 8px;
+      background: #111827;
+      color: #fff;
+      outline: none;
+      resize: vertical;
+      min-height: 60px;
+      transition: border-color 0.2s;
+    }
+    .comment-textarea:focus { border-color: #3b82f6; }
+    .comment-form-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .comment-submit {
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      border: none;
+      border-radius: 8px;
+      background: #3b82f6;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .comment-submit:hover { background: #2563eb; }
+    .comment-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    .comment-cancel {
+      padding: 10px 16px;
+      font-size: 14px;
+      font-family: inherit;
+      border: 1px solid #374151;
+      border-radius: 8px;
+      background: transparent;
+      color: #94a3b8;
+      cursor: pointer;
+    }
+    .comment-cancel:hover { border-color: #60a5fa; color: #fff; }
+    .comment-status {
+      font-size: 13px;
+      color: #94a3b8;
+    }
+    .comments-list {
+      margin-top: 8px;
+    }
+    .comments-loading {
+      font-size: 14px;
+      opacity: 0.5;
+      text-align: center;
+      padding: 20px;
+    }
+    .comment-thread {
+      margin-bottom: 16px;
+    }
+    .comment-bubble {
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 12px;
+      padding: 16px 20px;
+    }
+    .comment-bubble.mcg {
+      border-color: #1e3a5f;
+      background: #111d2e;
+    }
+    .comment-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+    .comment-author {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .comment-badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: #1e3a5f;
+      color: #60a5fa;
+    }
+    .comment-time {
+      font-size: 12px;
+      color: #64748b;
+      margin-left: auto;
+    }
+    .comment-text {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #cbd5e1;
+      margin: 0;
+      white-space: pre-wrap;
+    }
+    .comment-actions {
+      margin-top: 8px;
+    }
+    .reply-btn {
+      font-size: 13px;
+      font-family: inherit;
+      color: #60a5fa;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+    .reply-btn:hover { text-decoration: underline; }
+    .comment-replies {
+      margin-left: 28px;
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border-left: 2px solid #1e293b;
+      padding-left: 16px;
+    }
+    .comment-replies .comment-bubble {
+      padding: 12px 16px;
+    }
+    .no-comments {
+      text-align: center;
+      padding: 32px 20px;
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 12px;
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 32px; }
+      .hero-stats { gap: 24px; }
+      .toc ol { columns: 1; }
+      .content { padding: 0 16px 60px; }
+      .card { padding: 20px; }
+      table { font-size: 13px; }
+      thead th, tbody td { padding: 10px 12px; }
+      .comment-replies { margin-left: 16px; padding-left: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Shown when access is not verified -->
+  <div class="access-denied" id="accessDenied">
+    <div>
+      <h1>Access Required</h1>
+      <p id="accessMsg">You need a valid access code to view this proposal.</p>
+      <a href="/proposals/">Enter Access Code &rarr;</a>
+      <br><br>
+      <button id="retryBtn" style="display:none;padding:10px 24px;font-size:14px;border:1px solid #374151;border-radius:8px;background:#1f2937;color:#fff;cursor:pointer;" onclick="init()">Retry Verification</button>
+    </div>
+  </div>
+
+  <!-- Proposal content - only shown after verification -->
+  <div class="proposal" id="proposalContent">
+
+    <!-- ========== HERO ========== -->
+    <div class="hero">
+      <span class="badge">Build Proposal</span>
+      <h1>Taste of BLK &mdash; Chef Database</h1>
+      <p class="tagline">Prepared by McG Works &middot; April 2026</p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="value">$800</span>
+          <span class="label">Total Investment</span>
+        </div>
+        <div class="hero-stat">
+          <span class="value">6&ndash;8 wks</span>
+          <span class="label">Delivery Timeline</span>
+        </div>
+        <div class="hero-stat">
+          <span class="value">2 Phases</span>
+          <span class="label">Phased Release</span>
+        </div>
+      </div>
+      <div class="confidential">
+        <span>&#9888;&#65039;</span> This document is confidential and prepared exclusively for the Taste of BLK team. Contents may not be shared with third parties without written consent from McG Works.
+      </div>
+    </div>
+
+    <!-- ========== TOC ========== -->
+    <nav class="toc">
+      <h3>Contents</h3>
+      <ol>
+        <li><a href="#s1">Executive Summary</a></li>
+        <li><a href="#s2">Project Goals &amp; Success Criteria</a></li>
+        <li><a href="#s3">Target Users &amp; Roles</a></li>
+        <li><a href="#s4">How It Works</a></li>
+        <li><a href="#s5">Screens &amp; Interface</a></li>
+        <li><a href="#s6">Scope &amp; Phased Delivery</a></li>
+        <li><a href="#s7">Core Data Model</a></li>
+        <li><a href="#s8">Matching &amp; Scoring Logic</a></li>
+        <li><a href="#s9">Technology Approach</a></li>
+        <li><a href="#s10">Pricing</a></li>
+        <li><a href="#s11">Ongoing Support &amp; Changes</a></li>
+        <li><a href="#s12">Assumptions &amp; Open Decisions</a></li>
+        <li><a href="#s13">Next Steps</a></li>
+      </ol>
+    </nav>
+
+    <div class="content">
+
+      <!-- ========== 1. EXECUTIVE SUMMARY ========== -->
+      <div class="section" id="s1">
+        <span class="section-number">Section 1</span>
+        <h2>Executive Summary</h2>
+        <p>Taste of BLK operates as a culinary talent agency &mdash; connecting clients with vetted chefs for private dinners, cookouts, weddings, corporate events, and festivals. Today, matching a client request to the right chef relies on Jessica&rsquo;s personal knowledge, a Google Form intake, and manual outreach. As the roster grows and request volume increases, this process doesn&rsquo;t scale.</p>
+        <p>McG Works will build an internal Chef Database &amp; Matching Platform that allows the Taste of BLK team to intake client requests and instantly surface the best-fit chefs based on cuisine, budget, guest count, service style, availability, and more. Taste of BLK remains the intermediary at all times &mdash; chef contact details stay internal, and clients never interact with the database directly.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Stakeholder</th><th>Value Delivered</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Taste of BLK Staff</strong></td><td>Instantly find and recommend matching chefs for any client request; eliminate manual cross-referencing of spreadsheets and forms</td></tr>
+              <tr><td><strong>Clients</strong></td><td>Receive curated chef options faster, matched to their event needs, budget, and dietary requirements</td></tr>
+              <tr><td><strong>Chefs</strong></td><td>Get matched to events that fit their skills, capacity, and pricing &mdash; leading to better bookings</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ========== 2. PROJECT GOALS ========== -->
+      <div class="section" id="s2">
+        <span class="section-number">Section 2</span>
+        <h2>Project Goals &amp; Success Criteria</h2>
+        <div class="card">
+          <h3>Goals</h3>
+          <ul>
+            <li>Replace manual chef-matching with a searchable, filterable internal database that surfaces top chef recommendations automatically.</li>
+            <li>Protect Taste of BLK&rsquo;s intermediary role &mdash; keep chef contact information internal and prevent clients from bypassing the agency.</li>
+            <li>Reduce the time from client request to chef recommendation from days to minutes.</li>
+            <li>Provide a structured system for managing chef profiles, intake data, availability, and booking history.</li>
+            <li>Support Taste of BLK&rsquo;s 10% commission model by tracking bookings and revenue through the platform.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Success Criteria</h3>
+          <ul>
+            <li>Staff can enter a client request and receive 3&ndash;5 ranked chef suggestions within seconds.</li>
+            <li>All existing chef intake data (from the Google Form) is imported into the platform.</li>
+            <li>Jasmine and Jessica can manage chef profiles and client requests without technical assistance.</li>
+            <li>Chef contact details are never visible to clients at any point in the workflow.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ========== 3. TARGET USERS ========== -->
+      <div class="section" id="s3">
+        <span class="section-number">Section 3</span>
+        <h2>Target Users &amp; Roles</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Role</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Admin</strong></td><td>Taste of BLK internal team (Jessica, Jasmine, Dashonna). Full access to all chef profiles, client requests, bookings, matching, email outreach, and settings. This role encompasses all internal staff including bookers and liaisons.</td></tr>
+              <tr><td><strong>Chef</strong></td><td>Culinary partners on the Taste of BLK roster. Chef profiles are managed by Admin staff; chefs do not log into the platform directly in the MVP.</td></tr>
+              <tr><td><strong>Client</strong></td><td>Individuals or organizations seeking chef services. Clients interact with the platform only through the public intake form &mdash; they never see the internal database, chef contact info, or matching results.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Sensitive data &mdash; chef direct contact info, contract documents, and financial details &mdash; is visible only to Admins. Clients and chefs have no access to the internal platform.</p>
+      </div>
+
+      <!-- ========== 4. HOW IT WORKS ========== -->
+      <div class="section" id="s4">
+        <span class="section-number">Section 4</span>
+        <h2>How It Works</h2>
+
+        <h3>4.1 Client Request Intake</h3>
+        <div class="card">
+          <div class="flow-step">
+            <div class="flow-num">1</div>
+            <div class="flow-body">
+              <h4>Client Submits Intake Form</h4>
+              <p>A client fills out an intake form with their event details: event type, date, guest count, budget, desired cuisine, service style, dietary restrictions, and venue constraints. The form submission creates a new request in the platform.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">2</div>
+            <div class="flow-body">
+              <h4>Staff Reviews &amp; Enables Request</h4>
+              <p>The Taste of BLK team receives a notification of the new request. A team member reviews the submission for completeness and legitimacy, then enables the request to trigger the matching process.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">3</div>
+            <div class="flow-body">
+              <h4>System Surfaces Matches</h4>
+              <p>The platform automatically filters and scores the chef roster, returning the top 3&ndash;5 chefs with match reasons (e.g., &ldquo;cuisine match,&rdquo; &ldquo;budget within 10%,&rdquo; &ldquo;capacity fits guest count&rdquo;).</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">4</div>
+            <div class="flow-body">
+              <h4>Staff Reviews &amp; Curates</h4>
+              <p>The team reviews suggestions, inspects full chef profiles, adjusts filters if needed, and selects 1&ndash;3 chefs to present to the client. Staff can also manually include or exclude chefs.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">5</div>
+            <div class="flow-body">
+              <h4>Present Options to Client</h4>
+              <p>Staff presents curated chef options to the client (via phone consultation, email, or PDF) &mdash; with chef summaries, sample menus, and pricing. Chef direct contact info is never shared.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">6</div>
+            <div class="flow-body">
+              <h4>Book &amp; Record</h4>
+              <p>Once a chef is selected, staff records the booking in the platform, creates a contract record, and tracks the 10% Taste of BLK commission.</p>
+            </div>
+          </div>
+        </div>
+
+        <h3>4.2 Chef Profile Management</h3>
+        <div class="card">
+          <div class="flow-step">
+            <div class="flow-num">1</div>
+            <div class="flow-body">
+              <h4>Add Chef to Database</h4>
+              <p>Staff adds a new chef profile using data from the culinary partner intake form. Existing Google Form responses will be imported during initial setup.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">2</div>
+            <div class="flow-body">
+              <h4>Maintain Profiles</h4>
+              <p>Staff can update chef details at any time &mdash; new menu items, updated pricing, availability changes, portfolio additions, or internal notes and feedback from past events.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">3</div>
+            <div class="flow-body">
+              <h4>Track Performance</h4>
+              <p>Internal notes, reliability scores, and past event feedback are stored on each chef&rsquo;s profile to inform future matching decisions.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== 5. SCREENS & INTERFACE ========== -->
+      <div class="section" id="s5">
+        <span class="section-number">Section 5</span>
+        <h2>Screens &amp; Interface</h2>
+        <p>The platform consists of the following screens, organized by user context. All internal screens are behind role-based authentication.</p>
+
+        <h3>5.1 Client-Facing</h3>
+        <div class="card">
+          <div class="flow-step">
+            <div class="flow-num">1</div>
+            <div class="flow-body">
+              <h4>Client Intake Form</h4>
+              <p><strong>Access:</strong> Client (public, no login required)</p>
+              <p>Public-facing form where clients submit their event request: event type, date, guest count, budget, desired cuisine, service style, dietary restrictions, and venue constraints.</p>
+            </div>
+          </div>
+        </div>
+
+        <h3>5.2 Staff Dashboard &amp; Navigation</h3>
+        <div class="card">
+          <div class="flow-step">
+            <div class="flow-num">2</div>
+            <div class="flow-body">
+              <h4>Login</h4>
+              <p><strong>Access:</strong> Admin</p>
+              <p>Secure login screen for Taste of BLK staff.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">3</div>
+            <div class="flow-body">
+              <h4>Dashboard</h4>
+              <p><strong>Access:</strong> Admin</p>
+              <p>Home screen showing key metrics at a glance: pending client requests awaiting review, active bookings, total chefs on roster, and recent activity. Quick-action links to review new requests or add a chef.</p>
+            </div>
+          </div>
+        </div>
+
+        <h3>5.3 Chef Management Screens</h3>
+        <div class="card">
+          <div class="flow-step">
+            <div class="flow-num">4</div>
+            <div class="flow-body">
+              <h4>Chef Directory</h4>
+              <p><strong>Access:</strong> Admin</p>
+              <p>Searchable, filterable list of all chefs in the database. Filter by cuisine type, service style, capacity range, availability, and geographic area. Sort by name, date added, or reliability score.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">5</div>
+            <div class="flow-body">
+              <h4>Chef Profile Detail</h4>
+              <p><strong>Access:</strong> Admin (full profile including contact info, contracts, and financials)</p>
+              <p>Full view of a single chef&rsquo;s profile: bio, cuisine tags, signature dishes, pricing, capacity, service styles, equipment needs, dietary accommodations, availability, portfolio (photos and menus), contract/paperwork status, internal notes, and past event history.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">6</div>
+            <div class="flow-body">
+              <h4>Add / Edit Chef</h4>
+              <p><strong>Access:</strong> Admin</p>
+              <p>Form for creating a new chef profile or editing an existing one. All fields from the culinary partner intake form are represented. Supports file uploads for portfolio images, PDF menus, contracts, W9, and insurance documents.</p>
+            </div>
+          </div>
+        </div>
+
+        <h3>5.4 Client Request Screens</h3>
+        <div class="card">
+          <div class="flow-step">
+            <div class="flow-num">7</div>
+            <div class="flow-body">
+              <h4>Requests List</h4>
+              <p><strong>Access:</strong> Admin (view, enable, and disable requests)</p>
+              <p>List of all incoming client requests with status indicators: pending review, enabled, matched, booked, or closed. Filter by status, date, or event type.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">8</div>
+            <div class="flow-body">
+              <h4>Request Detail &amp; Matching Results</h4>
+              <p><strong>Access:</strong> Admin (full control &mdash; adjust filters, curate chef list, select chefs to present)</p>
+              <p>View full client request details. Once the request is enabled, this screen displays the top 3&ndash;5 recommended chefs with match scores and reasons (e.g., &ldquo;cuisine match,&rdquo; &ldquo;capacity fits,&rdquo; &ldquo;budget within 10%&rdquo;). Staff can adjust filters, manually include or exclude chefs, and select which chefs to present to the client.</p>
+            </div>
+          </div>
+        </div>
+
+        <h3>5.5 Booking &amp; Commission Screens</h3>
+        <div class="card">
+          <div class="flow-step">
+            <div class="flow-num">9</div>
+            <div class="flow-body">
+              <h4>Bookings List</h4>
+              <p><strong>Access:</strong> Admin</p>
+              <p>Overview of all bookings: chef name, client name, event date, total amount, Taste of BLK commission (10%), and payment status. Filter by date range, chef, or status.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">10</div>
+            <div class="flow-body">
+              <h4>Booking Detail</h4>
+              <p><strong>Access:</strong> Admin</p>
+              <p>Individual booking record with full event details, assigned chef, pricing breakdown, commission amount, contract attachments, and internal notes. Staff can update status and record payments.</p>
+            </div>
+          </div>
+        </div>
+
+        <h3>5.6 Email &amp; Communication</h3>
+        <div class="card">
+          <div class="flow-step">
+            <div class="flow-num">11</div>
+            <div class="flow-body">
+              <h4>Email Templates</h4>
+              <p><strong>Access:</strong> Admin</p>
+              <p>Manage reusable email templates for chef outreach, quote requests, and booking confirmations. Templates support variables (chef name, event details, etc.) that auto-populate when sent.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">12</div>
+            <div class="flow-body">
+              <h4>Send Email to Chef</h4>
+              <p><strong>Access:</strong> Admin</p>
+              <p>Compose and send an email to a chef directly from their profile or from a matching result. Pre-fills with the selected template and request details.</p>
+            </div>
+          </div>
+        </div>
+
+        <h3>5.7 Phase 2 Screens</h3>
+        <div class="card">
+          <div class="flow-step">
+            <div class="flow-num">13</div>
+            <div class="flow-body">
+              <h4>Revenue &amp; Commission Dashboard</h4>
+              <p><strong>Access:</strong> Admin</p>
+              <p>Summary view of total bookings, revenue, and commission earned by period. Breakdown by chef, event type, and month.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">14</div>
+            <div class="flow-body">
+              <h4>Audit Log</h4>
+              <p><strong>Access:</strong> Admin only</p>
+              <p>Chronological log of all actions: profile edits, match results, booking changes, and staff activity. Searchable by user, action type, or date.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">15</div>
+            <div class="flow-body">
+              <h4>Reports</h4>
+              <p><strong>Access:</strong> Admin</p>
+              <p>Exportable reports: bookings by chef, revenue by period, request volume trends, and popular cuisine/event types.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== 6. SCOPE & PHASED DELIVERY ========== -->
+      <div class="section" id="s6">
+        <span class="section-number">Section 6</span>
+        <h2>Scope &amp; Phased Delivery</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Phase</th><th>Summary</th><th>Timeline</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Phase 1 &mdash; MVP</strong></td><td>Chef database, client request intake, matching engine, booking workflow, role-based access, data import from Google Form, email templates for chef outreach</td><td>5&ndash;7 weeks</td></tr>
+              <tr><td><strong>Phase 2 &mdash; Enhancements</strong></td><td>Booking &amp; commission tracking dashboard, contract/attachment management, audit logs, reporting</td><td>1&ndash;2 weeks</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout info">
+          <strong>Future add-ons (post-MVP, not included in this engagement):</strong> Stripe Connect for on-platform payments and automated commission splits, availability calendar sync, public-facing client intake portal, analytics dashboard, and chef self-service portal for profile updates.
+        </div>
+      </div>
+
+      <!-- ========== 7. CORE DATA MODEL ========== -->
+      <div class="section" id="s7">
+        <span class="section-number">Section 7</span>
+        <h2>Core Data Model</h2>
+
+        <h3>6.1 Chef Profile</h3>
+        <p>Each chef profile is stored privately and visible only to Taste of BLK staff.</p>
+        <div class="card">
+          <ul>
+            <li><strong>Identity:</strong> Display name / business name, short bio, specialties</li>
+            <li><strong>Contact:</strong> Email, phone &mdash; hidden from clients, visible to Admin &amp; Booker only</li>
+            <li><strong>Cuisine Types:</strong> Multi-select tags (e.g., Southern, Caribbean, Italian, Vegan, BBQ)</li>
+            <li><strong>Signature Dishes / Sample Menu:</strong> Text descriptions + price-per-person ranges</li>
+            <li><strong>Service Styles:</strong> Plated, buffet, grazing table, passed apps, food truck, on-site catering</li>
+            <li><strong>Capacity:</strong> Minimum and maximum guest counts the chef can handle</li>
+            <li><strong>Staffing &amp; Equipment:</strong> Chef-only vs. requires servers; preferred staff count. Equipment needs (stove, fryer, grill, power, tent, etc.)</li>
+            <li><strong>Dietary Accommodations:</strong> Tags for vegan, gluten-free, halal, kosher, allergy-friendly, etc.</li>
+            <li><strong>Pricing:</strong> Pricing model (per guest, flat fee, packages) + sample rates / quote history</li>
+            <li><strong>Availability:</strong> General availability notes and lead time required</li>
+            <li><strong>Geography:</strong> Service area and travel constraints</li>
+            <li><strong>Portfolio:</strong> Photos, PDF menus, and references</li>
+            <li><strong>Paperwork:</strong> Contract status, W9, insurance (boolean + attachments)</li>
+            <li><strong>Internal Notes:</strong> Reliability score, past event feedback, team observations</li>
+          </ul>
+        </div>
+
+        <h3>6.2 Client Request</h3>
+        <div class="card">
+          <ul>
+            <li><strong>Client Info:</strong> Contact name, email, phone</li>
+            <li><strong>Event Details:</strong> Event type (private dinner, cookout, wedding, corporate, festival), date/time, guest count</li>
+            <li><strong>Budget:</strong> Total budget or per-guest budget, willingness to negotiate</li>
+            <li><strong>Cuisine &amp; Menu:</strong> Desired cuisine types, specific menu requests or examples</li>
+            <li><strong>Service Style:</strong> Preferred service style (plated, buffet, passed apps, etc.)</li>
+            <li><strong>Dietary Restrictions:</strong> Any dietary or allergy requirements</li>
+            <li><strong>Venue Constraints:</strong> Indoor/outdoor, on-site kitchen availability, power access</li>
+            <li><strong>Priority &amp; Timeline:</strong> Request urgency and event timeline</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ========== 8. MATCHING & SCORING LOGIC ========== -->
+      <div class="section" id="s8">
+        <span class="section-number">Section 8</span>
+        <h2>Matching &amp; Scoring Logic</h2>
+        <p>When a client request is submitted, the system filters and ranks chefs using a weighted scoring model.</p>
+
+        <h3>Filter Sequence</h3>
+        <div class="card">
+          <p>Chefs are filtered in the following order (fast-pass elimination):</p>
+          <ul>
+            <li>Availability on the requested date</li>
+            <li>Capacity fits guest count</li>
+            <li>Service style match</li>
+            <li>Cuisine tag match</li>
+            <li>Geography / travel constraints</li>
+            <li>Lead time is sufficient</li>
+            <li>Budget compatibility (chef&rsquo;s minimum &le; client budget)</li>
+            <li>Equipment / venue constraints compatible</li>
+          </ul>
+        </div>
+
+        <h3>Scoring Weights</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Factor</th><th>Weight</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Availability</strong></td><td>30%</td></tr>
+              <tr><td><strong>Capacity / Guest Count</strong></td><td>20%</td></tr>
+              <tr><td><strong>Service Style</strong></td><td>15%</td></tr>
+              <tr><td><strong>Cuisine Match</strong></td><td>15%</td></tr>
+              <tr><td><strong>Budget Match</strong></td><td>10%</td></tr>
+              <tr><td><strong>Equipment / Venue Fit</strong></td><td>10%</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Fallback Rules</h3>
+        <div class="card">
+          <ul>
+            <li>If fewer than 3 chefs match, relax budget constraints first, then cuisine specificity, then allow chefs with partial availability (requires staff confirmation).</li>
+            <li>Staff can manually override any filter, include or exclude specific chefs, and finalize the list before presenting to the client.</li>
+          </ul>
+        </div>
+
+        <h3>Audit Trail</h3>
+        <div class="card">
+          <p>Every match result is stored &mdash; including the scores, filters applied, and any staff overrides &mdash; so the team can review past decisions and refine the matching logic over time.</p>
+        </div>
+      </div>
+
+      <!-- ========== 9. TECHNOLOGY APPROACH ========== -->
+      <div class="section" id="s9">
+        <span class="section-number">Section 9</span>
+        <h2>Technology Approach</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Layer</th><th>Approach</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Frontend</strong></td><td>Modern web application &mdash; responsive, works on desktop, tablet, and mobile browsers</td></tr>
+              <tr><td><strong>Backend &amp; Database</strong></td><td>Supabase (managed PostgreSQL database + authentication + role-based access control)</td></tr>
+              <tr><td><strong>File Storage</strong></td><td>Supabase Storage for chef portfolios, menus, photos, and contract documents</td></tr>
+              <tr><td><strong>Email</strong></td><td>Templated email integration for chef outreach and quote requests</td></tr>
+              <tr><td><strong>Source Control</strong></td><td>GitHub &mdash; repository created by McG Works, client granted access throughout development</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ========== 10. PRICING ========== -->
+      <div class="section" id="s10">
+        <span class="section-number">Section 10</span>
+        <h2>Pricing</h2>
+
+        <div class="pricing-hero">
+          <div class="amount">$800</div>
+          <div class="amount-label">Total Fixed Investment &mdash; All Phases Included</div>
+        </div>
+
+        <h3>Payment Schedule</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Milestone</th><th>Amount &amp; Trigger</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Deposit</strong></td><td>$200 &mdash; due at project kickoff</td></tr>
+              <tr><td><strong>Phase 1 Midpoint</strong></td><td>$200 &mdash; due when chef database &amp; matching engine are demo-ready</td></tr>
+              <tr><td><strong>Phase 1 Completion</strong></td><td>$200 &mdash; due at MVP delivery &amp; acceptance</td></tr>
+              <tr><td><strong>Phase 2 Completion</strong></td><td>$200 &mdash; due at final delivery &amp; acceptance</td></tr>
+              <tr><td><strong>Total</strong></td><td><strong>$800</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Phase-by-Phase Deliverables</h3>
+
+        <div class="card">
+          <h3>Phase 1 &mdash; MVP &nbsp;($600)</h3>
+          <ul>
+            <li>Chef profile database with full CRUD (create, read, update, delete) and all fields from the culinary partner intake form</li>
+            <li>Client request intake form with all relevant fields (event type, guest count, budget, cuisine, service style, dietary needs, venue constraints)</li>
+            <li>Matching engine with weighted scoring &mdash; surfaces top 3&ndash;5 chef recommendations with match reasons</li>
+            <li>Manual override capabilities for staff to adjust filters and curate final chef list</li>
+            <li>Booking workflow: record selected chef, create contract record, track Taste of BLK 10% commission</li>
+            <li>Authentication for Admin team members</li>
+            <li>Import of existing chef data from Google Form responses</li>
+            <li>Templated email for chef outreach and quote requests</li>
+            <li>File uploads for chef portfolios, menus, photos, and contracts</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Phase 2 &mdash; Enhancements &nbsp;($200)</h3>
+          <ul>
+            <li>Booking &amp; commission tracking dashboard with revenue summaries</li>
+            <li>Contract and attachment management per chef and per booking</li>
+            <li>Audit logs for all profile edits, match results, and booking actions</li>
+            <li>Internal reporting: bookings by chef, revenue by period, request volume trends</li>
+          </ul>
+        </div>
+        <div class="callout info">
+          <strong>Ongoing infrastructure costs:</strong> The $800 covers all design and development. After launch, the client is responsible for ongoing hosting and database costs (Supabase free tier may cover initial needs; paid plans start at $25/month if usage grows). Estimated ongoing costs will be outlined before launch.
+        </div>
+      </div>
+
+      <!-- ========== 11. ONGOING SUPPORT ========== -->
+      <div class="section" id="s11">
+        <span class="section-number">Section 11</span>
+        <h2>Ongoing Support &amp; Changes After Delivery</h2>
+
+        <h3>Post-Launch Warranty (Included)</h3>
+        <div class="card">
+          <p>McG Works includes a <strong>30-day post-launch warranty</strong> covering bug fixes related to the delivered scope at no additional cost, <strong>provided no other developers modify the codebase</strong> during the warranty period. This covers:</p>
+          <ul>
+            <li>Bugs that prevent core features from functioning as defined in the agreed-upon scope</li>
+            <li>Broken flows from the initial launch build</li>
+            <li>Fixes needed to restore agreed-upon functionality</li>
+          </ul>
+          <p style="margin-top: 12px;">This warranty is <strong>void if any third-party developer modifies the codebase</strong> after delivery.</p>
+        </div>
+
+        <h3>Cancellation &amp; Termination</h3>
+        <div class="card">
+          <ul>
+            <li>Either party may terminate the engagement with written notice.</li>
+            <li>Payments for fully completed milestones are non-refundable.</li>
+            <li>If the engagement is terminated while a milestone is in progress, the client will receive a prorated refund for the unfinished portion based on the percentage of work remaining.</li>
+            <li>Upon cancellation, all completed work product and source code for paid milestones is delivered to the client.</li>
+          </ul>
+        </div>
+
+        <h3>Phase Acceptance</h3>
+        <div class="card">
+          <p>Each phase concludes with a <strong>5-business-day acceptance window</strong>. The client reviews all deliverables and either approves or provides specific written feedback. If no response is received within the window, the phase is considered accepted.</p>
+        </div>
+
+        <h3>On-Demand Changes</h3>
+        <p>After the warranty period, all updates and improvements are handled on an as-needed basis with no monthly commitment.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Detail</th><th>Terms</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Rate</strong></td><td>$100/hour</td></tr>
+              <tr><td><strong>Billing</strong></td><td>Billed monthly based on actual hours used</td></tr>
+              <tr><td><strong>Minimum</strong></td><td>0.5 hours (30 minutes) per request</td></tr>
+              <tr><td><strong>Process</strong></td><td>McG Works confirms estimated effort and scheduling before work begins</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ========== 12. ASSUMPTIONS ========== -->
+      <div class="section" id="s12">
+        <span class="section-number">Section 12</span>
+        <h2>Assumptions &amp; Open Decisions</h2>
+
+        <h3>12.1 Assumptions</h3>
+        <div class="card">
+          <ul>
+            <li>Initial chef roster is small (under 50 chefs); the database is designed to scale to 150+ chefs.</li>
+            <li>Taste of BLK remains the intermediary for all client-chef interactions &mdash; chef contact info is never exposed to clients.</li>
+            <li>The 10% commission model is tracked in the platform but payments and payouts are handled off-platform for the MVP (Option A from the tech spec).</li>
+            <li>Jessica will share the existing culinary partner intake Google Form and chef responses for data import.</li>
+            <li>Jasmine will serve as the primary point of contact for requirements and feedback during development.</li>
+            <li>Target rollout: June&ndash;July 2026.</li>
+          </ul>
+        </div>
+
+        <h3>12.2 Open Decisions (to finalize at kickoff)</h3>
+        <div class="card">
+          <ul>
+            <li>Confirm the full list of cuisine type tags and service style options</li>
+            <li>Finalize matching weight priorities based on Taste of BLK&rsquo;s real-world experience</li>
+            <li>Confirm which fields from the Google Form intake map to chef profile fields</li>
+            <li>Confirm if any additional Admin permission levels are needed within the team</li>
+            <li>Confirm email provider preferences for templated chef outreach</li>
+          </ul>
+        </div>
+
+        <h3>12.3 Future Capabilities (Post-Launch)</h3>
+        <p>The following features are not in scope for this engagement but have been discussed and can be added as future work:</p>
+        <div class="card">
+          <ul>
+            <li><strong>Stripe Connect payouts:</strong> On-platform payments where clients pay through the website and Taste of BLK&rsquo;s 10% commission is applied automatically, with chef payouts via Stripe Connect.</li>
+            <li><strong>Availability calendar sync:</strong> Integration with Google Calendar so chef availability updates automatically.</li>
+            <li><strong>Public client intake portal:</strong> A public-facing form on the Taste of BLK website where clients can submit requests directly (feeding into the matching engine).</li>
+            <li><strong>Chef self-service portal:</strong> A login for chefs to update their own profiles, pricing, availability, and portfolio.</li>
+            <li><strong>Analytics dashboard:</strong> Trends in request volume, booking rates, revenue by chef, popular cuisines, and seasonal demand.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ========== 13. NEXT STEPS ========== -->
+      <div class="section" id="s13">
+        <span class="section-number">Section 13</span>
+        <h2>Next Steps</h2>
+        <div class="card">
+          <div class="flow-step">
+            <div class="flow-num">1</div>
+            <div class="flow-body">
+              <h4>Review &amp; Approve Proposal</h4>
+              <p>Taste of BLK team reviews this proposal and confirms scope alignment.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">2</div>
+            <div class="flow-body">
+              <h4>Submit Deposit ($200)</h4>
+              <p>First installment payment to initiate the engagement.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">3</div>
+            <div class="flow-body">
+              <h4>Share Chef Data &amp; Kickoff Call</h4>
+              <p>Jessica shares the Google Form intake and existing chef responses. Jasmine and Jalen align on field mappings, cuisine tags, and matching priorities.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">4</div>
+            <div class="flow-body">
+              <h4>Phase 1 Build with Regular Check-ins</h4>
+              <p>McG Works builds the MVP with weekly or bi-weekly demos so the team can provide feedback throughout development.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">5</div>
+            <div class="flow-body">
+              <h4>Launch &amp; Onboarding</h4>
+              <p>Platform goes live with imported chef data. McG Works provides onboarding support and training calls as needed to ensure the team is comfortable using the system.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== PROPOSAL NOTE ========== -->
+      <div class="proposal-note">
+        <strong>Please Note:</strong> This proposal is for informational and planning purposes only. A final version of the agreement will be provided for review and confirmation by both parties before the engagement begins.
+      </div>
+
+      <!-- ========== CTA ========== -->
+      <div class="cta-section">
+        <h2>Ready to move forward?</h2>
+        <p><a href="mailto:Jalen@mcg-works.com" style="color:#3b82f6;text-decoration:none;font-weight:600;">Contact McG Works</a> to get started and schedule your kickoff call.</p>
+      </div>
+
+      <!-- ========== COMMENTS ========== -->
+      <div class="section" id="comments-section">
+        <span class="section-number">Discussion</span>
+        <h2>Comments &amp; Feedback</h2>
+        <p>Leave questions, feedback, or requested changes directly on this proposal.</p>
+
+        <!-- Comment form -->
+        <div class="comment-form-wrap" id="commentFormWrap">
+          <div class="comment-form">
+            <div class="comment-form-row">
+              <input type="text" id="commentName" class="comment-input" placeholder="Your name" />
+              <label class="mcg-toggle">
+                <input type="checkbox" id="mcgToggle" />
+                <span class="mcg-toggle-label">McG Works Team</span>
+              </label>
+            </div>
+            <div class="mcg-key-row" id="mcgKeyRow" style="display:none;">
+              <input type="password" id="mcgKey" class="comment-input" placeholder="Team passphrase" />
+            </div>
+            <textarea id="commentBody" class="comment-textarea" placeholder="Write a comment…" rows="3"></textarea>
+            <div class="comment-form-actions">
+              <button class="comment-submit" id="commentSubmit">Post Comment</button>
+              <span class="comment-status" id="commentStatus"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reply form (hidden, cloned into threads) -->
+        <template id="replyFormTemplate">
+          <div class="reply-form">
+            <div class="comment-form-row">
+              <input type="text" class="comment-input reply-name" placeholder="Your name" />
+              <label class="mcg-toggle">
+                <input type="checkbox" class="reply-mcg-toggle" />
+                <span class="mcg-toggle-label">McG Works Team</span>
+              </label>
+            </div>
+            <div class="mcg-key-row reply-mcg-key-row" style="display:none;">
+              <input type="password" class="comment-input reply-mcg-key" placeholder="Team passphrase" />
+            </div>
+            <textarea class="comment-textarea reply-body" placeholder="Write a reply…" rows="2"></textarea>
+            <div class="comment-form-actions">
+              <button class="comment-submit reply-submit">Post Reply</button>
+              <button class="comment-cancel reply-cancel">Cancel</button>
+              <span class="comment-status reply-status"></span>
+            </div>
+          </div>
+        </template>
+
+        <!-- Comments list -->
+        <div id="commentsList" class="comments-list">
+          <p class="comments-loading" id="commentsLoading">Loading comments…</p>
+        </div>
+      </div>
+
+    </div><!-- .content -->
+  </div><!-- .proposal -->
+
+<script>
+    const FUNCTIONS_BASE = 'https://awccquoyscijmtqtibgr.supabase.co/functions/v1';
+    const PROPOSAL_ID    = 'taste-of-blk';
+
+    const storedCode = sessionStorage.getItem('mcg_proposal_access');
+
+    async function init() {
+      if (FUNCTIONS_BASE === 'YOUR_SUPABASE_FUNCTIONS_URL') return;
+      if (!storedCode) {
+        console.warn('[McG] No access code in session.');
+        return;
+      }
+
+      try {
+        console.log('[McG] Verifying access…');
+        const res = await fetch(FUNCTIONS_BASE + '/verify-code', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: storedCode })
+        });
+
+        if (!res.ok) {
+          const errText = await res.text();
+          console.error('[McG] Verify response not ok:', res.status, errText);
+          document.getElementById('accessMsg').textContent = 'Verification failed (' + res.status + '). Try again or re-enter your code.';
+          document.getElementById('retryBtn').style.display = 'inline-block';
+          return;
+        }
+
+        const result = await res.json();
+
+        if (result.valid && result.proposal_path === PROPOSAL_ID) {
+          document.getElementById('accessDenied').style.display = 'none';
+          document.getElementById('proposalContent').classList.add('visible');
+          initComments();
+        } else {
+          console.warn('[McG] Verification mismatch:', result);
+          document.getElementById('accessMsg').textContent = 'Code not recognised for this proposal. Please re-enter.';
+          document.getElementById('retryBtn').style.display = 'inline-block';
+        }
+      } catch (err) {
+        console.error('[McG] Verification error:', err);
+        document.getElementById('accessMsg').textContent = 'Connection error. Please check your network and try again.';
+        document.getElementById('retryBtn').style.display = 'inline-block';
+      }
+    }
+
+    init();
+
+    // =====================
+    // COMMENTS VIA EDGE FN
+    // =====================
+    async function apiFetch(action, extra = {}) {
+      const res = await fetch(FUNCTIONS_BASE + '/comments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, proposal_id: PROPOSAL_ID, code: storedCode, ...extra })
+      });
+      return res.json();
+    }
+
+    async function initComments() {
+      if (FUNCTIONS_BASE === 'YOUR_SUPABASE_FUNCTIONS_URL') return;
+      await loadComments();
+      setupMainForm();
+      setInterval(loadComments, 15000);
+    }
+
+    function setupMainForm() {
+      const mcgToggle = document.getElementById('mcgToggle');
+      const mcgKeyRow = document.getElementById('mcgKeyRow');
+      mcgToggle.addEventListener('change', () => {
+        mcgKeyRow.style.display = mcgToggle.checked ? 'block' : 'none';
+      });
+
+      document.getElementById('commentSubmit').addEventListener('click', async () => {
+        const name = document.getElementById('commentName').value.trim();
+        const body = document.getElementById('commentBody').value.trim();
+        const isMcg = mcgToggle.checked;
+        const key = document.getElementById('mcgKey')?.value?.trim();
+        const status = document.getElementById('commentStatus');
+
+        if (!name || !body) {
+          status.textContent = 'Name and comment are required.';
+          status.style.color = '#ef4444';
+          return;
+        }
+        document.getElementById('commentSubmit').disabled = true;
+        status.textContent = 'Posting…';
+        status.style.color = '#94a3b8';
+
+        const result = await apiFetch('create', {
+          parent_id: null,
+          author_name: name,
+          is_mcg: isMcg,
+          mcg_passphrase: isMcg ? key : undefined,
+          content: body
+        });
+
+        if (result.error) {
+          status.textContent = result.error || 'Error posting comment. Try again.';
+          status.style.color = '#ef4444';
+        } else {
+          document.getElementById('commentBody').value = '';
+          status.textContent = '';
+          await loadComments();
+        }
+        document.getElementById('commentSubmit').disabled = false;
+      });
+    }
+
+    async function loadComments() {
+      const result = await apiFetch('list');
+      const container = document.getElementById('commentsList');
+
+      if (result.error) {
+        container.innerHTML = '<p class="comments-loading">Error loading comments.</p>';
+        return;
+      }
+
+      const data = result.comments || [];
+
+      if (data.length === 0) {
+        container.innerHTML = '<div class="no-comments">No comments yet. Be the first to leave feedback!</div>';
+        return;
+      }
+
+      const parents = data.filter(c => !c.parent_id);
+      const replies = data.filter(c => c.parent_id);
+      const replyMap = {};
+      replies.forEach(r => {
+        if (!replyMap[r.parent_id]) replyMap[r.parent_id] = [];
+        replyMap[r.parent_id].push(r);
+      });
+
+      container.innerHTML = parents.map(comment => `
+        <div class="comment-thread" data-id="${comment.id}">
+          ${renderBubble(comment)}
+          <div class="comment-actions">
+            <button class="reply-btn" onclick="showReplyForm('${comment.id}')">Reply</button>
+          </div>
+          <div class="comment-replies" id="replies-${comment.id}">
+            ${(replyMap[comment.id] || []).map(r => renderBubble(r)).join('')}
+          </div>
+          <div id="reply-form-${comment.id}"></div>
+        </div>
+      `).join('');
+    }
+
+    function renderBubble(c) {
+      const time = new Date(c.created_at).toLocaleDateString('en-US', {
+        month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit'
+      });
+      return `
+        <div class="comment-bubble ${c.is_mcg ? 'mcg' : ''}">
+          <div class="comment-header">
+            <span class="comment-author">${escHtml(c.author_name)}</span>
+            ${c.is_mcg ? '<span class="comment-badge">McG Works</span>' : ''}
+            <span class="comment-time">${time}</span>
+          </div>
+          <p class="comment-text">${escHtml(c.content)}</p>
+        </div>
+      `;
+    }
+
+    function showReplyForm(parentId) {
+      const target = document.getElementById('reply-form-' + parentId);
+      if (target.querySelector('.reply-form')) return;
+
+      const template = document.getElementById('replyFormTemplate');
+      const clone = template.content.cloneNode(true);
+      target.appendChild(clone);
+
+      const form = target.querySelector('.reply-form');
+      const mcgToggle = form.querySelector('.reply-mcg-toggle');
+      const mcgKeyRow = form.querySelector('.reply-mcg-key-row');
+
+      mcgToggle.addEventListener('change', () => {
+        mcgKeyRow.style.display = mcgToggle.checked ? 'block' : 'none';
+      });
+
+      form.querySelector('.reply-cancel').addEventListener('click', () => {
+        form.remove();
+      });
+
+      form.querySelector('.reply-submit').addEventListener('click', async () => {
+        const name = form.querySelector('.reply-name').value.trim();
+        const body = form.querySelector('.reply-body').value.trim();
+        const isMcg = mcgToggle.checked;
+        const key = form.querySelector('.reply-mcg-key')?.value?.trim();
+        const status = form.querySelector('.reply-status');
+
+        if (!name || !body) {
+          status.textContent = 'Name and reply are required.';
+          status.style.color = '#ef4444';
+          return;
+        }
+        const btn = form.querySelector('.reply-submit');
+        btn.disabled = true;
+        status.textContent = 'Posting…';
+        status.style.color = '#94a3b8';
+
+        const result = await apiFetch('create', {
+          parent_id: parentId,
+          author_name: name,
+          is_mcg: isMcg,
+          mcg_passphrase: isMcg ? key : undefined,
+          content: body
+        });
+
+        if (result.error) {
+          status.textContent = result.error || 'Error posting reply. Try again.';
+          status.style.color = '#ef4444';
+          btn.disabled = false;
+        } else {
+          form.remove();
+          await loadComments();
+        }
+      });
+    }
+
+    function escHtml(str) {
+      const d = document.createElement('div');
+      d.textContent = str;
+      return d.innerHTML;
+    }
+  </script>
+</body>
+</html>
