@@ -668,7 +668,7 @@
           <table>
             <thead><tr><th>Role</th><th>Description</th></tr></thead>
             <tbody>
-              <tr><td><strong>Admin</strong></td><td>Taste of BLK internal team (Jessica, Jasmine, Dashonna). Full access to all chef applications, chef profiles, client requests, bookings, matching, and settings. This role encompasses all internal staff including bookers and liaisons.</td></tr>
+              <tr><td><strong>Admin</strong></td><td>Taste of BLK internal team (Jessica, Jasmine, Dashonna). Full access to all chef applications, chef profiles, client requests, matching, and settings. This role encompasses all internal staff including bookers and liaisons.</td></tr>
               <tr><td><strong>Chef</strong></td><td>Culinary partners applying to join or already on the Taste of BLK roster. Chefs submit a public application form to be considered; Admin staff review and approve or deny each submission. Chefs do not log into the platform.</td></tr>
               <tr><td><strong>Client</strong></td><td>Individuals or organizations seeking chef services. Clients interact with the platform only through the public intake form &mdash; they never see the internal database, chef contact info, or matching results.</td></tr>
             </tbody>
@@ -861,12 +861,12 @@
         <span class="section-number">Section 7</span>
         <h2>Core Data Model</h2>
 
-        <h3>6.1 Chef Profile</h3>
+        <h3>7.1 Chef Profile</h3>
         <p>Each chef profile is stored privately and visible only to Taste of BLK staff.</p>
         <div class="card">
           <ul>
             <li><strong>Identity:</strong> Display name / business name, short bio, specialties</li>
-            <li><strong>Contact:</strong> Email, phone &mdash; hidden from clients, visible to Admin &amp; Booker only</li>
+            <li><strong>Contact:</strong> Email, phone &mdash; hidden from clients, visible to Admin only</li>
             <li><strong>Cuisine Types:</strong> Multi-select tags (e.g., Southern, Caribbean, Italian, Vegan, BBQ)</li>
             <li><strong>Signature Dishes / Sample Menu:</strong> Text descriptions + price-per-person ranges</li>
             <li><strong>Service Styles:</strong> Plated, buffet, grazing table, passed apps, food truck, on-site catering</li>
@@ -882,7 +882,7 @@
           </ul>
         </div>
 
-        <h3>6.2 Client Request</h3>
+        <h3>7.2 Client Request</h3>
         <div class="card">
           <ul>
             <li><strong>Client Info:</strong> Contact name, email, phone</li>
@@ -957,7 +957,6 @@
             <tbody>
               <tr><td><strong>Frontend</strong></td><td>Modern web application &mdash; responsive, works on desktop, tablet, and mobile browsers</td></tr>
               <tr><td><strong>Backend &amp; Database</strong></td><td>Supabase (managed PostgreSQL database + authentication + role-based access control)</td></tr>
-              <tr><td><strong>File Storage</strong></td><td>Supabase Storage for chef portfolios, menus, photos, and contract documents</td></tr>
               <tr><td><strong>Deployment URLs</strong></td><td><strong>book.tasteofblk.com</strong> (client intake) and <strong>portal.tasteofblk.com</strong> (chef applications &amp; admin) &mdash; two CNAME subdomains of tasteofblk.com, hosted independently of Squarespace. Two DNS records added at launch; SSL provisioned automatically.</td></tr>
               <tr><td><strong>Source Control</strong></td><td>GitHub &mdash; repository created by McG Works, client granted access throughout development</td></tr>
             </tbody>
@@ -1035,7 +1034,7 @@
 
         <h3>Phase Acceptance</h3>
         <div class="card">
-          <p>Each phase concludes with a <strong>5-business-day acceptance window</strong>. The client reviews all deliverables and either approves or provides specific written feedback. If no response is received within the window, the phase is considered accepted.</p>
+          <p>Delivery concludes with a <strong>5-business-day acceptance window</strong>. The client reviews all deliverables and either approves or provides specific written feedback. If no response is received within the window, the delivery is considered accepted.</p>
         </div>
 
         <h3>On-Demand Changes</h3>
@@ -1121,8 +1120,8 @@
           <div class="flow-step">
             <div class="flow-num">4</div>
             <div class="flow-body">
-              <h4>Phase 1 Build with Regular Check-ins</h4>
-              <p>McG Works builds the MVP with weekly or bi-weekly demos so the team can provide feedback throughout development.</p>
+              <h4>Build with Regular Check-ins</h4>
+              <p>McG Works builds the platform with weekly or bi-weekly demos so the team can provide feedback throughout development.</p>
             </div>
           </div>
           <div class="flow-step">
