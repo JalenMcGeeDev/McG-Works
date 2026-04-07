@@ -785,7 +785,7 @@
             <div class="flow-num">4</div>
             <div class="flow-body">
               <h4>Build &amp; Tag Menu</h4>
-              <p>Admin creates menu items (name, description, category) and selects one of two transparency paths: <strong>Option A — Full Ingredients:</strong> enter a complete ingredient list per item, from which allergen flags are derived. <strong>Option B — Allergen Tags Only:</strong> check allergen boxes from the Top 14 list per item without disclosing full ingredients. Full ingredient lists are used internally for risk calculation but are not displayed publicly to diners. Optionally adds item-level notes (e.g., "Pesto contains pine nuts").</p>
+              <p>Admin creates menu items (name, description, category) and selects one of three transparency paths: <strong>Option A — Full Ingredients:</strong> enter a complete ingredient list per item, from which allergen flags are derived. <strong>Option B — Allergen Tags Only:</strong> check allergen boxes from the Top 14 list per item without disclosing full ingredients. <strong>Option C — AI-Assisted Ingredient Import:</strong> upload an existing recipe book or ingredient list file (PDF, CSV, or spreadsheet); OpenAI reads the file and extracts the ingredient list for each menu item automatically. The restaurant then reviews each item's extracted ingredients on a verification screen, corrects any errors, and confirms before saving. Once verified, the data is stored as a full ingredient list (same as Option A). Full ingredient lists are used internally for risk calculation but are not displayed publicly to diners. Optionally adds item-level notes (e.g., "Pesto contains pine nuts").</p>
             </div>
           </div>
           <div class="flow-step">
@@ -918,10 +918,11 @@
           <ul>
             <li>Business name, address, hours, phone, website entered manually by restaurant admin</li>
             <li>Menu item CRUD: name, description, category (optional)</li>
-            <li><strong>Dual-path allergen input per item:</strong> Restaurant selects one of two transparency paths:
+            <li><strong>Multi-path allergen input per item:</strong> Restaurant selects one of three transparency paths:
               <ul>
                 <li><strong>Option A — Full Ingredients:</strong> Enter a complete ingredient list per item. Allergen flags are derived from the ingredients entered. Full ingredient lists are used internally for risk calculation but are not displayed publicly to diners.</li>
                 <li><strong>Option B — Allergen Tags Only:</strong> Check allergen boxes from the Top 14 list per item without disclosing full ingredients.</li>
+                <li><strong>Option C — AI-Assisted Ingredient Import:</strong> Upload an existing recipe book or ingredient list file (PDF, CSV, or XLSX). OpenAI reads the file and automatically extracts the ingredient list for each menu item. The restaurant is presented with a review screen to verify, correct, and confirm all extracted ingredients before publishing. Once confirmed, data is stored as a full ingredient list (same as Option A). Items that OpenAI cannot confidently parse are flagged for manual entry.</li>
               </ul>
             </li>
             <li>Optional item-level notes (e.g., preparation warnings)</li>
@@ -1111,6 +1112,7 @@
               <tr><td><strong>Restaurant / Admin Portal</strong></td><td>Modern web app</td></tr>
               <tr><td><strong>Backend &amp; API</strong></td><td>Secure REST API + Supabase (managed database + auth) + role-based authentication</td></tr>
               <tr><td><strong>Source Control</strong></td><td>GitHub — repository created by McG Works, client granted admin access throughout, full ownership transferred at completion</td></tr>
+              <tr><td><strong>AI Document Parsing</strong></td><td>OpenAI API — extracts per-item ingredient lists from restaurant-uploaded recipe books and ingredient files (PDF, CSV, XLSX)</td></tr>
               <tr><td><strong>Analytics</strong></td><td>Privacy-safe event tracking (provider selected during kickoff)</td></tr>
             </tbody>
           </table>
@@ -1147,14 +1149,15 @@
           <ul>
             <li>Requirements workshop and alignment at kickoff</li>
             <li>Diner mobile app — React Native, submitted to App Store + Google Play (email + Apple/Google Sign-In, invite code gating, allergy profile, restaurant browsing, menu with R/Y/G indicators, report inaccurate info)</li>
-            <li>Restaurant portal — web app (signup, profile management, menu builder with dual-path allergen input, kitchen questionnaire, invite code + printable QR code auto-generated)</li>
+            <li>Restaurant portal — web app (signup, profile management, menu builder with multi-path allergen input including AI-assisted ingredient import, kitchen questionnaire, invite code + printable QR code auto-generated)</li>
+            <li>AI-assisted ingredient import — restaurant uploads recipe book or ingredient list (PDF, CSV, XLSX); OpenAI extracts per-item ingredients; restaurant reviews and verifies all results on a confirmation screen before publishing</li>
             <li>Admin portal — lightweight internal tool (restaurant activation queue, diner reports list, allergen list management, user lookup)</li>
             <li>Report flow: predefined categories + optional comment → shared email inbox + admin portal</li>
             <li>Privacy policy and terms of service</li>
           </ul>
         </div>
         <div class="callout info">
-          <strong>Ongoing infrastructure costs:</strong> The $6,580 covers all design and development. After launch, the client is responsible for ongoing infrastructure costs including hosting/database services (Supabase), App Store / Google Play developer accounts ($99/yr and $25 one-time respectively), and any future analytics provider fees. Estimated ongoing costs will be outlined during the kickoff workshop.
+          <strong>Ongoing infrastructure costs:</strong> The $6,580 covers all design and development. After launch, the client is responsible for ongoing infrastructure costs including hosting/database services (Supabase), App Store / Google Play developer accounts ($99/yr and $25 one-time respectively), OpenAI API usage for AI ingredient parsing (usage-based cost; estimated volume will be discussed at kickoff), and any future analytics provider fees. <strong>OpenAI API usage does not affect the $6,580 build investment.</strong> Estimated ongoing costs will be outlined during the kickoff workshop.
         </div>
       </div>
 
@@ -1244,6 +1247,9 @@
             <li>Restaurant details (name, address, hours, etc.) are entered manually — no Google Places API integration in MVP</li>
             <li>Admin portal is a lightweight, internal-quality tool — functional but not heavily polished</li>
             <li>No automated email notifications in MVP — the Alert Dining team handles communications manually</li>
+            <li>Supported file formats for AI ingredient import: PDF, CSV, and XLSX</li>
+            <li>AI ingredient extraction (Option C) is best-effort — restaurant must review and confirm all parsed results on the verification screen before publishing; unverified data cannot be saved</li>
+            <li>Items OpenAI cannot confidently parse from an uploaded file are flagged for manual entry by the restaurant admin</li>
           </ul>
         </div>
 
