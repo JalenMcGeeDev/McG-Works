@@ -610,7 +610,7 @@
       <p class="tagline">Prepared by McG Works &middot; April 2026</p>
       <div class="hero-stats">
         <div class="hero-stat">
-          <span class="value">$6,580</span>
+          <span class="value">$6,880</span>
           <span class="label">Total Investment</span>
         </div>
         <div class="hero-stat">
@@ -732,7 +732,7 @@
             <div class="flow-num">3</div>
             <div class="flow-body">
               <h4>Browse Restaurants</h4>
-              <p>Diner views a flat browsable list of all participating restaurants that have been activated by the Alert Dining team.</p>
+              <p>Diner can view all participating restaurants that have been activated by the Alert Dining team via two views: a <strong>flat list</strong> and an <strong>interactive map</strong> showing each restaurant as a location pin. Tapping a pin on the map opens that restaurant's menu page directly.</p>
             </div>
           </div>
           <div class="flow-step">
@@ -853,7 +853,7 @@
           </table>
         </div>
         <div class="callout info">
-          <strong>Beyond the MVP:</strong> Features such as event organizer portal, GPS-based discovery, analytics dashboards, ratings, Stripe subscriptions, translation cards, wallet passes, and ads are not in scope for this engagement. These can be scoped as a follow-on build after MVP validation.
+          <strong>Beyond the MVP:</strong> Features such as event organizer portal, GPS-based proximity search and distance-sorted discovery, analytics dashboards, ratings, Stripe subscriptions, translation cards, wallet passes, and ads are not in scope for this engagement. These can be scoped as a follow-on build after MVP validation.
         </div>
       </div>
 
@@ -878,7 +878,8 @@
         <div class="card">
           <ul>
             <li>Flat browsable list of all participating restaurants that have been activated by the Alert Dining team</li>
-            <li>No search, filter, or location-based discovery in MVP</li>
+            <li>Interactive map view with location pins for all active restaurants — tapping a pin opens the restaurant's menu page</li>
+            <li>No search, filter, or proximity-based sorting in MVP</li>
           </ul>
         </div>
 
@@ -1113,6 +1114,7 @@
               <tr><td><strong>Backend &amp; API</strong></td><td>Secure REST API + Supabase (managed database + auth) + role-based authentication</td></tr>
               <tr><td><strong>Source Control</strong></td><td>GitHub — repository created by McG Works, client granted admin access throughout, full ownership transferred at completion</td></tr>
               <tr><td><strong>AI Document Parsing</strong></td><td>OpenAI API — extracts per-item ingredient lists from restaurant-uploaded recipe books and ingredient files (PDF, CSV, XLSX)</td></tr>
+              <tr><td><strong>Maps</strong></td><td>react-native-maps (iOS + Android) — interactive in-app map with restaurant pins; Google Maps Platform + Google Geocoding API converts restaurant addresses to coordinates server-side at profile save</td></tr>
               <tr><td><strong>Analytics</strong></td><td>Privacy-safe event tracking (provider selected during kickoff)</td></tr>
             </tbody>
           </table>
@@ -1125,7 +1127,7 @@
         <h2>Pricing</h2>
 
         <div class="pricing-hero">
-          <div class="amount">$6,580</div>
+          <div class="amount">$6,880</div>
           <div class="amount-label">Total Fixed Investment — MVP Build</div>
         </div>
 
@@ -1136,8 +1138,8 @@
             <tbody>
               <tr><td><strong>Kickoff</strong></td><td>$780 — due at project kickoff (includes requirements workshop)</td></tr>
               <tr><td><strong>Milestone 1</strong></td><td>$2,300 — due at MVP delivery and app store submission</td></tr>
-              <tr><td><strong>Milestone 2</strong></td><td>$3,500 — due at completion and handoff</td></tr>
-              <tr><td><strong>Total</strong></td><td><strong>$6,580</strong></td></tr>
+              <tr><td><strong>Milestone 2</strong></td><td>$3,800 — due at completion and handoff</td></tr>
+              <tr><td><strong>Total</strong></td><td><strong>$6,880</strong></td></tr>
             </tbody>
           </table>
         </div>
@@ -1145,19 +1147,20 @@
         <h3>MVP Deliverables</h3>
 
         <div class="card">
-          <h3>Phase 1 — MVP Build &nbsp;·&nbsp; $6,580</h3>
+          <h3>Phase 1 — MVP Build &nbsp;·&nbsp; $6,880</h3>
           <ul>
             <li>Requirements workshop and alignment at kickoff</li>
             <li>Diner mobile app — React Native, submitted to App Store + Google Play (email + Apple/Google Sign-In, invite code gating, allergy profile, restaurant browsing, menu with R/Y/G indicators, report inaccurate info)</li>
             <li>Restaurant portal — web app (signup, profile management, menu builder with multi-path allergen input including AI-assisted ingredient import, kitchen questionnaire, invite code + printable QR code auto-generated)</li>
             <li>AI-assisted ingredient import — restaurant uploads recipe book or ingredient list (PDF, CSV, XLSX); OpenAI extracts per-item ingredients; restaurant reviews and verifies all results on a confirmation screen before publishing</li>
+            <li>Interactive restaurant map — all active restaurants displayed as pins on an in-app map (iOS + Android); tapping a pin navigates to that restaurant's menu page; powered by react-native-maps and Google Geocoding API</li>
             <li>Admin portal — lightweight internal tool (restaurant activation queue, diner reports list, allergen list management, user lookup)</li>
             <li>Report flow: predefined categories + optional comment → shared email inbox + admin portal</li>
             <li>Privacy policy and terms of service</li>
           </ul>
         </div>
         <div class="callout info">
-          <strong>Ongoing infrastructure costs:</strong> The $6,580 covers all design and development. After launch, the client is responsible for ongoing infrastructure costs including hosting/database services (Supabase), App Store / Google Play developer accounts ($99/yr and $25 one-time respectively), OpenAI API usage for AI ingredient parsing (usage-based cost; estimated volume will be discussed at kickoff), and any future analytics provider fees. <strong>OpenAI API usage does not affect the $6,580 build investment.</strong> Estimated ongoing costs will be outlined during the kickoff workshop.
+          <strong>Ongoing infrastructure costs:</strong> The $6,880 covers all design and development. After launch, the client is responsible for ongoing infrastructure costs including hosting/database services (Supabase), App Store / Google Play developer accounts ($99/yr and $25 one-time respectively), OpenAI API usage for AI ingredient parsing (usage-based cost; estimated volume will be discussed at kickoff), Google Maps Platform API usage for map rendering and address geocoding (negligible at MVP scale — covered by Google's free monthly credit), and any future analytics provider fees. <strong>Neither OpenAI nor Google Maps API usage affects the $6,880 build investment.</strong> Estimated ongoing costs will be outlined during the kickoff workshop.
         </div>
       </div>
 
@@ -1213,7 +1216,7 @@
             <li>Bug fixes and OS compatibility updates</li>
             <li>Changes to red/yellow/green indicator rules or disclaimer text</li>
             <li>Restaurant onboarding assistance and content updates</li>
-            <li>GPS-based restaurant discovery and search functionality</li>
+            <li>GPS-based proximity search — location-aware, distance-sorted restaurant discovery via Google Places API (distinct from the MVP interactive map view)</li>
             <li>Event organizer portal and event menus</li>
             <li>Stripe integration for restaurant subscriptions</li>
             <li>Analytics dashboards and moderation workflows</li>
@@ -1250,6 +1253,9 @@
             <li>Supported file formats for AI ingredient import: PDF, CSV, and XLSX</li>
             <li>AI ingredient extraction (Option C) is best-effort — restaurant must review and confirm all parsed results on the verification screen before publishing; unverified data cannot be saved</li>
             <li>Items OpenAI cannot confidently parse from an uploaded file are flagged for manual entry by the restaurant admin</li>
+            <li>Restaurant addresses are geocoded server-side via the Google Geocoding API when a restaurant saves their profile; coordinates are stored in the database and used to render map pins in the diner app</li>
+            <li>Addresses that cannot be geocoded are flagged for manual coordinate entry by the Alert Dining team via the admin portal</li>
+            <li>Location permission is requested from the diner to show their current position on the map; all restaurant pins and map functionality work normally if permission is denied</li>
           </ul>
         </div>
 
@@ -1268,7 +1274,7 @@
         <p>The following features are not in scope for the MVP but have been discussed and can be scoped as a follow-on engagement after validation:</p>
         <div class="card">
           <ul>
-            <li><strong>GPS-based restaurant discovery:</strong> Location-aware search powered by Google Places API, replacing the flat restaurant list with distance-sorted, nearby results.</li>
+            <li><strong>GPS-based proximity search &amp; discovery:</strong> Location-aware search powered by Google Places API — distance-sorted nearby results, radius filtering, and "restaurants near me" capability. Note: this is distinct from the MVP interactive map view, which displays all active restaurants as pins without proximity filtering or sorting.</li>
             <li><strong>Event organizer portal:</strong> Private, time-bound allergy-aware menus for conferences, catered events, and large gatherings — accessible via QR code and event access code.</li>
             <li><strong>Restaurant subscriptions:</strong> Stripe-powered paid subscription tiers for restaurants, replacing the free MVP listing model.</li>
             <li><strong>Ratings &amp; enhanced moderation:</strong> Diner ratings, enhanced report flow with categorized issue types, admin moderation queue with resolution tracking.</li>
