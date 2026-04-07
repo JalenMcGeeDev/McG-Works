@@ -605,21 +605,21 @@
 
     <!-- ========== HERO ========== -->
     <div class="hero">
-      <span class="badge">Build Proposal &amp; Requirements</span>
+      <span class="badge">MVP Proposal</span>
       <h1>Alert Dining</h1>
-      <p class="tagline">Prepared by McG Works &middot; February 2026</p>
+      <p class="tagline">Prepared by McG Works &middot; April 2026</p>
       <div class="hero-stats">
         <div class="hero-stat">
-          <span class="value">$10,200</span>
+          <span class="value">$5,980</span>
           <span class="label">Total Investment</span>
         </div>
         <div class="hero-stat">
-          <span class="value">17–28 wks</span>
+          <span class="value">8–10 wks</span>
           <span class="label">Delivery Timeline</span>
         </div>
         <div class="hero-stat">
-          <span class="value">4 Phases</span>
-          <span class="label">Phased Release</span>
+          <span class="value">1 Phase</span>
+          <span class="label">MVP Build</span>
         </div>
       </div>
       <div class="confidential">
@@ -628,6 +628,10 @@
     </div>
 
     <!-- ========== TOC ========== -->
+    <div class="callout info" style="max-width:860px;margin:28px auto 0;">
+      <strong>📋 Lean MVP Proposal:</strong> This is a revised proposal scoped for speed and investor validation. It focuses on core user behavior — allergy profiles, restaurant menus, and ingredient-level flagging. The full-scope build proposal ($10,200, 4 phases) remains available to activate after validation.
+    </div>
+
     <nav class="toc">
       <h3>Contents</h3>
       <ol>
@@ -635,7 +639,7 @@
         <li><a href="#s2">Project Goals &amp; Success Criteria</a></li>
         <li><a href="#s3">Target Users &amp; Roles</a></li>
         <li><a href="#s4">How It Works</a></li>
-        <li><a href="#s5">Scope &amp; Phased Delivery</a></li>
+        <li><a href="#s5">Scope &amp; Delivery</a></li>
         <li><a href="#s6">Functional Requirements</a></li>
         <li><a href="#s7">Risk Indicator Logic</a></li>
         <li><a href="#s8">Non-Functional Requirements</a></li>
@@ -654,16 +658,16 @@
       <div class="section" id="s1">
         <span class="section-number">Section 1</span>
         <h2>Executive Summary</h2>
-        <p>Alert Dining is a mobile-ready platform that helps people with food allergies make safer, more informed choices when dining out. Users create a personal allergy profile from the "Top 14" allergens - either for themselves or on behalf of someone they care for (e.g., a child or dependent) - and the app displays participating restaurants and menus with personalized risk indicators (<span class="indicator red"></span>red / <span class="indicator yellow"></span>yellow / <span class="indicator green"></span>green) for each menu item.</p>
-        <p>Restaurants subscribe to be listed and manage their menu, ingredient, and allergen data. Diners access the platform for free. </p>
+        <p>Alert Dining is a mobile platform that helps people with food allergies make safer, more informed choices when dining out. This proposal defines a lean MVP scoped for speed and investor validation — focused on the core loop of allergy profiles, restaurant menus, and personalized ingredient-level risk flagging.</p>
+        <p>Users create a personal allergy profile from the "Top 14" allergens and browse participating restaurants. Each menu item is displayed with a personalized risk indicator (<span class="indicator red"></span>red / <span class="indicator yellow"></span>yellow / <span class="indicator green"></span>green) based on the diner's specific allergens. Restaurants sign up, build their menu, tag allergen data, and complete a kitchen questionnaire that feeds into the risk indicator logic.</p>
+        <p>Access to the app is gated by restaurant invite codes — each participating restaurant receives a unique code and printable QR code. Diners must enter a valid invite code at signup, ensuring the user base is composed of real diners at real restaurants. This creates a controlled launch environment ideal for collecting investor-ready usage data.</p>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Stakeholder</th><th>Value Delivered</th></tr></thead>
             <tbody>
               <tr><td><strong>Diner</strong></td><td>Browse menus with personalized allergen risk signals at no cost</td></tr>
-              <tr><td><strong>Restaurant</strong></td><td>Attract allergy-sensitive diners; showcase transparency and trust; unique QR code to drive app adoption</td></tr>
-              <tr><td><strong>Event Organizer</strong></td><td>Offer allergy-aware menus at conferences, catered events, and large gatherings via private, time-bound listings</td></tr>
-              <tr><td><strong>Alert Dining Team</strong></td><td>Manage platform operations, restaurants, events, content, and billing</td></tr>
+              <tr><td><strong>Restaurant</strong></td><td>Attract allergy-sensitive diners; showcase transparency and trust; unique invite code and QR code to drive app adoption</td></tr>
+              <tr><td><strong>Alert Dining Team</strong></td><td>Activate restaurants, manage platform data, and collect real usage metrics for investor conversations</td></tr>
             </tbody>
           </table>
         </div>
@@ -673,14 +677,15 @@
       <div class="section" id="s2">
         <span class="section-number">Section 2</span>
         <h2>Project Goals &amp; Success Criteria</h2>
+        <p>This MVP is designed to validate core user behavior and generate evidence for investor conversations — not to build the full product. Success is measured by real usage, not feature completeness.</p>
         <div class="card">
-          <h3>Goals</h3>
+          <h3>Validation Goals</h3>
           <ul>
-            <li>Help diners quickly identify safer menu items based on their personal allergy profile.</li>
-            <li>Help restaurants attract allergy-sensitive diners by improving transparency and trust.</li>
-            <li>Enable event organizers to provide allergy-aware menus at conferences, catered gatherings, and special events - driving platform adoption at scale.</li>
-            <li>Provide the Alert Dining team with operational tools to manage restaurants, events, content, and platform health.</li>
-            <li>Generate revenue through restaurant subscriptions and event organizer subscriptions.</li>
+            <li>Validate that diners engage with and trust the red / yellow / green allergy indicators when browsing menus.</li>
+            <li>Test diner willingness to create and maintain a personal allergy profile.</li>
+            <li>Prove restaurant interest in listing on the platform and providing accurate allergen data.</li>
+            <li>Generate investor-ready usage data: signups, profile completions, menu views, report submissions.</li>
+            <li>Confirm the invite-code distribution model drives organic adoption through participating restaurants.</li>
           </ul>
         </div>
       </div>
@@ -693,10 +698,9 @@
           <table>
             <thead><tr><th>Role</th><th>Description</th></tr></thead>
             <tbody>
-              <tr><td><strong>Diner</strong></td><td>Browses restaurants and menus with allergen risk indicators. May create a profile for themselves or on behalf of another person (e.g., parent/caregiver).</td></tr>
-              <tr><td><strong>Restaurant Admin</strong></td><td>Creates listing, manages menu items, ingredient data, allergen tags, and kitchen questionnaire</td></tr>
-              <tr><td><strong>Event Organizer</strong></td><td>Creates private, time-bound event listings with allergy-tagged menus accessible via search, QR code, and event access code</td></tr>
-              <tr><td><strong>Alert Dining Team</strong></td><td>Approves restaurants and events, manages billing, moderates content, monitors platform</td></tr>
+              <tr><td><strong>Diner</strong></td><td>Creates an allergy profile, browses participating restaurants and menus with personalized risk indicators. Signs up using a restaurant invite code.</td></tr>
+              <tr><td><strong>Restaurant Admin</strong></td><td>Signs up, builds menu items, tags allergen data (full ingredient list or allergen tags), and completes kitchen questionnaire. Receives a unique invite code and printable QR code upon signup.</td></tr>
+              <tr><td><strong>Alert Dining Team</strong></td><td>Activates restaurants, reviews diner reports, manages platform data and allergen list.</td></tr>
             </tbody>
           </table>
         </div>
@@ -706,64 +710,50 @@
       <div class="section" id="s4">
         <span class="section-number">Section 4</span>
         <h2>How It Works</h2>
-        <p>This section describes the primary user flows across the platform - from diner onboarding to restaurant management to special events to Alert Dining Team operations.</p>
+        <p>This section describes the primary user flows across the MVP — from diner onboarding to restaurant management to Alert Dining Team operations.</p>
 
         <h3>4.1 Diner Flow</h3>
         <div class="card">
           <div class="flow-step">
             <div class="flow-num">1</div>
             <div class="flow-body">
-              <h4>Create Account &amp; Allergy Profile</h4>
-              <p>Diner signs up via email (Apple/Google optional). During onboarding, the diner selects whether they are creating a profile <strong>for themselves</strong> or <strong>on behalf of someone else</strong> (e.g., a parent or caregiver managing allergies for a child or dependent). This selection is captured for legal clarity and terms acceptance. The diner then selects allergens from the Top 14 list.</p>
+              <h4>Download &amp; Enter Invite Code</h4>
+              <p>Diner scans a restaurant's QR code (printed on menus, signage, or table cards) which links to the App Store or Google Play. After downloading, the diner enters the restaurant's invite code at signup. The invite code is required once at account creation and is not needed for subsequent logins.</p>
             </div>
           </div>
           <div class="flow-step">
             <div class="flow-num">2</div>
             <div class="flow-body">
-              <h4>Discover Restaurants</h4>
-              <p>App detects location (with permission) and uses Google Places API to surface nearby participating restaurants sorted by distance. Can also search by name.</p>
+              <h4>Create Account &amp; Allergy Profile</h4>
+              <p>Diner signs up via email, Apple, or Google. During onboarding, the diner selects allergens from the Top 14 list to build their personal allergy profile.</p>
             </div>
           </div>
           <div class="flow-step">
             <div class="flow-num">3</div>
+            <div class="flow-body">
+              <h4>Browse Restaurants</h4>
+              <p>Diner views a flat browsable list of all participating restaurants that have been activated by the Alert Dining team.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">4</div>
             <div class="flow-body">
               <h4>Browse Menus</h4>
               <p>Diner opens a restaurant page and views menu items labeled Green, Yellow, or Red based on their personal allergen profile. Disclaimers remind the diner to confirm with staff.</p>
             </div>
           </div>
           <div class="flow-step">
-            <div class="flow-num">4</div>
-            <div class="flow-body">
-              <h4>View Item Details</h4>
-              <p>Tapping an item shows a detailed view explaining why it was flagged - specific allergen match, ingredient-level detail (where provided by the restaurant), or cross-contact risk - along with any restaurant notes.</p>
-            </div>
-          </div>
-          <div class="flow-step">
             <div class="flow-num">5</div>
             <div class="flow-body">
-              <h4>Scan a Restaurant or Event QR Code</h4>
-              <p>Existing users scan a restaurant's QR code from within the Alert Dining app and are taken directly to that restaurant's profile. People who do not have the app use their phone's camera to scan the QR code and are directed to the App Store / Google Play to download Alert Dining. For special events, scanning the QR code and entering the event access code opens a private event menu.</p>
+              <h4>View Item Details</h4>
+              <p>Tapping an item shows a detailed view explaining why it was flagged — specific allergen match, ingredient-level detail (where provided by the restaurant), or cross-contact risk — along with any restaurant notes.</p>
             </div>
           </div>
           <div class="flow-step">
             <div class="flow-num">6</div>
             <div class="flow-body">
-              <h4>Continue Using the App</h4>
-              <p>Diner continues using the app for free. A ribbon-style ad placeholder is included in the architecture so ads and a premium ad-free tier can be introduced in a future phase.</p>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-num">7</div>
-            <div class="flow-body">
-              <h4>Rate &amp; Report (Phase 2)</h4>
-              <p>Diner can rate an experience or report inaccurate menu/allergen information.</p>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-num">8</div>
-            <div class="flow-body">
-              <h4>Generate Translation Card (Phase 3)</h4>
-              <p>Diner generates an allergy translation card from their profile in up to 10 languages. Cards can be downloaded, shared, or saved directly to Apple Wallet / Google Wallet for instant offline access while traveling.</p>
+              <h4>Report Inaccurate Information</h4>
+              <p>Diner can flag a menu item as potentially inaccurate by selecting a predefined category (e.g., wrong allergen, missing ingredient, item doesn't exist) and optionally adding a comment. Reports are sent to a shared Alert Dining inbox and displayed in the admin portal.</p>
             </div>
           </div>
         </div>
@@ -773,15 +763,15 @@
           <div class="flow-step">
             <div class="flow-num">1</div>
             <div class="flow-body">
-              <h4>Sign Up &amp; Request Verification</h4>
-              <p>Restaurant admin creates an account and submits their listing for manual approval by the Alert Dining Team. Receives confirmation email.</p>
+              <h4>Sign Up</h4>
+              <p>Restaurant admin creates an account and submits their listing. A unique invite code and printable QR code are auto-generated at signup. The listing enters a pending state until the Alert Dining team activates it.</p>
             </div>
           </div>
           <div class="flow-step">
             <div class="flow-num">2</div>
             <div class="flow-body">
               <h4>Complete Restaurant Profile</h4>
-              <p>Admin searches for their restaurant via Google Places API to auto-populate business name, address, hours, phone, and website. Reviews and confirms details, then selects a subscription tier and sets up billing via Stripe.</p>
+              <p>Admin enters business name, address, hours, phone, and website manually.</p>
             </div>
           </div>
           <div class="flow-step">
@@ -795,204 +785,75 @@
             <div class="flow-num">4</div>
             <div class="flow-body">
               <h4>Build &amp; Tag Menu</h4>
-              <p>Admin creates menu items (name, description, category) and selects one of two transparency paths: <strong>Option A - Full Ingredients:</strong> enter a complete ingredient list per item, from which allergen flags are derived. <strong>Option B - Allergen Tags Only:</strong> check allergen boxes from the Top 14 list per item without disclosing full ingredients. Optionally adds item-level notes (e.g., "Pesto contains pine nuts"). Full ingredient lists are used internally for risk calculation but are not displayed publicly to diners.</p>
+              <p>Admin creates menu items (name, description, category) and selects one of two transparency paths: <strong>Option A — Full Ingredients:</strong> enter a complete ingredient list per item, from which allergen flags are derived. <strong>Option B — Allergen Tags Only:</strong> check allergen boxes from the Top 14 list per item without disclosing full ingredients. Full ingredient lists are used internally for risk calculation but are not displayed publicly to diners. Optionally adds item-level notes (e.g., "Pesto contains pine nuts").</p>
             </div>
           </div>
           <div class="flow-step">
             <div class="flow-num">5</div>
             <div class="flow-body">
               <h4>Publish &amp; Maintain</h4>
-              <p>Menu goes live after initial admin approval. Restaurant admin updates items and re-attests accuracy. "Last updated" timestamp displays to diners.</p>
+              <p>Menu goes live after the Alert Dining team activates the restaurant. Restaurant admin updates items as needed. "Last updated" timestamp displays to diners.</p>
             </div>
           </div>
           <div class="flow-step">
             <div class="flow-num">6</div>
             <div class="flow-body">
-              <h4>Generate Restaurant QR Code</h4>
-              <p>After the restaurant profile is live, a unique, trackable QR code is generated. The restaurant can print and display the code on menus, signage, or table cards. Existing app users scan the code from within the Alert Dining app to go directly to the restaurant's profile. People without the app use their phone's camera to scan the code and are directed to the App Store / Google Play to download Alert Dining. QR scans are tracked for analytics.</p>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-num">7</div>
-            <div class="flow-body">
-              <h4>View Analytics (Phase 2)</h4>
-              <p>Admin views dashboard: menu views, unique diner counts, QR code scans, allergen demand breakdown, and trend charts.</p>
+              <h4>Download QR Code &amp; Invite Code</h4>
+              <p>Restaurant admin can view and download their unique invite code and printable QR code from within the portal. The QR code links to the App Store / Google Play for diners to download the app, and the invite code is entered at signup.</p>
             </div>
           </div>
         </div>
 
-        <h3>4.3 Event Organizer Flow</h3>
-        <p>The Special Events flow enables event organizers - such as conference planners, corporate catering teams, or large-venue hosts - to create private, time-bound allergy-aware menus for their attendees.</p>
+        <h3>4.3 Alert Dining Team (Management) Flow</h3>
+        <p>The Alert Dining Team uses a lightweight internal admin portal to manage core platform activity during the MVP phase.</p>
+
         <div class="card">
           <div class="flow-step">
             <div class="flow-num">1</div>
             <div class="flow-body">
-              <h4>Create Event Account &amp; Listing</h4>
-              <p>Event organizer signs up and creates a new event listing with event name, date(s), description, and menu schedule (e.g., Monday lunch, Tuesday dinner). The listing is accessible via search, QR code, and event access code.</p>
+              <h4>Activate Restaurants</h4>
+              <p>New restaurant signups appear in a queue. The team reviews submissions and activates restaurants to make them visible to diners. Restaurants remain in a pending state until manually activated.</p>
             </div>
           </div>
           <div class="flow-step">
             <div class="flow-num">2</div>
-            <div class="flow-body">
-              <h4>Build Event Menus &amp; Tag Allergens</h4>
-              <p>Organizer builds one or more menus (organized by day or meal) using the same menu item CRUD and allergen tagging (Option A or Option B) as restaurants. Green / Yellow / Red indicators work identically for attendees.</p>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-num">3</div>
-            <div class="flow-body">
-              <h4>Generate QR Code &amp; Event Access Code</h4>
-              <p>A unique QR code and a 6-digit event access code are generated for the event. The organizer distributes these at registration, on signage, or via email to attendees. Scanning the QR code and entering the access code grants access to the private event menu.</p>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-num">4</div>
-            <div class="flow-body">
-              <h4>Shared Login for Event Team</h4>
-              <p>The event organizer uses a single shared login credential for their team to manage the event listing. Team members who need access receive the credential from the organizer.</p>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-num">5</div>
-            <div class="flow-body">
-              <h4>Go Live &amp; Deactivate</h4>
-              <p>Organizer notifies Alert Dining when the event should go live and when it should be deactivated. After deactivation, the event listing is no longer accessible to attendees but is retained in the system for record-keeping.</p>
-            </div>
-          </div>
-        </div>
-
-        <h3>4.4 Alert Dining Team (Management) Flow</h3>
-        <p>The Alert Dining Team operates a dedicated admin portal to manage all platform activity. This is a distinct role with elevated access to approve restaurants and events, monitor content quality, manage billing, and maintain platform health.</p>
-
-        <p class="sub-heading">Restaurant &amp; Event Approval &amp; Verification</p>
-        <div class="card">
-          <div class="flow-step">
-            <div class="flow-num">1</div>
-            <div class="flow-body">
-              <h4>Review Incoming Signup Requests</h4>
-              <p>New restaurant and event organizer signups appear in a queue with submitted business/event details. Team reviews for completeness and legitimacy.</p>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-num">2</div>
-            <div class="flow-body">
-              <h4>Approve or Reject Listing</h4>
-              <p>Admin approves the restaurant (triggering the verified badge) or event, or rejects with a reason. Rejection sends an automated email. Approved restaurants become searchable by diners; approved events become accessible via QR code and access code.</p>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-num">3</div>
-            <div class="flow-body">
-              <h4>Manual Verification Actions</h4>
-              <p>Admin can manually revoke verification, flag a listing for review, or place a restaurant or event on hold if issues arise post-launch.</p>
-            </div>
-          </div>
-        </div>
-
-        <p class="sub-heading">Menu &amp; Content Moderation</p>
-        <div class="card">
-          <div class="flow-step">
-            <div class="flow-num">4</div>
             <div class="flow-body">
               <h4>Review Diner Reports</h4>
-              <p>When diners report inaccurate allergen info or outdated menus, reports land in a moderation queue. Each report shows: the item flagged, the reason, and the diner who submitted it.</p>
+              <p>Reports submitted by diners appear in a reports list with the flagged item, category, optional comment, and the diner who submitted it. Reports are also emailed to a shared Alert Dining inbox.</p>
             </div>
           </div>
           <div class="flow-step">
-            <div class="flow-num">5</div>
+            <div class="flow-num">3</div>
             <div class="flow-body">
-              <h4>Investigate &amp; Take Action</h4>
-              <p>Admin reviews the report against the restaurant's tagged data. Actions available: mark resolved, send a warning to the restaurant, temporarily hide the item, or escalate for re-verification.</p>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-num">6</div>
-            <div class="flow-body">
-              <h4>Edit or Override Menu Content</h4>
-              <p>Admin can edit restaurant or event profile details or specific menu items if necessary to correct critical safety-related inaccuracies, with all edits logged in the audit trail.</p>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-num">7</div>
-            <div class="flow-body">
-              <h4>Audit Log Review</h4>
-              <p>Admin can view a chronological log of all changes to any menu item - who changed it, what changed, and when - to investigate disputes or spot patterns of inaccuracy.</p>
-            </div>
-          </div>
-        </div>
-
-        <p class="sub-heading">Billing &amp; Subscription Management</p>
-        <div class="card">
-          <div class="flow-step">
-            <div class="flow-num">8</div>
-            <div class="flow-body">
-              <h4>Monitor Subscription Status</h4>
-              <p>Admin sees a dashboard of active restaurant and event organizer subscriptions: tier, billing status (active / past due / cancelled), and renewal dates.</p>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-num">9</div>
-            <div class="flow-body">
-              <h4>Handle Billing Issues</h4>
-              <p>Admin can manually upgrade or downgrade a restaurant's tier, issue credits, or mark a subscription as complimentary (e.g., during a pilot period).</p>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-num">10</div>
-            <div class="flow-body">
-              <h4>Diner Subscription Oversight (Future)</h4>
-              <p>When a diner premium tier is introduced in a future phase, admin will be able to view subscription counts, handle refund requests, and monitor churn trends.</p>
-            </div>
-          </div>
-        </div>
-
-        <p class="sub-heading">Platform Health &amp; Analytics</p>
-        <div class="card">
-          <div class="flow-step">
-            <div class="flow-num">11</div>
-            <div class="flow-body">
-              <h4>Dashboard Overview</h4>
-              <p>Admin home screen surfaces: pending approvals count (restaurants + events), open moderation reports, active restaurant count, active event count, total MAU, and revenue MTD.</p>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-num">12</div>
-            <div class="flow-body">
-              <h4>Allergen Demand Insights</h4>
-              <p>Admin can view platform-wide allergen frequency data - which allergens appear most in diner profiles - to inform restaurant outreach and product decisions.</p>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-num">13</div>
-            <div class="flow-body">
-              <h4>Allergen List Management</h4>
+              <h4>Manage Allergen List</h4>
               <p>Admin manages the master list of recognized allergens. Changes cascade to all tagging interfaces.</p>
             </div>
           </div>
           <div class="flow-step">
-            <div class="flow-num">14</div>
+            <div class="flow-num">4</div>
             <div class="flow-body">
-              <h4>User Management</h4>
-              <p>Admin can search for any diner, restaurant, or event organizer account, view their profile/activity, reset passwords, or deactivate accounts if needed.</p>
+              <h4>User Lookup</h4>
+              <p>Admin can search for any diner or restaurant account, view their profile, or deactivate accounts if needed.</p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ========== 5. SCOPE & PHASED DELIVERY ========== -->
+      <!-- ========== 5. SCOPE & DELIVERY ========== -->
       <div class="section" id="s5">
         <span class="section-number">Section 5</span>
-        <h2>Scope &amp; Phased Delivery</h2>
+        <h2>Scope &amp; Delivery</h2>
+        <p>This MVP is delivered as a single build phase. A brief requirements workshop is folded into the Phase 1 kickoff to align on final details before development begins.</p>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Phase</th><th>Summary</th></tr></thead>
             <tbody>
-              <tr><td><strong>Phase 0 - Requirements + Prototype</strong></td><td>Requirements workshop, prototype, backlog, technical plan (1–2 wks)</td></tr>
-              <tr><td><strong>Phase 1 - MVP Build</strong></td><td>Diner app (React Native, iOS + Android), restaurant portal, event organizer portal, admin tools, restaurant monetization, basic report flow, restaurant and event QR codes, special events, ad placeholder ribbon (8–14 wks)</td></tr>
-              <tr><td><strong>Phase 2 - Trust + Feedback</strong></td><td>Ratings, enhanced report flow with moderation queue, admin moderation upgrades, analytics dashboard (4–6 wks)</td></tr>
-              <tr><td><strong>Phase 3 - Translation Cards + Wallet Passes</strong></td><td>Allergy card generator, top 10 languages, downloadable/shareable format, Apple Wallet &amp; Google Wallet pass integration (4–6 wks)</td></tr>
+              <tr><td><strong>Phase 1 — MVP Build</strong></td><td>Requirements alignment + kickoff workshop, diner app (React Native, iOS + Android), restaurant portal (web), lightweight admin portal, invite code + QR system, report flow, app store submission (8–10 wks)</td></tr>
             </tbody>
           </table>
+        </div>
+        <div class="callout info">
+          <strong>Beyond the MVP:</strong> Features such as event organizer portal, GPS-based discovery, analytics dashboards, ratings, Stripe subscriptions, translation cards, wallet passes, and ads are not in scope for this engagement. These can be scoped as a follow-on build after MVP validation.
         </div>
       </div>
 
@@ -1006,70 +867,61 @@
         <p class="sub-heading">Account &amp; Profile</p>
         <div class="card">
           <ul>
-            <li>Sign up / login via email; Apple / Google optional</li>
-            <li><strong>Account type selection at onboarding:</strong> diner indicates whether the profile is for themselves or on behalf of someone else (parent / caregiver). This selection is captured for legal clarity and displayed alongside terms acceptance.</li>
+            <li>Sign up / login via email, Apple, or Google</li>
+            <li><strong>Invite code required at signup:</strong> diner must enter a valid restaurant invite code to create an account. The code is validated once and is not required at subsequent logins.</li>
             <li>Select allergens from Top 14 list; edit profile at any time</li>
-            <li>Optional free-text field for additional allergens (captured for future taxonomy)</li>
+            <li>Single allergy profile per account</li>
           </ul>
         </div>
 
-        <p class="sub-heading">Restaurant Discovery</p>
+        <p class="sub-heading">Restaurant Browsing</p>
         <div class="card">
           <ul>
-            <li>Auto-detect location (with permission); fallback to manual search</li>
-            <li>Google Places API powers nearby restaurant discovery and search by name</li>
-            <li>List restaurants by distance with Google-sourced location data</li>
+            <li>Flat browsable list of all participating restaurants that have been activated by the Alert Dining team</li>
+            <li>No search, filter, or location-based discovery in MVP</li>
           </ul>
         </div>
 
         <p class="sub-heading">Menu Browsing</p>
         <div class="card">
           <ul>
-            <li>Restaurant detail page: name, address, hours, contact, verified badge (core details sourced via Google Places API)</li>
+            <li>Restaurant detail page: name, address, hours, contact info</li>
             <li>Menu items displayed with <span class="indicator green"></span>Green / <span class="indicator yellow"></span>Yellow / <span class="indicator red"></span>Red indicator personalized to user</li>
             <li>Item detail view: allergen match explanation, ingredient-level detail (where provided by restaurant), cross-contact warnings, restaurant notes</li>
             <li>Persistent disclaimer: "Information is self-reported by restaurant. Confirm with staff."</li>
           </ul>
         </div>
 
-        <p class="sub-heading">QR Code Scanning</p>
+        <p class="sub-heading">Report Inaccurate Information</p>
         <div class="card">
           <ul>
-            <li>Existing app users scan a restaurant QR code from within the Alert Dining app and are taken directly to that restaurant's profile</li>
-            <li>People without the app use their phone's camera to scan the QR code and are directed to the App Store / Google Play to download Alert Dining</li>
-            <li>For special events, scanning the QR code (in-app or via camera) and entering a 6-digit event access code opens the event menu</li>
-          </ul>
-        </div>
-
-        <p class="sub-heading">Monetization</p>
-        <div class="card">
-          <ul>
-            <li>App is free for diners at launch; no ads displayed initially</li>
-            <li>Ribbon-style ad placeholder included in the UI architecture for future ad integration</li>
-            <li>Premium ad-free tier and full ad system to be introduced in a future phase</li>
+            <li>"Report inaccurate info" button on each menu item detail view</li>
+            <li>Diner selects a predefined category (e.g., wrong allergen listed, missing ingredient, item doesn't exist) and optionally adds a free-text comment</li>
+            <li>Report is sent to a shared Alert Dining email inbox and displayed in the admin portal</li>
           </ul>
         </div>
 
         <h3>6.2 Restaurant Portal (Web)</h3>
 
-        <p class="sub-heading">Signup &amp; Verification</p>
+        <p class="sub-heading">Signup &amp; Activation</p>
         <div class="card">
           <ul>
-            <li>Restaurant creates account and submits listing request</li>
-            <li>Manual approval by Alert Dining Team; verified badge applied post-approval</li>
-            <li>Rejection flow with automated email notification</li>
+            <li>Restaurant creates account and submits listing</li>
+            <li>Unique invite code and printable QR code are auto-generated at signup</li>
+            <li>Listing enters a pending state; the Alert Dining team manually activates the restaurant</li>
+            <li>The Alert Dining team notifies the restaurant manually when activated (no automated emails in MVP)</li>
           </ul>
         </div>
 
         <p class="sub-heading">Profile &amp; Menu Management</p>
         <div class="card">
           <ul>
-            <li>Business name, address, hours, phone, website auto-populated via Google Places API; subscription tier</li>
+            <li>Business name, address, hours, phone, website entered manually by restaurant admin</li>
             <li>Menu item CRUD: name, description, category (optional)</li>
             <li><strong>Dual-path allergen input per item:</strong> Restaurant selects one of two transparency paths:
               <ul>
-                <li><strong>Option A - Full Ingredients:</strong> Enter a complete ingredient list per item. Allergen flags are derived from the ingredients entered. Full ingredient lists are used internally for risk calculation but are not displayed publicly to diners.</li>
-                <li><strong>Option B - Allergen Tags Only:</strong> Check allergen boxes from the Top 14 list per item without disclosing full ingredients.</li>
+                <li><strong>Option A — Full Ingredients:</strong> Enter a complete ingredient list per item. Allergen flags are derived from the ingredients entered. Full ingredient lists are used internally for risk calculation but are not displayed publicly to diners.</li>
+                <li><strong>Option B — Allergen Tags Only:</strong> Check allergen boxes from the Top 14 list per item without disclosing full ingredients.</li>
               </ul>
             </li>
             <li>Optional item-level notes (e.g., preparation warnings)</li>
@@ -1087,96 +939,39 @@
           </ul>
         </div>
 
-        <p class="sub-heading">QR Code Generation</p>
+        <p class="sub-heading">Invite Code &amp; QR Code</p>
         <div class="card">
           <ul>
-            <li>Unique, trackable QR code generated automatically for each approved restaurant</li>
-            <li>Restaurant can download / print the QR code for display on menus, signage, or table cards</li>
-            <li>Existing app users scan from within the Alert Dining app to go directly to the restaurant profile; people without the app use their phone's camera to scan and are directed to the App Store / Google Play</li>
-            <li>Scan events tracked for restaurant analytics (Phase 2 dashboard)</li>
+            <li>Unique invite code auto-generated per restaurant at signup</li>
+            <li>Printable QR code that links to the App Store / Google Play for diners to download the app</li>
+            <li>Restaurant admin can view and download the invite code and QR code from within the portal</li>
           </ul>
         </div>
 
         <h3>6.3 Alert Dining Admin Portal (Web)</h3>
+        <p>The admin portal is a lightweight, internal-quality tool designed for the Alert Dining team — functional and reliable, with minimal visual polish.</p>
 
-        <p class="sub-heading">Restaurant &amp; Event Management</p>
+        <p class="sub-heading">Restaurant Activation</p>
         <div class="card">
           <ul>
-            <li>Approval queue: view, approve, reject, or hold incoming restaurant and event organizer signups</li>
-            <li>Verified badge management: grant, revoke, or flag for re-review</li>
-            <li>Edit restaurant or event profile details to correct critical issues</li>
-            <li>Deactivate or suspend listings</li>
+            <li>Activation queue: view all pending restaurant signups and activate or deactivate them</li>
+            <li>Activated restaurants become visible in the diner app; deactivated restaurants are hidden</li>
           </ul>
         </div>
 
-        <p class="sub-heading">Menu &amp; Content Moderation</p>
+        <p class="sub-heading">Diner Reports</p>
         <div class="card">
           <ul>
-            <li>View all diner-submitted inaccuracy reports with status tracking</li>
-            <li>Take action on reports: resolve, warn restaurant, hide item, or escalate</li>
-            <li>Edit or override individual menu items with admin note logged</li>
-            <li>Audit log: full history of menu changes (who / what / when)</li>
+            <li>View all diner-submitted reports with category, optional comment, flagged item, and submitting diner</li>
+            <li>Reports are also emailed to the shared Alert Dining inbox</li>
           </ul>
         </div>
 
-        <p class="sub-heading">Billing &amp; Subscription Oversight</p>
+        <p class="sub-heading">Platform Data Management</p>
         <div class="card">
           <ul>
-            <li>View all restaurant and event organizer subscriptions: tier, status, renewal date</li>
-            <li>Manually adjust tiers, apply credits, or mark as complimentary</li>
-            <li>Handle refund and cancellation requests</li>
-            <li>Diner premium subscription oversight deferred to future phase (when ads and premium tier are introduced)</li>
-          </ul>
-        </div>
-
-        <p class="sub-heading">Platform Monitoring &amp; Configuration</p>
-        <div class="card">
-          <ul>
-            <li>Admin home dashboard: pending approvals (restaurants + events), open reports, MAU, revenue MTD</li>
-            <li>Platform-wide allergen demand insights (most common diner allergen profiles)</li>
-            <li>Manage master allergen list definitions (add, update, deprecate)</li>
-            <li>User lookup: search any diner, restaurant, or event organizer account; view activity; deactivate</li>
-            <li>Review and moderation notes (Phase 2)</li>
-          </ul>
-        </div>
-
-        <h3>6.4 Event Organizer Portal (Web)</h3>
-
-        <p class="sub-heading">Event Setup</p>
-        <div class="card">
-          <ul>
-            <li>Event organizer creates account and submits event listing for approval</li>
-            <li>Event details: name, date(s), description, venue information</li>
-            <li>Event listing accessible via search, QR code, and event access code</li>
-            <li>Shared login credential for event team - organizer distributes to team members as needed</li>
-          </ul>
-        </div>
-
-        <p class="sub-heading">Event Menu Management</p>
-        <div class="card">
-          <ul>
-            <li>One or more menus per event, organized by day or meal (e.g., "Monday Lunch," "Tuesday Dinner")</li>
-            <li>Same menu item CRUD and dual-path allergen input (Option A / Option B) as restaurant portal</li>
-            <li>Green / Yellow / Red indicators function identically for attendees based on their allergy profile</li>
-          </ul>
-        </div>
-
-        <p class="sub-heading">QR Code &amp; Access Code</p>
-        <div class="card">
-          <ul>
-            <li>Unique QR code generated per event for distribution at registration, signage, or email</li>
-            <li>6-digit event access code required after scanning QR code to access the private event menu</li>
-            <li>Attendees with the app scan the QR code from within the Alert Dining app and enter the access code to view the event menu with personalized allergen indicators</li>
-            <li>Attendees without the app use their phone's camera to scan the QR code and are directed to the App Store / Google Play to download Alert Dining, then prompted for the event access code after install</li>
-          </ul>
-        </div>
-
-        <p class="sub-heading">Event Lifecycle</p>
-        <div class="card">
-          <ul>
-            <li>Organizer notifies Alert Dining Team when event should go live and when it should be deactivated</li>
-            <li>Deactivated events are no longer accessible to attendees but retained in the system for records</li>
-            <li>Event data (menus, allergen tags) can be reused or duplicated for recurring events</li>
+            <li>Manage master allergen list (add, update, deprecate). Changes cascade to all tagging interfaces.</li>
+            <li>User lookup: search any diner or restaurant account, view their profile, deactivate if needed</li>
           </ul>
         </div>
       </div>
@@ -1190,12 +985,12 @@
           <ul>
             <li>User allergy profile (selected Top 14 allergens)</li>
             <li>Restaurant kitchen questionnaire flags (cross-contact risk declarations)</li>
-            <li>Menu item allergen data - either derived from a full ingredient list (Option A) or from direct allergen tags (Option B), depending on the path chosen by the restaurant or event organizer</li>
+            <li>Menu item allergen data — either derived from a full ingredient list (Option A) or from direct allergen tags (Option B), depending on the path chosen by the restaurant</li>
           </ul>
         </div>
 
         <h3>The Top 14 Allergens (Baseline)</h3>
-        <p>The MVP launches with the following widely recognized allergens. Any additions will be confirmed during the Phase 0 requirements workshop.</p>
+        <p>The MVP launches with the following widely recognized allergens. Any additions will be confirmed during the kickoff workshop.</p>
         <div class="card">
           <ul>
             <li>Milk</li>
@@ -1239,11 +1034,11 @@
           <table>
             <thead><tr><th>Area</th><th>Requirement</th></tr></thead>
             <tbody>
-              <tr><td><strong>Platforms</strong></td><td>iOS + Android via React Native (submitted to App Store and Google Play); web portal for restaurants, event organizers, and admin</td></tr>
-              <tr><td><strong>Scalability</strong></td><td>Database (Supabase) and infrastructure designed to support hundreds of thousands of restaurants and users without performance degradation</td></tr>
+              <tr><td><strong>Platforms</strong></td><td>iOS + Android via React Native (submitted to App Store and Google Play); web portal for restaurants and admin</td></tr>
+              <tr><td><strong>Scalability</strong></td><td>Database (Supabase) and infrastructure designed to support growth beyond MVP without re-architecture</td></tr>
               <tr><td><strong>Security</strong></td><td>Secure authentication, role-based access control, encryption at rest for sensitive fields</td></tr>
-              <tr><td><strong>Audit</strong></td><td>Full audit logging for all restaurant and event menu edits and admin actions</td></tr>
-              <tr><td><strong>Performance</strong></td><td>Fast menu load times with caching; stable location handling with manual fallback</td></tr>
+              <tr><td><strong>Audit</strong></td><td>Full audit logging for all restaurant menu edits and admin actions</td></tr>
+              <tr><td><strong>Performance</strong></td><td>Fast menu load times with caching</td></tr>
               <tr><td><strong>Monitoring</strong></td><td>Production error reporting and uptime monitoring from launch</td></tr>
               <tr><td><strong>Data Privacy</strong></td><td>Allergy profiles are health-adjacent personal data. All user data stored securely with encryption at rest; no data shared with third parties without consent. Privacy policy and terms of service included at launch.</td></tr>
             </tbody>
@@ -1258,10 +1053,8 @@
         <div class="card">
           <ul>
             <li>Clear disclaimers presented during diner onboarding and on every item detail view</li>
-            <li><strong>Account type distinction:</strong> Onboarding clearly identifies whether the account holder is the person with the allergy or is creating the profile on behalf of another person (parent / caregiver). Terms acceptance language is adjusted accordingly so the consenting party understands their responsibility.</li>
             <li>Restaurant attestation checkbox required every time menu changes are published</li>
-            <li>"Verified" badge confirms identity verification only - not a medical safety certification</li>
-            <li>"Report inaccurate info" flow available to all diners (Phase 1 basic, Phase 2 enhanced)</li>
+            <li>"Report inaccurate info" flow available to all diners</li>
             <li>Admin audit log provides traceability for all content changes</li>
             <li><strong>Confidentiality:</strong> A mutual Non-Disclosure Agreement (NDA) will be executed by both parties alongside the final signed agreement, covering proprietary business information, app concepts, and technical details shared during the engagement.</li>
             <li><strong>Intellectual property:</strong> Upon receipt of final payment, full ownership of all custom-built code, designs, and platform IP transfers to the client. McG Works retains no rights to the delivered codebase. The source code repository (GitHub) will be created by McG Works with the client granted admin access throughout development, and full repository ownership transferred to the client upon project completion.</li>
@@ -1278,7 +1071,7 @@
           <p>The client agrees to indemnify, defend, and hold harmless McG Works, its officers, employees, and contractors from and against any and all claims, damages, losses, liabilities, costs, and expenses (including reasonable attorney fees) arising out of or related to:</p>
           <ul>
             <li>The use or operation of the platform by the client, its users, or any third party</li>
-            <li>The accuracy, completeness, or timeliness of allergen or menu data entered by restaurants, event organizers, or any other party</li>
+            <li>The accuracy, completeness, or timeliness of allergen or menu data entered by restaurants or any other party</li>
             <li>Any allergic reaction, injury, or health event experienced by any user of the platform</li>
             <li>Any violation of applicable laws or regulations by the client</li>
           </ul>
@@ -1291,12 +1084,12 @@
 
         <h3>No Medical or Health Liability</h3>
         <div class="card">
-          <p>McG Works is a software development provider and does not provide medical, dietary, or health advice. McG Works bears no responsibility for the accuracy of allergen data entered by restaurants or event organizers, the decisions made by users based on information displayed in the platform, or any allergic reaction or adverse health event. The client is solely responsible for all disclaimers, user-facing safety language, and regulatory compliance related to the platform's operation.</p>
+          <p>McG Works is a software development provider and does not provide medical, dietary, or health advice. McG Works bears no responsibility for the accuracy of allergen data entered by restaurants, the decisions made by users based on information displayed in the platform, or any allergic reaction or adverse health event. The client is solely responsible for all disclaimers, user-facing safety language, and regulatory compliance related to the platform's operation.</p>
         </div>
 
         <h3>Third-Party Data Disclaimer</h3>
         <div class="card">
-          <p>All allergen, ingredient, and menu data displayed on the platform is self-reported by participating restaurants and event organizers. McG Works has no obligation to verify, audit, or guarantee the accuracy of any such data. The client acknowledges and agrees that McG Works is not liable for errors, omissions, or inaccuracies in third-party data.</p>
+          <p>All allergen, ingredient, and menu data displayed on the platform is self-reported by participating restaurants. McG Works has no obligation to verify, audit, or guarantee the accuracy of any such data. The client acknowledges and agrees that McG Works is not liable for errors, omissions, or inaccuracies in third-party data.</p>
         </div>
 
         <h3>Survival</h3>
@@ -1314,13 +1107,11 @@
           <table>
             <thead><tr><th>Layer</th><th>Approach</th></tr></thead>
             <tbody>
-              <tr><td><strong>Diner App</strong></td><td>React Native - single codebase for iOS + Android; submitted to App Store and Google Play</td></tr>
-              <tr><td><strong>Restaurant / Event / Admin Portal</strong></td><td>Modern web app (same codebase or companion app)</td></tr>
+              <tr><td><strong>Diner App</strong></td><td>React Native — single codebase for iOS + Android; submitted to App Store and Google Play</td></tr>
+              <tr><td><strong>Restaurant / Admin Portal</strong></td><td>Modern web app</td></tr>
               <tr><td><strong>Backend &amp; API</strong></td><td>Secure REST API + Supabase (managed database + auth) + role-based authentication</td></tr>
-              <tr><td><strong>Payments</strong></td><td>Stripe (restaurant subscriptions); diner premium via in-app purchase deferred to future phase</td></tr>
-              <tr><td><strong>Location &amp; Places</strong></td><td>Google Places API - restaurant search, location data, and profile auto-population; manual search fallback</td></tr>
-              <tr><td><strong>Source Control</strong></td><td>GitHub - repository created by McG Works, client granted admin access throughout, full ownership transferred at completion</td></tr>
-              <tr><td><strong>Analytics</strong></td><td>Privacy-safe event tracking (provider selected in Phase 0)</td></tr>
+              <tr><td><strong>Source Control</strong></td><td>GitHub — repository created by McG Works, client granted admin access throughout, full ownership transferred at completion</td></tr>
+              <tr><td><strong>Analytics</strong></td><td>Privacy-safe event tracking (provider selected during kickoff)</td></tr>
             </tbody>
           </table>
         </div>
@@ -1332,70 +1123,38 @@
         <h2>Pricing</h2>
 
         <div class="pricing-hero">
-          <div class="amount">$10,200</div>
-          <div class="amount-label">Total Fixed Investment - All Phases Included</div>
+          <div class="amount">$5,980</div>
+          <div class="amount-label">Total Fixed Investment — MVP Build</div>
         </div>
 
         <h3>Payment Schedule</h3>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Phase</th><th>Amount &amp; Trigger</th></tr></thead>
+            <thead><tr><th>Milestone</th><th>Amount &amp; Trigger</th></tr></thead>
             <tbody>
-              <tr><td><strong>Phase 0 - Requirements + Prototype</strong></td><td>$1,850 - due at Phase 0 kickoff</td></tr>
-              <tr><td><strong>Phase 1 - MVP Build (Milestone 1)</strong></td><td>$3,250 - due at Phase 1 kickoff</td></tr>
-              <tr><td><strong>Phase 1 - MVP Build (Milestone 2)</strong></td><td>$3,250 - due at Phase 1 midpoint (prototype approved)</td></tr>
-              <tr><td><strong>Phase 2 - Trust + Feedback</strong></td><td>$925 - due at Phase 2 kickoff</td></tr>
-              <tr><td><strong>Phase 3 - Translation Cards + Wallet Passes</strong></td><td>$925 - due at Phase 3 kickoff</td></tr>
-              <tr><td><strong>Total</strong></td><td><strong>$10,200</strong></td></tr>
+              <tr><td><strong>Kickoff</strong></td><td>$980 — due at project kickoff (includes requirements workshop)</td></tr>
+              <tr><td><strong>Milestone 1</strong></td><td>$2,000 — due at MVP delivery and app store submission</td></tr>
+              <tr><td><strong>Milestone 2</strong></td><td>$3,000 — due at completion and handoff</td></tr>
+              <tr><td><strong>Total</strong></td><td><strong>$5,980</strong></td></tr>
             </tbody>
           </table>
         </div>
 
-        <h3>Phase-by-Phase Deliverables</h3>
+        <h3>MVP Deliverables</h3>
 
         <div class="card">
-          <h3>Phase 0  -  $1,850</h3>
+          <h3>Phase 1 — MVP Build &nbsp;·&nbsp; $5,980</h3>
           <ul>
-            <li>Requirements workshop and finalized MVP requirements document</li>
-            <li>Clickable prototype covering core diner and restaurant flows</li>
-            <li>Prioritized launch backlog and technical plan</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Phase 1  -  $6,500</h3>
-          <ul>
-            <li>Diner mobile app - React Native, submitted to App Store + Google Play (account with self/caregiver selection, profile, discovery, menu, indicators, disclaimers)</li>
-            <li>Basic "report inaccurate info" flow for diners to flag menu or allergen issues</li>
-            <li>Restaurant portal (signup, verification, profile, menu CRUD with dual-path allergen input, kitchen questionnaire, unique trackable QR code)</li>
-            <li>Event organizer portal: account creation, event listing setup, shared team login</li>
-            <li>Time-bound event menus accessible via search, QR code, and 6-digit event access code</li>
-            <li>Event menu CRUD with same dual-path allergen input and Green / Yellow / Red indicators as restaurant menus</li>
-            <li>Unique QR code and event access code generation per event</li>
-            <li>Event lifecycle management: go-live, deactivation, and record retention</li>
-            <li>Alert Dining admin portal (approval queue, restaurant and event management, billing oversight, basic moderation, event analytics)</li>
-            <li>Monetization: Stripe restaurant subscriptions + ad placeholder ribbon in diner app (premium tier and full ad system deferred to future phase)</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Phase 2  -  $925</h3>
-          <ul>
-            <li>Basic diner ratings (Recommend / Neutral / Not Recommend)</li>
-            <li>Enhanced report flow with categorized issue types and status updates for the reporting diner</li>
-            <li>Admin moderation queue for reports with resolution tracking and escalation workflows</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Phase 3  -  $925</h3>
-          <ul>
-            <li>Allergy translation card generator from diner profile</li>
-            <li>Downloadable / shareable mobile-friendly card format</li>
-            <li>Apple Wallet pass (.pkpass) and Google Wallet pass (JWT) generation - diners save their allergy card directly to their phone's wallet for instant offline access</li>
-            <li>Server-side pass updates when a diner changes their allergen profile</li>
-            <li>Top 10 languages (English + 9 additional - specific languages confirmed in Phase 0)</li>
+            <li>Requirements workshop and alignment at kickoff</li>
+            <li>Diner mobile app — React Native, submitted to App Store + Google Play (email + Apple/Google Sign-In, invite code gating, allergy profile, restaurant browsing, menu with R/Y/G indicators, report inaccurate info)</li>
+            <li>Restaurant portal — web app (signup, profile management, menu builder with dual-path allergen input, kitchen questionnaire, invite code + printable QR code auto-generated)</li>
+            <li>Admin portal — lightweight internal tool (restaurant activation queue, diner reports list, allergen list management, user lookup)</li>
+            <li>Report flow: predefined categories + optional comment → shared email inbox + admin portal</li>
+            <li>Privacy policy and terms of service</li>
           </ul>
         </div>
         <div class="callout info">
-          <strong>Ongoing infrastructure costs:</strong> The $10,200 covers all design and development. After launch, the client is responsible for ongoing infrastructure costs including hosting/database services (Supabase), Stripe transaction fees, Google Places API usage fees, App Store / Google Play developer accounts ($99/yr and $25 one-time respectively), Apple Developer account for Wallet pass signing, Google Cloud project for Wallet API, and any future ad network or analytics provider fees. Estimated ongoing costs will be outlined during Phase 0.
+          <strong>Ongoing infrastructure costs:</strong> The $5,980 covers all design and development. After launch, the client is responsible for ongoing infrastructure costs including hosting/database services (Supabase), App Store / Google Play developer accounts ($99/yr and $25 one-time respectively), and any future analytics provider fees. Estimated ongoing costs will be outlined during the kickoff workshop.
         </div>
       </div>
 
@@ -1419,16 +1178,15 @@
         <div class="card">
           <ul>
             <li>Either party may terminate the engagement with written notice.</li>
-            <li>Payments for fully completed phases are non-refundable.</li>
+            <li>Payments for fully completed milestones are non-refundable.</li>
             <li><strong>Prorated refund for incomplete milestones:</strong> If the engagement is terminated while a milestone is in progress, the client will receive a prorated refund for the unfinished portion of that milestone based on the percentage of work remaining. McG Works will provide a written accounting of work completed at the time of termination.</li>
-            <li>Remaining unpaid phases can be cancelled at any time with no further obligation.</li>
-            <li>Upon cancellation, all completed work product and source code for paid phases is delivered to the client.</li>
+            <li>Upon cancellation, all completed work product and source code for paid milestones is delivered to the client.</li>
           </ul>
         </div>
 
         <h3>Phase Acceptance</h3>
         <div class="card">
-          <p>Each phase concludes with a <strong>5-business-day acceptance window</strong>. The client reviews all deliverables and either approves or provides specific written feedback. If no response is received within the window, the phase is considered accepted. Feedback is limited to items within the agreed scope for that phase - new feature requests are handled as on-demand work.</p>
+          <p>The MVP build concludes with a <strong>5-business-day acceptance window</strong>. The client reviews all deliverables and either approves or provides specific written feedback. If no response is received within the window, the deliverables are considered accepted. Feedback is limited to items within the agreed scope — new feature requests are handled as on-demand work.</p>
         </div>
 
         <h3>On-Demand Changes</h3>
@@ -1451,11 +1209,13 @@
             <li>Minor feature enhancements and UI improvements</li>
             <li>Bug fixes and OS compatibility updates</li>
             <li>Changes to red/yellow/green indicator rules or disclaimer text</li>
-            <li>Adding languages beyond the included top 10 to translation cards</li>
             <li>Restaurant onboarding assistance and content updates</li>
-            <li>Basic analytics adjustments or reporting changes</li>
+            <li>GPS-based restaurant discovery and search functionality</li>
+            <li>Event organizer portal and event menus</li>
+            <li>Stripe integration for restaurant subscriptions</li>
+            <li>Analytics dashboards and moderation workflows</li>
+            <li>Translation cards and wallet passes</li>
             <li>Family profile support (multiple allergy profiles per account)</li>
-            <li>In-app ordering capabilities</li>
           </ul>
         </div>
       </div>
@@ -1467,42 +1227,50 @@
 
         <h3>13.1 Timeline Transparency</h3>
         <div class="card">
-          <p>Some aspects of this project may take longer than initially anticipated due to the complexity of third-party integrations, app store review processes, or unforeseen technical challenges. Should this happen, <strong>McG Works will be upfront with communication at all times</strong> - the client will be informed promptly of any delays, the reasons behind them, and revised timelines before they impact deliverables.</p>
+          <p>Some aspects of this project may take longer than initially anticipated due to the complexity of third-party integrations, app store review processes, or unforeseen technical challenges. Should this happen, <strong>McG Works will be upfront with communication at all times</strong> — the client will be informed promptly of any delays, the reasons behind them, and revised timelines before they impact deliverables.</p>
         </div>
 
         <h3>13.2 Assumptions</h3>
         <div class="card">
           <ul>
-            <li>MVP starts with the Top 14 allergens</li>
-            <li>Restaurants choose between full ingredient input or allergen-only tagging per menu item; both paths supported from Phase 1</li>
-            <li>Full ingredient lists entered by restaurants are used internally for risk calculation and are not displayed publicly to diners unless allowed by the restaurant</li>
+            <li>MVP launches with the Top 14 allergens</li>
+            <li>Restaurants choose between full ingredient input or allergen-only tagging per menu item; both paths supported</li>
+            <li>Full ingredient lists entered by restaurants are used internally for risk calculation and are not displayed publicly to diners</li>
             <li>Risk display uses red / yellow / green only (not percentage scores)</li>
-            <li>Phase 1 includes account type selection (self vs. on behalf of) for legal clarity; single-profile accounts only</li>
-            <li>Phase 3 translation cards include Apple Wallet and Google Wallet pass generation (requires Apple Developer account and Google Cloud project with Wallet API enabled - client-provided)</li>
-            <li>Special events use a shared login model for event teams (not individual team member accounts)</li>
+            <li>Single allergy profile per account (no caregiver/on-behalf distinction in MVP)</li>
+            <li>No payments or subscriptions — all restaurants list for free during the MVP validation period</li>
+            <li>App access is gated by restaurant invite codes; each restaurant receives a unique code and printable QR code at signup</li>
+            <li>Restaurants enter a pending state at signup and are manually activated by the Alert Dining team</li>
+            <li>Restaurant details (name, address, hours, etc.) are entered manually — no Google Places API integration in MVP</li>
+            <li>Admin portal is a lightweight, internal-quality tool — functional but not heavily polished</li>
+            <li>No automated email notifications in MVP — the Alert Dining team handles communications manually</li>
           </ul>
         </div>
 
-        <h3>13.3 Open Decisions (to finalize in Phase 0)</h3>
+        <h3>13.3 Open Decisions (to finalize at kickoff)</h3>
         <div class="card">
           <ul>
             <li>Confirm Top 14 allergen list</li>
-            <li>Verification method: manual approval, domain email, or hybrid</li>
-            <li>Ad approach deferred to future phase; ribbon placeholder included in MVP architecture</li>
-            <li>Restaurant tier pricing (diner premium pricing deferred to future phase with ads)</li>
-            <li>Event organizer pricing model (subscription, per-event, or flat fee)</li>
-            <li>Whether basic reviews ship in Phase 1 or Phase 2</li>
-            <li>Confirm top 10 languages for Phase 3 translation cards</li>
+            <li>Predefined report categories (e.g., wrong allergen, missing ingredient, item doesn't exist) — finalize exact list</li>
+            <li>Specific fields and options for the kitchen questionnaire</li>
+            <li>Analytics provider selection for privacy-safe event tracking</li>
+            <li>Shared Alert Dining email inbox address for report notifications</li>
           </ul>
         </div>
 
-        <h3>13.4 Future Capabilities (Post-Launch)</h3>
-        <p>The following features are not in scope for the current engagement but have been discussed and will be architecturally accounted for where possible:</p>
+        <h3>13.4 Future Capabilities (Post-MVP)</h3>
+        <p>The following features are not in scope for the MVP but have been discussed and can be scoped as a follow-on engagement after validation:</p>
         <div class="card">
           <ul>
-            <li><strong>Family profiles:</strong> A single parent/caregiver account managing multiple allergy profiles (e.g., three children), with a profile switcher to toggle between profiles when browsing menus. MVP supports one profile per account; architecture will be designed to support multi-profile expansion.</li>
-            <li><strong>In-app ordering:</strong> The platform may be expanded to support ordering directly from within the app at participating restaurants. This is a potential future direction and does not affect current scope or pricing.</li>
-            <li><strong>Ads &amp; premium ad-free tier:</strong> The MVP includes a ribbon-style ad placeholder in the diner app. In a future phase, ads can be activated - with restaurants promoting locally by zip code or radius, national brands (food brands, allergy-friendly products, travel brands, etc.) advertising across the platform, and all ads submitted through a dashboard and approved by the Alert Dining team before going live. A premium subscription tier will also be introduced, allowing diners to upgrade for an ad-free experience.</li>
+            <li><strong>GPS-based restaurant discovery:</strong> Location-aware search powered by Google Places API, replacing the flat restaurant list with distance-sorted, nearby results.</li>
+            <li><strong>Event organizer portal:</strong> Private, time-bound allergy-aware menus for conferences, catered events, and large gatherings — accessible via QR code and event access code.</li>
+            <li><strong>Restaurant subscriptions:</strong> Stripe-powered paid subscription tiers for restaurants, replacing the free MVP listing model.</li>
+            <li><strong>Ratings &amp; enhanced moderation:</strong> Diner ratings, enhanced report flow with categorized issue types, admin moderation queue with resolution tracking.</li>
+            <li><strong>Translation cards &amp; wallet passes:</strong> Allergy card generator in multiple languages with Apple Wallet and Google Wallet pass support.</li>
+            <li><strong>Family profiles:</strong> A single parent/caregiver account managing multiple allergy profiles with a profile switcher.</li>
+            <li><strong>Ads &amp; premium tier:</strong> Ad placeholder activation with restaurant and national brand advertising, plus a premium ad-free subscription for diners.</li>
+            <li><strong>Caregiver distinction:</strong> Account type toggle for self vs. on-behalf profiles with adjusted legal language.</li>
+            <li><strong>In-app ordering:</strong> Ordering directly from within the app at participating restaurants.</li>
           </ul>
         </div>
       </div>
@@ -1515,36 +1283,29 @@
           <div class="flow-step">
             <div class="flow-num">1</div>
             <div class="flow-body">
-              <h4>Sign Proposal, Execute NDA &amp; Submit Phase 0 Deposit ($1,850)</h4>
+              <h4>Sign Proposal, Execute NDA &amp; Submit Kickoff Deposit ($980)</h4>
               <p>Confirm scope alignment, sign mutual NDA, and initiate the engagement.</p>
             </div>
           </div>
           <div class="flow-step">
             <div class="flow-num">2</div>
             <div class="flow-body">
-              <h4>Requirements Workshop (60–90 min)</h4>
-              <p>Finalize MVP scope, resolve open decisions, and align on Phase 0 prototype priorities.</p>
+              <h4>Kickoff Workshop (60–90 min)</h4>
+              <p>Finalize MVP scope, resolve open decisions, and align on build priorities.</p>
             </div>
           </div>
           <div class="flow-step">
             <div class="flow-num">3</div>
             <div class="flow-body">
-              <h4>Prototype Review &amp; Approval</h4>
-              <p>Review prototype. McG Works incorporates feedback before Phase 1 build begins.</p>
+              <h4>MVP Build with Weekly Demos</h4>
+              <p>Shared backlog, weekly progress demos, and clear milestones throughout the 8–10 week build.</p>
             </div>
           </div>
           <div class="flow-step">
             <div class="flow-num">4</div>
             <div class="flow-body">
-              <h4>Phase 1 Build with Weekly Demos</h4>
-              <p>Shared backlog, weekly progress demos, and clear milestones throughout the build.</p>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-num">5</div>
-            <div class="flow-body">
-              <h4>Pilot Launch</h4>
-              <p>Soft launch to validate the platform with real restaurants and diners before broader rollout.</p>
+              <h4>MVP Launch</h4>
+              <p>Submit to App Store and Google Play. Begin collecting real user data with early partner restaurants for investor conversations.</p>
             </div>
           </div>
         </div>
@@ -1558,7 +1319,7 @@
       <!-- ========== CTA ========== -->
       <div class="cta-section">
         <h2>Ready to move forward?</h2>
-        <p><a href="mailto:Jalen@mcg-works.com" style="color:#3b82f6;text-decoration:none;font-weight:600;">Contact McG Works</a> to schedule your Phase 0 kickoff and requirements workshop.</p>
+        <p><a href="mailto:Jalen@mcg-works.com" style="color:#3b82f6;text-decoration:none;font-weight:600;">Contact McG Works</a> to schedule your kickoff workshop and start building the MVP.</p>
       </div>
 
       <!-- ========== COMMENTS ========== -->
