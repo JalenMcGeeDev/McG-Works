@@ -76,3 +76,27 @@ ALTER TABLE proposal_comments ENABLE ROW LEVEL SECURITY;
 
 -- 5. No public access — only Edge Functions (using service_role key) can read/write
 --    The anon key has ZERO access to comments
+
+
+-- ========================
+-- PROPOSAL SIGNATURES
+-- ========================
+
+-- 1. Create signatures table
+CREATE TABLE proposal_signatures (
+  id           UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  proposal_id  TEXT NOT NULL,
+  code         TEXT NOT NULL UNIQUE,
+  client_name  TEXT NOT NULL,
+  client_email TEXT NOT NULL,
+  ip_address   TEXT,
+  signed_at    TIMESTAMPTZ DEFAULT now()
+);
+
+-- 2. Index for fast lookup by code
+CREATE INDEX idx_signatures_code ON proposal_signatures(code);
+
+-- 3. Enable Row Level Security
+ALTER TABLE proposal_signatures ENABLE ROW LEVEL SECURITY;
+
+-- 4. No public access — only Edge Functions (using service_role key) can access

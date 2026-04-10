@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -316,6 +316,102 @@
     }
     .proposal-note strong {
       color: #93c5fd;
+    }
+
+    /* ---------- Signature ---------- */
+    .sig-section {
+      margin-top: 32px;
+      padding: 28px 28px 24px;
+      background: #111827;
+      border: 1px solid #1e3a5f;
+      border-radius: 14px;
+    }
+    .sig-section h3 {
+      margin: 0 0 6px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+    .sig-intro {
+      margin: 0 0 20px;
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+    .sig-field { margin-bottom: 14px; }
+    .sig-field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #94a3b8;
+      margin-bottom: 6px;
+    }
+    .sig-input {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      color: #e2e8f0;
+      font-size: 15px;
+      padding: 10px 14px;
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .sig-input:focus { border-color: #3b82f6; }
+    .sig-agree {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      color: #94a3b8;
+      margin: 18px 0 20px;
+      line-height: 1.5;
+    }
+    .sig-agree input[type="checkbox"] {
+      margin-top: 2px;
+      accent-color: #3b82f6;
+      flex-shrink: 0;
+    }
+    .sig-btn {
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 12px 28px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .sig-btn:hover:not(:disabled) { background: #1d4ed8; }
+    .sig-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .sig-status {
+      display: block;
+      margin-top: 12px;
+      font-size: 13px;
+    }
+    .sig-status.error { color: #ef4444; }
+    .sig-status.info  { color: #94a3b8; }
+    .sig-signed-badge {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 20px;
+      background: rgba(34,197,94,0.08);
+      border: 1px solid rgba(34,197,94,0.3);
+      border-radius: 10px;
+    }
+    .sig-badge-text strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 700;
+      color: #4ade80;
+      margin-bottom: 2px;
+    }
+    .sig-badge-text span {
+      font-size: 13px;
+      color: #86efac;
     }
 
     /* ---------- CTA ---------- */
@@ -1136,7 +1232,38 @@
 
       <!-- ========== PROPOSAL NOTE ========== -->
       <div class="proposal-note">
-        <strong>Please Note:</strong> This proposal is for informational and planning purposes only. A final version of the agreement will be provided for review and confirmation by both parties before the engagement begins.
+        <strong>Please Note:</strong> Review this proposal thoroughly, then use the signature section below to formally sign and move forward. A signed copy will be emailed to both parties.
+      </div>
+
+      <!-- ========== SIGNATURE ========== -->
+      <div id="signature-section" class="sig-section" style="display:none;">
+        <h3>Sign This Proposal</h3>
+        <p class="sig-intro">Sign below to move forward. A signed copy of this proposal will be emailed to you and the McG Works team.</p>
+        <div id="sigForm">
+          <div class="sig-field">
+            <label for="sigName">Full Name</label>
+            <input type="text" id="sigName" class="sig-input" placeholder="Your full name" autocomplete="name" />
+          </div>
+          <div class="sig-field">
+            <label for="sigEmail">Email Address</label>
+            <input type="email" id="sigEmail" class="sig-input" placeholder="your@email.com" autocomplete="email" />
+          </div>
+          <label class="sig-agree">
+            <input type="checkbox" id="sigAgree" />
+            I have read and agree to the terms in this proposal. By typing my name and clicking "Sign Proposal," I am providing a legally binding electronic signature under the ESIGN Act.
+          </label>
+          <button class="sig-btn" id="sigBtn">Sign Proposal</button>
+          <span class="sig-status info" id="sigStatus"></span>
+        </div>
+        <div id="sigBadge" style="display:none;">
+          <div class="sig-signed-badge">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+            <div class="sig-badge-text">
+              <strong>Proposal Signed</strong>
+              <span id="sigTimestamp"></span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- ========== CTA ========== -->
@@ -1237,7 +1364,9 @@
         if (result.valid && result.proposal_path === PROPOSAL_ID) {
           document.getElementById('accessDenied').style.display = 'none';
           document.getElementById('proposalContent').classList.add('visible');
+          if (result.client_name) sessionStorage.setItem('mcg_proposal_client_name', result.client_name);
           initComments();
+          initSignature();
         } else {
           console.warn('[McG] Verification mismatch:', result);
           document.getElementById('accessMsg').textContent = 'Code not recognised for this proposal. Please re-enter.';
@@ -1422,6 +1551,92 @@
           await loadComments();
         }
       });
+    }
+
+    // =======================
+    // SIGNATURE VIA EDGE FN
+    // =======================
+    async function initSignature() {
+      const section = document.getElementById('signature-section');
+      if (!section) return;
+
+      // Check if already signed
+      try {
+        const checkRes = await fetch(FUNCTIONS_BASE + '/sign-proposal', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'check', code: storedCode, proposal_id: PROPOSAL_ID })
+        });
+        const checkData = await checkRes.json();
+        if (checkData.signed) {
+          showSignedBadge(checkData.signed_at);
+          section.style.display = 'block';
+          return;
+        }
+      } catch (e) {
+        console.warn('[McG] Signature check error:', e);
+      }
+
+      section.style.display = 'block';
+
+      document.getElementById('sigBtn').addEventListener('click', async () => {
+        const name   = document.getElementById('sigName').value.trim();
+        const email  = document.getElementById('sigEmail').value.trim();
+        const agree  = document.getElementById('sigAgree').checked;
+        const status = document.getElementById('sigStatus');
+        const btn    = document.getElementById('sigBtn');
+
+        if (!name) { setStatus(status, 'Please enter your full name.', 'error'); return; }
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          setStatus(status, 'Please enter a valid email address.', 'error'); return;
+        }
+        if (!agree) { setStatus(status, 'Please check the agreement box to proceed.', 'error'); return; }
+
+        btn.disabled = true;
+        setStatus(status, 'Submitting signature\u2026', 'info');
+
+        try {
+          const signRes = await fetch(FUNCTIONS_BASE + '/sign-proposal', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'sign',
+              code: storedCode,
+              proposal_id: PROPOSAL_ID,
+              client_name: name,
+              client_email: email
+            })
+          });
+          const signData = await signRes.json();
+          if (signData.error) {
+            setStatus(status, signData.error, 'error');
+            btn.disabled = false;
+            return;
+          }
+          showSignedBadge(signData.signed_at);
+        } catch (err) {
+          console.error('[McG] Sign error:', err);
+          setStatus(status, 'Network error. Please try again.', 'error');
+          btn.disabled = false;
+        }
+      });
+    }
+
+    function showSignedBadge(signedAt) {
+      document.getElementById('sigForm').style.display  = 'none';
+      document.getElementById('sigBadge').style.display = 'block';
+      if (signedAt) {
+        const formatted = new Date(signedAt).toLocaleDateString('en-US', {
+          month: 'long', day: 'numeric', year: 'numeric',
+          hour: 'numeric', minute: '2-digit'
+        });
+        document.getElementById('sigTimestamp').textContent = 'Signed on ' + formatted;
+      }
+    }
+
+    function setStatus(el, message, type) {
+      el.textContent = message;
+      el.className   = 'sig-status ' + (type || 'info');
     }
 
     function escHtml(str) {

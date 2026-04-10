@@ -26,7 +26,7 @@ Deno.serve(async (req) => {
     // Use the service role key (hidden in env, never exposed to client)
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SERVICE_ROLE_KEY')!
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     )
 
     // Case-insensitive match against plaintext code
@@ -45,7 +45,7 @@ Deno.serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ valid: true, proposal_path: data.proposal_path }),
+      JSON.stringify({ valid: true, proposal_path: data.proposal_path, client_name: data.client_name }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   } catch {
