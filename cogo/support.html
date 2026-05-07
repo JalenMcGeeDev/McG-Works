@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoGoals - Support</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 0 auto; padding: 24px; line-height: 1.6; color: #1a1a1a; }
+  h1 { font-size: 28px; margin-bottom: 4px; }
+  h2 { font-size: 20px; margin-top: 32px; }
+  .subtitle { color: #666; font-size: 14px; margin-bottom: 32px; }
+  label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; margin-top: 20px; }
+  input, select, textarea { width: 100%; box-sizing: border-box; padding: 10px 12px; font-size: 15px; font-family: inherit; border: 1px solid #ddd; border-radius: 8px; color: #1a1a1a; background: #fff; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: #3B82F6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+  textarea { resize: vertical; min-height: 120px; }
+  button { margin-top: 24px; width: 100%; padding: 12px; font-size: 16px; font-weight: 600; color: #fff; background: #3B82F6; border: none; border-radius: 8px; cursor: pointer; }
+  button:hover { background: #2563EB; }
+  .success { display: none; margin-top: 20px; padding: 16px; background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; color: #166534; font-size: 15px; }
+  .note { margin-top: 32px; padding-top: 24px; border-top: 1px solid #eee; font-size: 13px; color: #666; }
+  a { color: #3B82F6; }
+</style>
+</head>
+<body>
+
+<h1>CoGoals Support</h1>
+<p class="subtitle">Having trouble? We're here to help. Fill out the form below and we'll get back to you as soon as possible.</p>
+
+<form id="supportForm" action="https://formsubmit.co/jalen@mcg-works.com" method="POST">
+  <!-- Formsubmit config -->
+  <input type="hidden" name="_subject" value="CoGoals Support Request">
+  <input type="hidden" name="_captcha" value="false">
+  <input type="hidden" name="_template" value="table">
+  <input type="hidden" name="_next" value="https://mcg-works.com/cogo/support.html?sent=true">
+
+  <label for="name">Your Name</label>
+  <input type="text" id="name" name="name" placeholder="First and last name" required>
+
+  <label for="email">Email Address</label>
+  <input type="email" id="email" name="email" placeholder="you@example.com" required>
+
+  <label for="issue_type">Issue Type</label>
+  <select id="issue_type" name="issue_type" required>
+    <option value="" disabled selected>Select a category</option>
+    <option value="Account / Login">Account / Login</option>
+    <option value="Goals & Progress">Goals &amp; Progress</option>
+    <option value="Groups">Groups</option>
+    <option value="Notifications">Notifications</option>
+    <option value="Privacy / Data">Privacy / Data</option>
+    <option value="Bug Report">Bug Report</option>
+    <option value="Other">Other</option>
+  </select>
+
+  <label for="message">Describe your issue</label>
+  <textarea id="message" name="message" placeholder="Please describe your issue in as much detail as possible." required></textarea>
+
+  <button type="submit">Submit</button>
+</form>
+
+<div class="success" id="successMsg">
+  Your message has been sent. We'll follow up at the email address you provided.
+</div>
+
+<p class="note">
+  You can also reach us directly at <a href="mailto:jalen@mcg-works.com">jalen@mcg-works.com</a>.<br>
+  For privacy-related questions, see our <a href="/cogo/privacy-policy.html">Privacy Policy</a>.
+</p>
+
+<script>
+  // Show success banner if redirected back after submission
+  if (new URLSearchParams(window.location.search).get('sent') === 'true') {
+    document.getElementById('supportForm').style.display = 'none';
+    const msg = document.getElementById('successMsg');
+    msg.style.display = 'block';
+  }
+</script>
+
+</body>
+</html>
