@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cogo – Download the App</title>
+  <script>
+    (function () {
+      var ua = navigator.userAgent || "";
+      var isIOS = /iPhone|iPad|iPod/i.test(ua);
+      var isAndroid = /Android/i.test(ua);
+
+      if (isAndroid) {
+        window.location.replace("https://play.google.com/store/apps/details?id=com.cogoal.app");
+      } else {
+        // iOS or desktop → App Store
+        window.location.replace("https://apps.apple.com/us/app/cogo-collaborative-goals/id6762568993");
+      }
+    })();
+  </script>
+</head>
+<body>
+</body>
+</html>
