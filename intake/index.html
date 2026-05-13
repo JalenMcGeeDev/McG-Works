@@ -290,6 +290,7 @@
      * Replace with your Supabase project's Edge Function base URL.
      */
     const FUNCTIONS_BASE = 'https://awccquoyscijmtqtibgr.supabase.co/functions/v1';
+    const ANON_KEY       = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3Y2NxdW95c2Npam10cXRpYmdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4MDI0MDUsImV4cCI6MjA4MjM3ODQwNX0.zUBCXRah_oK8P_Q-1sFwZ5altAFUfZMOdBdY-tuXWrE';
 
     const MAX_FILE_BYTES = 2 * 1024 * 1024; // 2 MB
 
@@ -405,7 +406,7 @@
 
         const res    = await fetch(`${FUNCTIONS_BASE}/intake`, {
           method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${ANON_KEY}` },
           body:    JSON.stringify(payload),
         });
 
