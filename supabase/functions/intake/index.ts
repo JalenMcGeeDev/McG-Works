@@ -46,7 +46,7 @@ Deno.serve(async (req) => {
 
   try {
     const body = await req.json()
-    const { name, email, phone, service, description, budget, timeline, referral, file } = body
+    const { name, email, phone, description, budget, timeline, referral, file } = body
 
     // ── Validate required fields ─────────────────────────────────────────────
     if (!name || typeof name !== 'string' || name.trim().length === 0) {
@@ -59,13 +59,6 @@ Deno.serve(async (req) => {
     if (!email || !isValidEmail(email)) {
       return new Response(
         JSON.stringify({ error: 'A valid email address is required.' }),
-        { status: 400, headers: responseHeaders }
-      )
-    }
-
-    if (!service || typeof service !== 'string') {
-      return new Response(
-        JSON.stringify({ error: 'Service type is required.' }),
         { status: 400, headers: responseHeaders }
       )
     }
@@ -117,7 +110,6 @@ Deno.serve(async (req) => {
 
     // ── Build email HTML ─────────────────────────────────────────────────────
     const fields: [string, string][] = [
-      ['Service',  service],
       ['Name',     name],
       ['Email',    email],
       ['Phone',    phone  || '—'],
@@ -182,7 +174,7 @@ Deno.serve(async (req) => {
         from:     FROM_EMAIL,
         to:       [TO_EMAIL],
         reply_to: email,
-        subject:  `New Request: ${service} — ${name}`,
+        subject:  `New Request — ${name}`,
         html:     emailHtml,
       }),
     })
