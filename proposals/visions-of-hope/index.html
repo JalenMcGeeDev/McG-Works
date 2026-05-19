@@ -1,0 +1,1287 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Visions of Hope — Website Proposal | McG Works</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #0b0f14;
+      color: #e2e8f0;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---------- Access denied overlay ---------- */
+    .access-denied {
+      display: grid;
+      place-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+    .access-denied h1 { font-size: 28px; margin-bottom: 8px; color: #fff; }
+    .access-denied p { opacity: 0.6; margin-bottom: 24px; }
+    .access-denied a {
+      color: #2dd4bf;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .access-denied a:hover { text-decoration: underline; }
+
+    /* ---------- Proposal wrapper ---------- */
+    .proposal { display: none; }
+    .proposal.visible { display: block; }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      text-align: center;
+      padding: 72px 24px 48px;
+      background: linear-gradient(180deg, #0d1f1e 0%, #0b0f14 100%);
+      border-bottom: 1px solid #1e293b;
+    }
+    .hero .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding: 5px 14px;
+      border-radius: 20px;
+      background: #134e4a;
+      color: #5eead4;
+      margin-bottom: 16px;
+    }
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 44px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -1px;
+    }
+    .hero .tagline {
+      font-size: 18px;
+      opacity: 0.5;
+      margin: 0 0 32px;
+    }
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat .value {
+      display: block;
+      font-size: 28px;
+      font-weight: 800;
+      color: #2dd4bf;
+    }
+    .hero-stat .label {
+      font-size: 13px;
+      opacity: 0.5;
+      margin-top: 2px;
+    }
+
+    /* ---------- Confidential banner ---------- */
+    .confidential {
+      max-width: 860px;
+      margin: 28px auto 0;
+      padding: 14px 20px;
+      background: #1c1917;
+      border: 1px solid #44403c;
+      border-radius: 10px;
+      font-size: 13px;
+      color: #d6d3d1;
+      text-align: center;
+    }
+    .confidential span { margin-right: 6px; }
+
+    /* ---------- TOC ---------- */
+    .toc {
+      max-width: 860px;
+      margin: 32px auto;
+      padding: 24px 28px;
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 12px;
+    }
+    .toc h3 {
+      margin: 0 0 12px;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.5;
+    }
+    .toc ol {
+      margin: 0;
+      padding-left: 20px;
+      columns: 2;
+      column-gap: 32px;
+    }
+    .toc li {
+      font-size: 14px;
+      padding: 3px 0;
+      break-inside: avoid;
+    }
+    .toc a {
+      color: #5eead4;
+      text-decoration: none;
+    }
+    .toc a:hover { text-decoration: underline; }
+
+    /* ---------- Content container ---------- */
+    .content {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ---------- Sections ---------- */
+    .section { margin-top: 40px; }
+    .section-number {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #2dd4bf;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 6px;
+    }
+    .section h2 {
+      margin: 0 0 20px;
+      font-size: 26px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .section h3 {
+      margin: 28px 0 12px;
+      font-size: 19px;
+      font-weight: 600;
+      color: #f1f5f9;
+    }
+    .section p {
+      margin: 0 0 14px;
+      font-size: 15px;
+      opacity: 0.85;
+    }
+
+    /* ---------- Cards ---------- */
+    .card {
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-bottom: 16px;
+    }
+    .card h3 {
+      margin: 0 0 12px;
+      font-size: 18px;
+      color: #fff;
+    }
+    .card p, .card ul {
+      font-size: 15px;
+      opacity: 0.85;
+      margin: 0;
+    }
+    .card ul {
+      padding-left: 18px;
+      margin-top: 8px;
+    }
+    .card ul li { padding: 2px 0; }
+
+    /* ---------- Tables ---------- */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 16px 0;
+      border-radius: 10px;
+      border: 1px solid #374151;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    thead th {
+      text-align: left;
+      padding: 12px 16px;
+      background: #1e293b;
+      color: #94a3b8;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #374151;
+    }
+    tbody td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #1e293b;
+      vertical-align: top;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #1e293b44; }
+    td strong { color: #fff; }
+
+    /* ---------- Flow steps ---------- */
+    .flow-step {
+      display: flex;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid #1e293b;
+    }
+    .flow-step:last-child { border-bottom: none; }
+    .flow-num {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #134e4a;
+      color: #5eead4;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .flow-body h4 {
+      margin: 0 0 4px;
+      font-size: 15px;
+      color: #fff;
+    }
+    .flow-body p {
+      margin: 0;
+      font-size: 14px;
+      opacity: 0.7;
+    }
+
+    /* ---------- Callout ---------- */
+    .callout {
+      padding: 16px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      margin: 16px 0;
+      line-height: 1.6;
+    }
+    .callout.info {
+      background: #0c1f1e;
+      border: 1px solid #134e4a;
+      color: #5eead4;
+    }
+    .callout.warning {
+      background: #1c1917;
+      border: 1px solid #44403c;
+      color: #fbbf24;
+    }
+
+    /* ---------- Pricing highlight ---------- */
+    .pricing-hero {
+      text-align: center;
+      padding: 32px;
+      background: linear-gradient(135deg, #134e4a 0%, #1e293b 100%);
+      border: 1px solid #0d9488;
+      border-radius: 14px;
+      margin-bottom: 24px;
+    }
+    .pricing-hero .amount {
+      font-size: 48px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .pricing-hero .amount-label {
+      font-size: 15px;
+      opacity: 0.6;
+      margin-top: 4px;
+    }
+
+    /* ---------- Deliverable check list ---------- */
+    .check-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .check-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 6px 0;
+      font-size: 15px;
+      opacity: 0.85;
+    }
+    .check-list li::before {
+      content: '✓';
+      color: #2dd4bf;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ---------- Not included list ---------- */
+    .x-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .x-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 6px 0;
+      font-size: 15px;
+      opacity: 0.75;
+    }
+    .x-list li::before {
+      content: '✕';
+      color: #ef4444;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ---------- Proposal Note ---------- */
+    .proposal-note {
+      margin-top: 40px;
+      padding: 20px 24px;
+      background: rgba(45,212,191,0.06);
+      border: 1px solid rgba(45,212,191,0.2);
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+    }
+    .proposal-note strong { color: #5eead4; }
+
+    /* ---------- Signature ---------- */
+    .sig-section {
+      margin-top: 32px;
+      padding: 28px 28px 24px;
+      background: #111827;
+      border: 1px solid #134e4a;
+      border-radius: 14px;
+    }
+    .sig-section h3 {
+      margin: 0 0 6px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+    .sig-intro {
+      margin: 0 0 20px;
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+    .sig-field { margin-bottom: 14px; }
+    .sig-field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #94a3b8;
+      margin-bottom: 6px;
+    }
+    .sig-input {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      color: #e2e8f0;
+      font-size: 15px;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .sig-input:focus { border-color: #2dd4bf; }
+    .sig-agree {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      color: #94a3b8;
+      margin: 18px 0 20px;
+      line-height: 1.5;
+    }
+    .sig-agree input[type="checkbox"] {
+      margin-top: 2px;
+      accent-color: #2dd4bf;
+      flex-shrink: 0;
+    }
+    .sig-btn {
+      background: #0d9488;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 12px 28px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .sig-btn:hover:not(:disabled) { background: #0f766e; }
+    .sig-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .sig-status {
+      display: block;
+      margin-top: 12px;
+      font-size: 13px;
+    }
+    .sig-status.error { color: #ef4444; }
+    .sig-status.info  { color: #94a3b8; }
+    .sig-signed-badge {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 20px;
+      background: rgba(34,197,94,0.08);
+      border: 1px solid rgba(34,197,94,0.3);
+      border-radius: 10px;
+    }
+    .sig-badge-text strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 700;
+      color: #4ade80;
+      margin-bottom: 2px;
+    }
+    .sig-badge-text span {
+      font-size: 13px;
+      color: #86efac;
+    }
+
+    /* ---------- CTA ---------- */
+    .cta-section {
+      text-align: center;
+      padding: 48px 24px;
+      margin-top: 40px;
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 14px;
+    }
+    .cta-section h2 {
+      margin: 0 0 8px;
+      font-size: 26px;
+      color: #fff;
+    }
+    .cta-section p {
+      margin: 0;
+      font-size: 15px;
+      opacity: 0.6;
+    }
+
+    /* ---------- Comments ---------- */
+    .comment-form-wrap { margin: 20px 0 28px; }
+    .comment-form, .reply-form {
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .reply-form {
+      margin-top: 12px;
+      background: #1a2332;
+    }
+    .comment-form-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .comment-input {
+      flex: 1;
+      min-width: 160px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-family: inherit;
+      border: 1px solid #374151;
+      border-radius: 8px;
+      background: #111827;
+      color: #fff;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .comment-input:focus { border-color: #2dd4bf; }
+    .mcg-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .mcg-toggle input[type="checkbox"] {
+      accent-color: #2dd4bf;
+      width: 16px;
+      height: 16px;
+    }
+    .mcg-toggle-label {
+      font-size: 13px;
+      color: #94a3b8;
+      white-space: nowrap;
+    }
+    .mcg-key-row { margin-bottom: 10px; }
+    .mcg-key-row .comment-input { max-width: 260px; }
+    .comment-textarea {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 14px;
+      font-family: inherit;
+      border: 1px solid #374151;
+      border-radius: 8px;
+      background: #111827;
+      color: #fff;
+      outline: none;
+      resize: vertical;
+      min-height: 60px;
+      transition: border-color 0.2s;
+    }
+    .comment-textarea:focus { border-color: #2dd4bf; }
+    .comment-form-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .comment-submit {
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      border: none;
+      border-radius: 8px;
+      background: #0d9488;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .comment-submit:hover { background: #0f766e; }
+    .comment-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    .comment-cancel {
+      padding: 10px 16px;
+      font-size: 14px;
+      font-family: inherit;
+      border: 1px solid #374151;
+      border-radius: 8px;
+      background: transparent;
+      color: #94a3b8;
+      cursor: pointer;
+    }
+    .comment-cancel:hover { border-color: #5eead4; color: #fff; }
+    .comment-status { font-size: 13px; color: #94a3b8; }
+    .comments-list { margin-top: 8px; }
+    .comments-loading {
+      font-size: 14px;
+      opacity: 0.5;
+      text-align: center;
+      padding: 20px;
+    }
+    .comment-thread { margin-bottom: 16px; }
+    .comment-bubble {
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 12px;
+      padding: 16px 20px;
+    }
+    .comment-bubble.mcg {
+      border-color: #134e4a;
+      background: #0c1f1e;
+    }
+    .comment-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+    .comment-author {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .comment-badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: #134e4a;
+      color: #5eead4;
+    }
+    .comment-time {
+      font-size: 12px;
+      color: #64748b;
+      margin-left: auto;
+    }
+    .comment-text {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #cbd5e1;
+      margin: 0;
+      white-space: pre-wrap;
+    }
+    .comment-actions { margin-top: 8px; }
+    .reply-btn {
+      font-size: 13px;
+      font-family: inherit;
+      color: #5eead4;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+    .reply-btn:hover { text-decoration: underline; }
+    .comment-replies {
+      margin-left: 28px;
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border-left: 2px solid #1e293b;
+      padding-left: 16px;
+    }
+    .comment-replies .comment-bubble { padding: 12px 16px; }
+    .no-comments {
+      text-align: center;
+      padding: 32px 20px;
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 12px;
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 32px; }
+      .hero-stats { gap: 24px; }
+      .toc ol { columns: 1; }
+      .content { padding: 0 16px 60px; }
+      .card { padding: 20px; }
+      table { font-size: 13px; }
+      thead th, tbody td { padding: 10px 12px; }
+      .comment-replies { margin-left: 16px; padding-left: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Shown when access is not verified -->
+  <div class="access-denied" id="accessDenied">
+    <div>
+      <h1>Access Required</h1>
+      <p id="accessMsg">You need a valid access code to view this proposal.</p>
+      <a href="/proposals/">Enter Access Code &rarr;</a>
+      <br><br>
+      <button id="retryBtn" style="display:none;padding:10px 24px;font-size:14px;border:1px solid #374151;border-radius:8px;background:#1f2937;color:#fff;cursor:pointer;" onclick="init()">Retry Verification</button>
+    </div>
+  </div>
+
+  <!-- Proposal content — only shown after verification -->
+  <div class="proposal" id="proposalContent">
+
+    <!-- ========== HERO ========== -->
+    <div class="hero">
+      <span class="badge">Website Proposal</span>
+      <h1>Visions of Hope</h1>
+      <p class="tagline">Prepared by McG Works &middot; May 2026</p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="value">$500</span>
+          <span class="label">Total Investment</span>
+        </div>
+        <div class="hero-stat">
+          <span class="value">2 Weeks</span>
+          <span class="label">Delivery Timeline</span>
+        </div>
+        <div class="hero-stat">
+          <span class="value">2 Pages</span>
+          <span class="label">Home + Services</span>
+        </div>
+      </div>
+      <div class="confidential">
+        <span>⚠️</span> This document is confidential and prepared exclusively for Visions of Hope Counseling Services. Contents may not be shared with third parties without written consent from McG Works.
+      </div>
+    </div>
+
+    <!-- ========== TOC ========== -->
+    <nav class="toc">
+      <h3>Contents</h3>
+      <ol>
+        <li><a href="#s1">Overview</a></li>
+        <li><a href="#s2">Scope of Work</a></li>
+        <li><a href="#s3">Technical Details</a></li>
+        <li><a href="#s4">Timeline</a></li>
+        <li><a href="#s5">Deliverables</a></li>
+        <li><a href="#s6">Investment</a></li>
+        <li><a href="#s7">What's Not Included</a></li>
+        <li><a href="#s8">Hosting</a></li>
+        <li><a href="#s9">Next Steps</a></li>
+      </ol>
+    </nav>
+
+    <div class="content">
+
+      <!-- ========== 1. OVERVIEW ========== -->
+      <div class="section" id="s1">
+        <span class="section-number">Section 1</span>
+        <h2>Overview</h2>
+        <p>This proposal outlines the development of a clean, professional two-page website for Visions of Hope Counseling Services. The site will serve as an informative online presence for individuals and couples seeking counseling, DWI services, substance assessments, and related support — with a direct link to your existing scheduling portal.</p>
+        <p>The website is designed to feel calm, trustworthy, and welcoming — reflecting the care and professionalism Visions of Hope brings to every client.</p>
+      </div>
+
+      <!-- ========== 2. SCOPE OF WORK ========== -->
+      <div class="section" id="s2">
+        <span class="section-number">Section 2</span>
+        <h2>Scope of Work</h2>
+
+        <h3>Page 1 — Home</h3>
+        <div class="card">
+          <ul>
+            <li>Practice name, tagline, and welcoming introduction</li>
+            <li>Brief overview of who you serve (individuals, couples, groups)</li>
+            <li>Prominent <strong>"Schedule an Appointment"</strong> call-to-action button linking to your scheduling portal</li>
+            <li>Contact information and location details</li>
+            <li>Professional, calming design appropriate for a counseling practice</li>
+          </ul>
+        </div>
+
+        <h3>Page 2 — Services</h3>
+        <div class="card">
+          <p>Full detail on each of the following services:</p>
+          <ul>
+            <li>Individual Counseling</li>
+            <li>Couples Counseling</li>
+            <li>DWI Services</li>
+            <li>Substance Assessments</li>
+            <li>DMV Evaluations</li>
+            <li>SAP (Substance Abuse Professional) Assessments</li>
+            <li>Outpatient Group Therapy</li>
+          </ul>
+        </div>
+
+        <h3>Scheduling Integration</h3>
+        <div class="card">
+          <ul>
+            <li>A clearly visible <strong>"Schedule an Appointment"</strong> button/link on both pages</li>
+            <li>Links directly to your existing scheduling portal — no portal is built or managed as part of this project</li>
+          </ul>
+        </div>
+
+        <div class="callout warning">
+          <strong>📝 Content &amp; Copy Required from Client:</strong> All written content for both pages — including the practice description, service descriptions, tagline, contact information, and any other text — must be provided by the Visions of Hope team before development begins. McG Works will not write, source, or assume any copy on the client's behalf.
+        </div>
+      </div>
+
+      <!-- ========== 3. TECHNICAL DETAILS ========== -->
+      <div class="section" id="s3">
+        <span class="section-number">Section 3</span>
+        <h2>Technical Details</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Detail</th><th>Specification</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Pages</strong></td><td>2 — Home and Services</td></tr>
+              <tr><td><strong>Database</strong></td><td>None — all content hardcoded</td></tr>
+              <tr><td><strong>Hosting Platform</strong></td><td>Vercel (free tier)</td></tr>
+              <tr><td><strong>Scheduling</strong></td><td>External link to your existing portal</td></tr>
+              <tr><td><strong>Responsive Design</strong></td><td>Yes — mobile, tablet, and desktop</td></tr>
+              <tr><td><strong>Technology</strong></td><td>HTML / CSS / JavaScript</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ========== 4. TIMELINE ========== -->
+      <div class="section" id="s4">
+        <span class="section-number">Section 4</span>
+        <h2>Timeline</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Week</th><th>Milestones</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>Week 1</strong></td>
+                <td>Initial design mockup for review &nbsp;·&nbsp; Home Page development &nbsp;·&nbsp; Client feedback round</td>
+              </tr>
+              <tr>
+                <td><strong>Week 2</strong></td>
+                <td>Services Page development &nbsp;·&nbsp; Scheduling link integration &nbsp;·&nbsp; Final review &amp; revisions &nbsp;·&nbsp; Deployment to Vercel</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout info">
+          <strong>Estimated Completion:</strong> 2 weeks from the project start date. McG Works will be upfront with communication at all times — you'll be informed promptly of any updates before they impact delivery.
+        </div>
+      </div>
+
+      <!-- ========== 5. DELIVERABLES ========== -->
+      <div class="section" id="s5">
+        <span class="section-number">Section 5</span>
+        <h2>Deliverables</h2>
+        <div class="card">
+          <ul class="check-list">
+            <li>Fully deployed website hosted on Vercel</li>
+            <li>All source code files (HTML, CSS, JS)</li>
+            <li>Vercel project access transferred to your account</li>
+            <li>Brief written handoff guide covering how to update basic content</li>
+            <li>One round of post-launch minor revisions (within 7 days of launch)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ========== 6. INVESTMENT ========== -->
+      <div class="section" id="s6">
+        <span class="section-number">Section 6</span>
+        <h2>Investment</h2>
+
+        <div class="pricing-hero">
+          <div class="amount">$500</div>
+          <div class="amount-label">Total Fixed Investment</div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Item</th><th>Cost</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Home Page Design &amp; Development</strong></td><td>$200</td></tr>
+              <tr><td><strong>Services Page Design &amp; Development</strong></td><td>$150</td></tr>
+              <tr><td><strong>Scheduling Link Integration &amp; Testing</strong></td><td>$50</td></tr>
+              <tr><td><strong>Vercel Deployment &amp; Project Handoff</strong></td><td>$100</td></tr>
+              <tr><td><strong>Total</strong></td><td><strong>$500</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Payment Terms</h3>
+        <div class="card">
+          <div class="flow-step">
+            <div class="flow-num">1</div>
+            <div class="flow-body">
+              <h4>50% Deposit — $250</h4>
+              <p>Due upon signing to begin work.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">2</div>
+            <div class="flow-body">
+              <h4>50% Balance — $250</h4>
+              <p>Due upon final delivery before handoff.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== 7. WHAT'S NOT INCLUDED ========== -->
+      <div class="section" id="s7">
+        <span class="section-number">Section 7</span>
+        <h2>What's Not Included</h2>
+        <p>To keep this project simple and within budget, the following are outside the scope of this proposal:</p>
+        <div class="card">
+          <ul class="x-list">
+            <li>Written content and copy — all text for both pages must be provided by the Visions of Hope team</li>
+            <li>Logo design or graphic design assets — client to provide any images or logo</li>
+            <li>Domain name registration — must be purchased separately by the client if a custom web address is desired (e.g. visionsofhopecounseling.com). McG Works does not purchase or manage domains. Domains typically cost $10–20/year, renewed annually.</li>
+            <li>Ongoing maintenance or hosting fees after handoff</li>
+            <li>Building or managing a scheduling portal</li>
+            <li>SEO optimization campaigns</li>
+            <li>Any future content updates after the handoff period</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ========== 8. HOSTING ========== -->
+      <div class="section" id="s8">
+        <span class="section-number">Section 8</span>
+        <h2>Hosting</h2>
+        <p>Your website will be deployed on <strong>Vercel</strong>, a reliable and developer-friendly hosting platform. Vercel's free tier is well-suited for static websites of this size and includes:</p>
+        <div class="card">
+          <ul>
+            <li>Fast global content delivery</li>
+            <li>Automatic HTTPS / SSL security</li>
+            <li>Simple custom domain connection (if you have a domain)</li>
+          </ul>
+        </div>
+        <p>At handoff, the Vercel project will be transferred to an account of your choosing. There are no ongoing hosting fees on the free tier for a site of this scope.</p>
+
+        <h3>Ongoing Cost Expectations</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Item</th><th>Cost</th><th>Required?</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Vercel hosting</strong></td><td>$0/mo</td><td>Free — no monthly fees for a static site of this size</td></tr>
+              <tr><td><strong>Custom domain</strong> (e.g. visionsofhopecounseling.com)</td><td>~$10–20/yr</td><td>Only if you want a custom web address — purchased separately and renewed annually</td></tr>
+              <tr><td><strong>Vercel Pro upgrade</strong></td><td>$20/mo</td><td>Not needed — only relevant if traffic grows far beyond what a small practice site would ever see</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout info">
+          <strong>Bottom line:</strong> After handoff, you pay nothing for hosting. The only potential recurring cost is a domain name renewal once a year (~$10–20) if you choose to connect a custom domain.
+        </div>
+      </div>
+
+      <!-- ========== 9. NEXT STEPS ========== -->
+      <div class="section" id="s9">
+        <span class="section-number">Section 9</span>
+        <h2>Next Steps</h2>
+        <div class="card">
+          <div class="flow-step">
+            <div class="flow-num">1</div>
+            <div class="flow-body">
+              <h4>Sign This Proposal &amp; Submit Deposit ($250)</h4>
+              <p>Confirm scope and initiate the engagement. Work begins upon receipt of the deposit.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">2</div>
+            <div class="flow-body">
+              <h4>Provide Assets</h4>
+              <p>Share any logo, photos, or brand colors you'd like used. McG Works will use a professional default style if no assets are provided.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">3</div>
+            <div class="flow-body">
+              <h4>Design Mockup Review (Week 1)</h4>
+              <p>Review the initial design for the Home Page and share feedback before full development begins.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">4</div>
+            <div class="flow-body">
+              <h4>Final Delivery &amp; Handoff (Week 2)</h4>
+              <p>Review the completed site, confirm everything looks good, submit final payment, and receive full project handoff.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== PROPOSAL NOTE ========== -->
+      <div class="proposal-note">
+        <strong>Please Note:</strong> Review this proposal thoroughly, then use the signature section below to formally sign and move forward. A signed copy will be sent to both parties.
+      </div>
+
+      <!-- ========== SIGNATURE ========== -->
+      <div id="signature-section" class="sig-section" style="display:none;">
+        <h3>Sign This Proposal</h3>
+        <p class="sig-intro">Sign below to move forward. A signed copy of this proposal will be emailed to you and the McG Works team.</p>
+        <div id="sigForm">
+          <div class="sig-field">
+            <label for="sigName">Full Name</label>
+            <input type="text" id="sigName" class="sig-input" placeholder="Your full name" autocomplete="name" />
+          </div>
+          <div class="sig-field">
+            <label for="sigEmail">Email Address</label>
+            <input type="email" id="sigEmail" class="sig-input" placeholder="your@email.com" autocomplete="email" />
+          </div>
+          <label class="sig-agree">
+            <input type="checkbox" id="sigAgree" />
+            I have read and agree to the terms in this proposal. By typing my name and clicking "Sign Proposal," I am providing a legally binding electronic signature under the ESIGN Act.
+          </label>
+          <button class="sig-btn" id="sigBtn">Sign Proposal</button>
+          <span class="sig-status info" id="sigStatus"></span>
+        </div>
+        <div id="sigBadge" style="display:none;">
+          <div class="sig-signed-badge">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+            <div class="sig-badge-text">
+              <strong>Proposal Signed</strong>
+              <span id="sigTimestamp"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== CTA ========== -->
+      <div class="cta-section">
+        <h2>Ready to move forward?</h2>
+        <p><a href="mailto:Jalen@mcg-works.com" style="color:#2dd4bf;text-decoration:none;font-weight:600;">Contact McG Works</a> with any questions or to get started today.</p>
+      </div>
+
+      <!-- ========== COMMENTS ========== -->
+      <div class="section" id="comments-section">
+        <span class="section-number">Discussion</span>
+        <h2>Comments &amp; Feedback</h2>
+        <p>Leave questions, feedback, or requested changes directly on this proposal.</p>
+
+        <div class="comment-form-wrap" id="commentFormWrap">
+          <div class="comment-form">
+            <div class="comment-form-row">
+              <input type="text" id="commentName" class="comment-input" placeholder="Your name" />
+              <label class="mcg-toggle">
+                <input type="checkbox" id="mcgToggle" />
+                <span class="mcg-toggle-label">McG Works Team</span>
+              </label>
+            </div>
+            <div class="mcg-key-row" id="mcgKeyRow" style="display:none;">
+              <input type="password" id="mcgKey" class="comment-input" placeholder="Team passphrase" />
+            </div>
+            <textarea id="commentBody" class="comment-textarea" placeholder="Write a comment…" rows="3"></textarea>
+            <div class="comment-form-actions">
+              <button class="comment-submit" id="commentSubmit">Post Comment</button>
+              <span class="comment-status" id="commentStatus"></span>
+            </div>
+          </div>
+        </div>
+
+        <template id="replyFormTemplate">
+          <div class="reply-form">
+            <div class="comment-form-row">
+              <input type="text" class="comment-input reply-name" placeholder="Your name" />
+              <label class="mcg-toggle">
+                <input type="checkbox" class="reply-mcg-toggle" />
+                <span class="mcg-toggle-label">McG Works Team</span>
+              </label>
+            </div>
+            <div class="mcg-key-row reply-mcg-key-row" style="display:none;">
+              <input type="password" class="comment-input reply-mcg-key" placeholder="Team passphrase" />
+            </div>
+            <textarea class="comment-textarea reply-body" placeholder="Write a reply…" rows="2"></textarea>
+            <div class="comment-form-actions">
+              <button class="comment-submit reply-submit">Post Reply</button>
+              <button class="comment-cancel reply-cancel">Cancel</button>
+              <span class="comment-status reply-status"></span>
+            </div>
+          </div>
+        </template>
+
+        <div id="commentsList" class="comments-list">
+          <p class="comments-loading" id="commentsLoading">Loading comments…</p>
+        </div>
+      </div>
+
+    </div><!-- .content -->
+  </div><!-- .proposal -->
+
+<script>
+  const FUNCTIONS_BASE = 'https://awccquoyscijmtqtibgr.supabase.co/functions/v1';
+  const PROPOSAL_ID    = 'visions-of-hope';
+
+  const storedCode = sessionStorage.getItem('mcg_proposal_access');
+
+  async function init() {
+    if (!storedCode) {
+      console.warn('[McG] No access code in session.');
+      return;
+    }
+    try {
+      const res = await fetch(FUNCTIONS_BASE + '/verify-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: storedCode })
+      });
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error('[McG] Verify response not ok:', res.status, errText);
+        document.getElementById('accessMsg').textContent = 'Verification failed (' + res.status + '). Try again or re-enter your code.';
+        document.getElementById('retryBtn').style.display = 'inline-block';
+        return;
+      }
+      const result = await res.json();
+      if (result.valid && result.proposal_path === PROPOSAL_ID) {
+        document.getElementById('accessDenied').style.display = 'none';
+        document.getElementById('proposalContent').classList.add('visible');
+        if (result.client_name) sessionStorage.setItem('mcg_proposal_client_name', result.client_name);
+        initComments();
+        initSignature();
+      } else {
+        console.warn('[McG] Verification mismatch:', result);
+        document.getElementById('accessMsg').textContent = 'Code not recognised for this proposal. Please re-enter.';
+        document.getElementById('retryBtn').style.display = 'inline-block';
+      }
+    } catch (err) {
+      console.error('[McG] Verification error:', err);
+      document.getElementById('accessMsg').textContent = 'Connection error. Please check your network and try again.';
+      document.getElementById('retryBtn').style.display = 'inline-block';
+    }
+  }
+
+  init();
+
+  // =====================
+  // COMMENTS
+  // =====================
+  async function apiFetch(action, extra = {}) {
+    const res = await fetch(FUNCTIONS_BASE + '/comments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action, proposal_id: PROPOSAL_ID, code: storedCode, ...extra })
+    });
+    return res.json();
+  }
+
+  async function initComments() {
+    await loadComments();
+    setupMainForm();
+    setInterval(loadComments, 15000);
+  }
+
+  function setupMainForm() {
+    const mcgToggle = document.getElementById('mcgToggle');
+    const mcgKeyRow = document.getElementById('mcgKeyRow');
+    mcgToggle.addEventListener('change', () => {
+      mcgKeyRow.style.display = mcgToggle.checked ? 'block' : 'none';
+    });
+    document.getElementById('commentSubmit').addEventListener('click', submitComment);
+  }
+
+  async function submitComment() {
+    const name     = document.getElementById('commentName').value.trim();
+    const body     = document.getElementById('commentBody').value.trim();
+    const isMcg    = document.getElementById('mcgToggle').checked;
+    const mcgKey   = document.getElementById('mcgKey').value.trim();
+    const statusEl = document.getElementById('commentStatus');
+
+    if (!name || !body) { statusEl.textContent = 'Name and comment are required.'; return; }
+
+    const btn = document.getElementById('commentSubmit');
+    btn.disabled = true;
+    statusEl.textContent = 'Posting…';
+
+    try {
+      const result = await apiFetch('post', { author: name, body, is_mcg: isMcg, mcg_key: mcgKey });
+      if (result.error) { statusEl.textContent = result.error; btn.disabled = false; return; }
+      document.getElementById('commentBody').value = '';
+      statusEl.textContent = '';
+      await loadComments();
+    } catch {
+      statusEl.textContent = 'Failed to post. Try again.';
+    }
+    btn.disabled = false;
+  }
+
+  async function loadComments() {
+    const listEl = document.getElementById('commentsList');
+    try {
+      const result = await apiFetch('list');
+      const threads = result.threads || [];
+      document.getElementById('commentsLoading')?.remove();
+      if (!threads.length) {
+        listEl.innerHTML = '<div class="no-comments">No comments yet. Be the first to leave feedback.</div>';
+        return;
+      }
+      listEl.innerHTML = '';
+      threads.forEach(thread => {
+        const el = document.createElement('div');
+        el.className = 'comment-thread';
+        el.innerHTML = renderBubble(thread) + renderReplies(thread.replies || []);
+        const replyBtn = el.querySelector('.reply-btn');
+        if (replyBtn) replyBtn.addEventListener('click', () => openReply(el, thread.id));
+        listEl.appendChild(el);
+      });
+    } catch {
+      if (document.getElementById('commentsLoading')) {
+        document.getElementById('commentsLoading').textContent = 'Could not load comments.';
+      }
+    }
+  }
+
+  function renderBubble(c, isReply = false) {
+    const cls = c.is_mcg ? 'comment-bubble mcg' : 'comment-bubble';
+    const badge = c.is_mcg ? '<span class="comment-badge">McG Works</span>' : '';
+    const replyBtn = !isReply ? '<div class="comment-actions"><button class="reply-btn">Reply</button></div>' : '';
+    return `<div class="${cls}">
+      <div class="comment-header">
+        <span class="comment-author">${esc(c.author)}</span>${badge}
+        <span class="comment-time">${formatTime(c.created_at)}</span>
+      </div>
+      <p class="comment-text">${esc(c.body)}</p>
+      ${replyBtn}
+    </div>`;
+  }
+
+  function renderReplies(replies) {
+    if (!replies.length) return '';
+    return '<div class="comment-replies">' + replies.map(r => renderBubble(r, true)).join('') + '</div>';
+  }
+
+  function openReply(threadEl, parentId) {
+    if (threadEl.querySelector('.reply-form')) return;
+    const tpl = document.getElementById('replyFormTemplate').content.cloneNode(true);
+    const form = tpl.querySelector('.reply-form');
+
+    const mcgToggle = form.querySelector('.reply-mcg-toggle');
+    const mcgKeyRow = form.querySelector('.reply-mcg-key-row');
+    mcgToggle.addEventListener('change', () => {
+      mcgKeyRow.style.display = mcgToggle.checked ? 'block' : 'none';
+    });
+
+    form.querySelector('.reply-cancel').addEventListener('click', () => form.remove());
+    form.querySelector('.reply-submit').addEventListener('click', async () => {
+      const name   = form.querySelector('.reply-name').value.trim();
+      const body   = form.querySelector('.reply-body').value.trim();
+      const isMcg  = form.querySelector('.reply-mcg-toggle').checked;
+      const mcgKey = form.querySelector('.reply-mcg-key').value.trim();
+      const status = form.querySelector('.reply-status');
+      if (!name || !body) { status.textContent = 'Name and reply are required.'; return; }
+      const btn = form.querySelector('.reply-submit');
+      btn.disabled = true;
+      status.textContent = 'Posting…';
+      try {
+        const result = await apiFetch('reply', { parent_id: parentId, author: name, body, is_mcg: isMcg, mcg_key: mcgKey });
+        if (result.error) { status.textContent = result.error; btn.disabled = false; return; }
+        await loadComments();
+      } catch {
+        status.textContent = 'Failed to post. Try again.';
+        btn.disabled = false;
+      }
+    });
+
+    threadEl.appendChild(form);
+  }
+
+  function esc(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function formatTime(iso) {
+    try {
+      return new Date(iso).toLocaleString('en-US', { month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'2-digit' });
+    } catch { return iso; }
+  }
+
+  // =====================
+  // SIGNATURE
+  // =====================
+  function initSignature() {
+    const sec = document.getElementById('signature-section');
+    if (!sec) return;
+    sec.style.display = 'block';
+
+    const sigBtn   = document.getElementById('sigBtn');
+    const sigAgree = document.getElementById('sigAgree');
+    const sigStatus = document.getElementById('sigStatus');
+
+    sigBtn.addEventListener('click', async () => {
+      const name  = document.getElementById('sigName').value.trim();
+      const email = document.getElementById('sigEmail').value.trim();
+      if (!name || !email) { sigStatus.className = 'sig-status error'; sigStatus.textContent = 'Please enter your full name and email.'; return; }
+      if (!sigAgree.checked) { sigStatus.className = 'sig-status error'; sigStatus.textContent = 'Please check the agreement box to proceed.'; return; }
+
+      sigBtn.disabled = true;
+      sigStatus.className = 'sig-status info';
+      sigStatus.textContent = 'Submitting signature…';
+
+      try {
+        const res = await fetch(FUNCTIONS_BASE + '/sign-proposal', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ proposal_id: PROPOSAL_ID, code: storedCode, name, email })
+        });
+        const result = await res.json();
+        if (result.error) { sigStatus.className = 'sig-status error'; sigStatus.textContent = result.error; sigBtn.disabled = false; return; }
+        document.getElementById('sigForm').style.display = 'none';
+        document.getElementById('sigBadge').style.display = 'block';
+        document.getElementById('sigTimestamp').textContent = 'Signed by ' + name + ' on ' + new Date().toLocaleString('en-US', { month:'long', day:'numeric', year:'numeric', hour:'numeric', minute:'2-digit' });
+      } catch {
+        sigStatus.className = 'sig-status error';
+        sigStatus.textContent = 'Connection error. Please try again.';
+        sigBtn.disabled = false;
+      }
+    });
+  }
+</script>
+</body>
+</html>

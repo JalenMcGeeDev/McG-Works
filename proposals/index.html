@@ -161,7 +161,7 @@
 
         if (result.valid && result.proposal_path) {
           sessionStorage.setItem('mcg_proposal_access', raw);
-          window.location.href = result.proposal_path + '/';
+          window.location.href = '/proposals/' + result.proposal_path + '/';
         } else {
           showError('Invalid code. Please check and try again.');
         }
