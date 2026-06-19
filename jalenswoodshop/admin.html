@@ -742,13 +742,14 @@ async function checkPin() {
             body: JSON.stringify({ pin }),
         });
         const json = await res.json();
+        console.log('Response:', res.status, json);
 
-        if (json.authorized && json.session) {
-            await sb.auth.setSession(json.session);
-            sessionStorage.setItem('ws_admin_access',  json.session.access_token);
-            sessionStorage.setItem('ws_admin_refresh', json.session.refresh_token);
+        if (json.authorized && json.token) {
+            sessionStorage.setItem('ws_admin_token', json.token);
             showApp();
         } else {
+            console.error('Auth error:', json.error);
+            errEl.textContent   = json.error ? `Error: ${json.error}` : 'Incorrect PIN. Try again.';
             errEl.style.display = 'block';
             document.getElementById('pinInput').value = '';
         }
@@ -766,9 +767,7 @@ document.getElementById('pinInput').addEventListener('keydown', e => {
 });
 
 async function logout() {
-    await sb.auth.signOut();
-    sessionStorage.removeItem('ws_admin_access');
-    sessionStorage.removeItem('ws_admin_refresh');
+    sessionStorage.removeItem('ws_admin_token');
     location.reload();
 }
 
@@ -781,12 +780,7 @@ async function showApp() {
 
 // Restore session if page is refreshed
 (async () => {
-    const access  = sessionStorage.getItem('ws_admin_access');
-    const refresh = sessionStorage.getItem('ws_admin_refresh');
-    if (access && refresh) {
-        const { error } = await sb.auth.setSession({ access_token: access, refresh_token: refresh });
-        if (!error) showApp();
-    }
+    if (sessionStorage.getItem('ws_admin_token')) showApp();
 })();
 
 // ── Tabs ───────────────────────────────────────────────────────
