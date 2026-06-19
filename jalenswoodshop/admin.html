@@ -734,8 +734,12 @@ async function checkPin() {
     try {
         const res  = await fetch(ADMIN_AUTH_FN, {
             method:  'POST',
-            headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY },
-            body:    JSON.stringify({ pin }),
+            headers: {
+                'Content-Type':  'application/json',
+                'apikey':        SUPABASE_KEY,
+                'Authorization': `Bearer ${SUPABASE_KEY}`,
+            },
+            body: JSON.stringify({ pin }),
         });
         const json = await res.json();
 
