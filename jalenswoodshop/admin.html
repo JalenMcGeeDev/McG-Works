@@ -585,6 +585,40 @@
             .modal-sheet { border-radius: 20px; margin: auto; }
             .modal-overlay { align-items: center; }
         }
+
+        /* ── FULL-PAGE EDIT/ADD ────────────────────── */
+        #editPage {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: #f0ebe0;
+            z-index: 300;
+            overflow-y: auto;
+        }
+
+        .edit-page-nav {
+            background: linear-gradient(135deg, var(--brown-mid), var(--brown-dark));
+            color: #fff;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .edit-page-nav h2 { font-size: 1rem; font-weight: 700; }
+
+        .edit-page-body {
+            padding: 1.25rem;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        .edit-page-body .field textarea {
+            min-height: 180px;
+        }
     </style>
 </head>
 <body>
@@ -622,7 +656,7 @@
         <div class="tab active" onclick="switchTab('items')" id="tab-items">
             <span class="tab-icon">📦</span>Items
         </div>
-        <div class="tab" onclick="switchTab('add')" id="tab-add">
+        <div class="tab" onclick="openEditPage(null)" id="tab-add">
             <span class="tab-icon">➕</span>Add
         </div>
         <div class="tab" onclick="switchTab('orders')" id="tab-orders">
@@ -929,7 +963,7 @@ function renderItems(items) {
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
-                <button class="icon-btn" onclick="openEdit(${item.id})" title="Edit">✏️</button>
+                <button class="icon-btn" onclick="openEditPage(${item.id})" title="Edit">✏️</button>
             </div>
         </div>`;
     }).join('')}</div>`;
@@ -951,97 +985,70 @@ async function toggleAvailable(id, available, checkbox) {
     checkbox.disabled = false;
 }
 
-// ── Add Item ───────────────────────────────────────────────────
-async function addItem() {
-    const name       = document.getElementById('addName').value.trim();
-    const desc       = document.getElementById('addDesc').value.trim();
-    const price      = parseFloat(document.getElementById('addPrice').value);
-    const available  = document.getElementById('addAvailable').value === 'true';
-    const imageFiles = document.getElementById('addImage').files;
-
-    if (!name)          return showToast('Name is required', 'error');
-    if (isNaN(price))   return showToast('Price is required', 'error');
-
-    const btn = document.getElementById('addBtn');
-    btn.disabled    = true;
-    btn.textContent = 'Saving…';
-
-    try {
-        let image_paths = [];
-        if (imageFiles.length) image_paths = await uploadImages(imageFiles);
-
-        const { error } = await sb.from('items').insert([{
-            name, description: desc || null, price, available,
-            image_path:  image_paths[0] || null,
-            image_paths: image_paths
-        }]);
-
-        if (error) throw error;
-
-        showToast('Item added! ✓', 'success');
-        ['addName','addDesc','addPrice'].forEach(id => document.getElementById(id).value = '');
-        document.getElementById('addAvailable').value = 'true';
-        document.getElementById('addImage').value = '';
-        document.getElementById('addPreviews').innerHTML = '';
-        loadItems();
-        switchTab('items');
-    } catch (err) {
-        showToast('Error: ' + err.message, 'error');
-    }
-
-    btn.disabled    = false;
-    btn.textContent = 'Add Item';
-}
-
-// ── Edit ───────────────────────────────────────────────────────
+// ── Add / Edit (unified) ───────────────────────────────────────
 let _editItem = null;
 
-async function openEdit(id) {
-    try {
-        const { data, error } = await sb.from('items').select('*').eq('id', id).single();
-        if (error) throw error;
-        _editItem = data;
+async function openEditPage(id) {
+    _editItem = null;
+    document.getElementById('editId').value                  = '';
+    document.getElementById('editName').value                = '';
+    document.getElementById('editTagline').value             = '';
+    document.getElementById('editDesc').value                = '';
+    document.getElementById('editPrice').value               = '';
+    document.getElementById('editAvailable').value           = 'true';
+    document.getElementById('editImage').value               = '';
+    document.getElementById('editNewPreviews').innerHTML     = '';
+    document.getElementById('editCurrentPreviews').innerHTML = '';
+    document.getElementById('deleteBtn').style.display       = id ? 'block' : 'none';
+    document.getElementById('editPageTitle').textContent     = id ? 'Edit Item' : 'Add Item';
 
-        document.getElementById('editId').value           = data.id;
-        document.getElementById('editName').value         = data.name;
-        document.getElementById('editDesc').value         = data.description || '';
-        document.getElementById('editPrice').value        = data.price;
-        document.getElementById('editAvailable').value    = data.available ? 'true' : 'false';
-        document.getElementById('editImage').value        = '';
-        document.getElementById('editNewPreviews').innerHTML = '';
+    if (id) {
+        try {
+            const { data, error } = await sb.from('items').select('*').eq('id', id).single();
+            if (error) throw error;
+            _editItem = data;
 
-        // Show current photos with remove buttons
-        const currentPreviews = document.getElementById('editCurrentPreviews');
-        const existingPaths = Array.isArray(data.image_paths) && data.image_paths.length
-            ? data.image_paths
-            : (data.image_path ? [data.image_path] : []);
-        currentPreviews.innerHTML = existingPaths.map((p, i) => {
-            const url = getImageUrl(p);
-            return `<div class="img-preview-wrap" data-path="${escHtml(p)}">
-                <img src="${url}" alt="photo ${i+1}">
-                <button class="img-preview-remove" type="button"
-                    onclick="removeExistingPhoto(this, '${escHtml(p)}')" title="Remove">✕</button>
-            </div>`;
-        }).join('');
+            document.getElementById('editId').value        = data.id;
+            document.getElementById('editName').value      = data.name;
+            document.getElementById('editTagline').value   = data.tagline || '';
+            document.getElementById('editDesc').value      = data.description || '';
+            document.getElementById('editPrice').value     = data.price;
+            document.getElementById('editAvailable').value = data.available ? 'true' : 'false';
 
-        document.getElementById('editModal').classList.add('open');
-    } catch (err) {
-        showToast('Could not load item: ' + err.message, 'error');
+            const existingPaths = Array.isArray(data.image_paths) && data.image_paths.length
+                ? data.image_paths
+                : (data.image_path ? [data.image_path] : []);
+            document.getElementById('editCurrentPreviews').innerHTML = existingPaths.map((p, i) => {
+                const url = getImageUrl(p);
+                return `<div class="img-preview-wrap" data-path="${escHtml(p)}">
+                    <img src="${url}" alt="photo ${i+1}">
+                    <button class="img-preview-remove" type="button"
+                        onclick="this.closest('.img-preview-wrap').remove()" title="Remove">✕</button>
+                </div>`;
+            }).join('');
+        } catch (err) {
+            showToast('Could not load item: ' + err.message, 'error');
+            return;
+        }
     }
+
+    document.getElementById('editPage').style.display = 'block';
+    window.scrollTo(0, 0);
 }
 
 function closeEdit() {
-    document.getElementById('editModal').classList.remove('open');
+    document.getElementById('editPage').style.display = 'none';
     _editItem = null;
 }
 
 async function saveEdit() {
-    const id        = parseInt(document.getElementById('editId').value);
+    const idVal     = document.getElementById('editId').value;
+    const isNew     = !idVal;
     const name      = document.getElementById('editName').value.trim();
+    const tagline   = document.getElementById('editTagline').value.trim();
     const desc      = document.getElementById('editDesc').value.trim();
     const price     = parseFloat(document.getElementById('editPrice').value);
     const available = document.getElementById('editAvailable').value === 'true';
-    const imageFile = document.getElementById('editImage').files[0];
 
     if (!name)        return showToast('Name is required', 'error');
     if (isNaN(price)) return showToast('Price is required', 'error');
@@ -1051,26 +1058,34 @@ async function saveEdit() {
     btn.textContent = 'Saving…';
 
     try {
-        // Collect remaining existing paths (ones not removed by user)
         const remaining = Array.from(
             document.querySelectorAll('#editCurrentPreviews .img-preview-wrap[data-path]')
         ).map(el => el.dataset.path);
 
-        // Upload any newly added images
         const newFiles = document.getElementById('editImage').files;
         const newPaths = newFiles.length ? await uploadImages(newFiles) : [];
-
         const allPaths = [...remaining, ...newPaths];
-        const updates = {
-            name, description: desc || null, price, available,
+
+        const payload = {
+            name,
+            tagline:     tagline || null,
+            description: desc    || null,
+            price,
+            available,
             image_path:  allPaths[0] || null,
             image_paths: allPaths
         };
 
-        const { error } = await sb.from('items').update(updates).eq('id', id);
-        if (error) throw error;
+        if (isNew) {
+            const { error } = await sb.from('items').insert([payload]);
+            if (error) throw error;
+            showToast('Item added! ✓', 'success');
+        } else {
+            const { error } = await sb.from('items').update(payload).eq('id', parseInt(idVal));
+            if (error) throw error;
+            showToast('Saved ✓', 'success');
+        }
 
-        showToast('Saved ✓', 'success');
         closeEdit();
         loadItems();
     } catch (err) {
@@ -1078,11 +1093,7 @@ async function saveEdit() {
     }
 
     btn.disabled    = false;
-    btn.textContent = 'Save Changes';
-}
-
-function removeExistingPhoto(btn, path) {
-    btn.closest('.img-preview-wrap').remove();
+    btn.textContent = 'Save';
 }
 
 async function deleteItem() {

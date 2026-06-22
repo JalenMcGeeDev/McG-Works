@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jalen's Woodshop</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪵</text></svg>">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --brown-dark:  #3d2f20;
+            --brown-mid:   #5d4e37;
+            --brown-warm:  #8b7355;
+            --brown-light: #b8976a;
+            --cream:       #f5f1e8;
+            --cream-dark:  #e8dcc8;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: var(--cream);
+            color: #3a3a3a;
+            min-height: 100vh;
+        }
+
+        /* ── TOP NAV ──────────────────────────────── */
+        .topnav {
+            background: linear-gradient(135deg, var(--brown-mid) 0%, var(--brown-dark) 100%);
+            color: #fff;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: #fff;
+            padding: 0.45rem 0.9rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .back-btn:hover { background: rgba(255,255,255,0.25); }
+
+        .topnav-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            opacity: 0.85;
+        }
+
+        /* ── PHOTO CAROUSEL ───────────────────────── */
+        .photo-section {
+            position: relative;
+            width: 100%;
+            background: #2a2018;
+            aspect-ratio: 4/3;
+            max-height: 520px;
+            overflow: hidden;
+        }
+
+        .carousel-track {
+            display: flex;
+            height: 100%;
+            transition: transform 0.35s ease;
+        }
+
+        .carousel-slide {
+            flex: 0 0 100%;
+            height: 100%;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .no-photo {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            background: var(--cream-dark);
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.4);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-btn.prev { left: 10px; }
+        .carousel-btn.next { right: 10px; }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 7px;
+            z-index: 2;
+        }
+
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: background 0.2s;
+            border: none;
+        }
+
+        .carousel-dot.active { background: #fff; }
+
+        /* Thumbnail strip */
+        .thumb-strip {
+            display: flex;
+            gap: 6px;
+            padding: 8px 12px;
+            background: #1e1510;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .thumb-strip::-webkit-scrollbar { display: none; }
+
+        .thumb {
+            flex-shrink: 0;
+            width: 56px;
+            height: 56px;
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        .thumb.active { border-color: var(--brown-light); }
+
+        .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* ── ITEM BODY ────────────────────────────── */
+        .item-body {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 1.75rem 1.25rem 3rem;
+        }
+
+        .item-name {
+            font-size: 2rem;
+            color: var(--brown-dark);
+            font-weight: bold;
+            line-height: 1.2;
+        }
+
+        .item-tagline {
+            font-size: 1rem;
+            color: var(--brown-warm);
+            font-style: italic;
+            margin-top: 0.35rem;
+        }
+
+        .item-price {
+            font-size: 2rem;
+            color: var(--brown-mid);
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+
+        .item-desc-heading {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--brown-warm);
+            margin-bottom: 0.5rem;
+        }
+
+        .item-description {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #4a4a4a;
+            white-space: pre-wrap;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid var(--cream-dark);
+            margin: 1.5rem 0;
+        }
+
+        /* ── PURCHASE FORM ────────────────────────── */
+        .form-heading {
+            font-size: 1.3rem;
+            color: var(--brown-mid);
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--brown-mid);
+            margin-bottom: 0.4rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 0.9rem;
+            border: 2px solid var(--cream-dark);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            background: #fff;
+            color: #3a3a3a;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--brown-warm);
+        }
+
+        .form-group textarea { min-height: 90px; resize: vertical; }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--brown-mid) 0%, var(--brown-dark) 100%);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            margin-top: 0.25rem;
+        }
+
+        .submit-btn:hover:not(:disabled) { opacity: 0.88; }
+        .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .success-msg {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            text-align: center;
+            display: none;
+        }
+
+        .error-msg {
+            background: #fdecea;
+            color: #c0392b;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        /* ── SKELETON ─────────────────────────────── */
+        .skeleton-photo {
+            width: 100%;
+            aspect-ratio: 4/3;
+            max-height: 520px;
+            background: linear-gradient(90deg, var(--cream-dark) 25%, #f0ebe0 50%, var(--cream-dark) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.2s infinite;
+        }
+
+        @keyframes shimmer {
+            0%   { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .not-found {
+            text-align: center;
+            padding: 4rem 1rem;
+            color: var(--brown-warm);
+        }
+
+        .not-found p { font-size: 1rem; margin-top: 0.5rem; }
+        .not-found a { color: var(--brown-mid); }
+
+        @media (min-width: 680px) {
+            .item-name { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="topnav">
+    <a href="/jalenswoodshop/" class="back-btn">← Shop</a>
+    <span class="topnav-title" id="navTitle">Jalen's Woodshop</span>
+</div>
+
+<div id="photoSection" class="skeleton-photo"></div>
+
+<div class="item-body">
+    <div id="itemContent">
+        <!-- populated by JS -->
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://awccquoyscijmtqtibgr.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3Y2NxdW95c2Npam10cXRpYmdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4MDI0MDUsImV4cCI6MjA4MjM3ODQwNX0.zUBCXRah_oK8P_Q-1sFwZ5altAFUfZMOdBdY-tuXWrE';
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+function getImageUrl(path) {
+    if (!path) return null;
+    if (path.startsWith('http')) return path;
+    if (path.length < 10) return path;
+    const { data } = sb.storage.from('item-images').getPublicUrl(path);
+    return data.publicUrl;
+}
+
+function escHtml(s) {
+    return String(s ?? '')
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Carousel ─────────────────────────────────────────────────
+let _currentSlide = 0;
+let _totalSlides  = 0;
+
+function goSlide(idx) {
+    if (_totalSlides === 0) return;
+    _currentSlide = (idx + _totalSlides) % _totalSlides;
+    document.querySelector('.carousel-track').style.transform =
+        `translateX(-${_currentSlide * 100}%)`;
+    document.querySelectorAll('.carousel-dot').forEach((d, i) =>
+        d.classList.toggle('active', i === _currentSlide));
+    document.querySelectorAll('.thumb').forEach((t, i) =>
+        t.classList.toggle('active', i === _currentSlide));
+}
+
+function shift(dir) { goSlide(_currentSlide + dir); }
+
+// Touch swipe
+let _tx = 0;
+function tcStart(e) { _tx = e.touches[0].clientX; }
+function tcEnd(e) {
+    const diff = _tx - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) shift(diff > 0 ? 1 : -1);
+}
+
+// ── Load item ─────────────────────────────────────────────────
+(async () => {
+    const params = new URLSearchParams(location.search);
+    const id     = params.get('id');
+
+    if (!id) return showNotFound();
+
+    const { data: item, error } = await sb
+        .from('items')
+        .select('*')
+        .eq('id', id)
+        .eq('available', true)
+        .single();
+
+    if (error || !item) return showNotFound();
+
+    // Update page title
+    document.title = `${item.name} — Jalen's Woodshop`;
+    document.getElementById('navTitle').textContent = item.name;
+
+    // Photos
+    const paths = Array.isArray(item.image_paths) && item.image_paths.length
+        ? item.image_paths
+        : (item.image_path || item.image_url ? [item.image_path || item.image_url] : []);
+
+    const photoSection = document.getElementById('photoSection');
+    photoSection.className = 'photo-section';
+
+    if (!paths.length) {
+        photoSection.innerHTML = `<div class="no-photo">🪵</div>`;
+    } else {
+        _totalSlides = paths.length;
+
+        const slides = paths.map((p, i) => {
+            const u = getImageUrl(p);
+            return `<div class="carousel-slide"><img src="${escHtml(u)}" alt="${escHtml(item.name)} photo ${i+1}" loading="${i===0?'eager':'lazy'}"></div>`;
+        }).join('');
+
+        const dots = _totalSlides > 1 ? `
+            <div class="carousel-dots">
+                ${paths.map((_, i) => `<button class="carousel-dot${i===0?' active':''}" onclick="goSlide(${i})"></button>`).join('')}
+            </div>` : '';
+
+        const arrows = _totalSlides > 1 ? `
+            <button class="carousel-btn prev" onclick="shift(-1)">‹</button>
+            <button class="carousel-btn next" onclick="shift(1)">›</button>` : '';
+
+        photoSection.innerHTML = `
+            <div class="carousel-track" ontouchstart="tcStart(event)" ontouchend="tcEnd(event)">
+                ${slides}
+            </div>
+            ${arrows}
+            ${dots}`;
+
+        // Thumbnail strip (only if >1 photo)
+        if (_totalSlides > 1) {
+            const strip = document.createElement('div');
+            strip.className = 'thumb-strip';
+            strip.innerHTML = paths.map((p, i) => {
+                const u = getImageUrl(p);
+                return `<div class="thumb${i===0?' active':''}" onclick="goSlide(${i})">
+                    <img src="${escHtml(u)}" alt="photo ${i+1}" loading="lazy">
+                </div>`;
+            }).join('');
+            photoSection.insertAdjacentElement('afterend', strip);
+        }
+    }
+
+    // Item content
+    document.getElementById('itemContent').innerHTML = `
+        <h1 class="item-name">${escHtml(item.name)}</h1>
+        ${item.tagline ? `<p class="item-tagline">${escHtml(item.tagline)}</p>` : ''}
+        <p class="item-price">$${parseFloat(item.price).toFixed(2)}</p>
+
+        ${item.description ? `
+        <p class="item-desc-heading">About this piece</p>
+        <p class="item-description">${escHtml(item.description)}</p>
+        ` : ''}
+
+        <hr class="divider">
+
+        <h2 class="form-heading">Request to Purchase</h2>
+
+        <form id="purchaseForm">
+            <input type="hidden" id="itemId"    value="${escHtml(item.id)}">
+            <input type="hidden" id="itemName"  value="${escHtml(item.name)}">
+            <input type="hidden" id="itemPrice" value="${escHtml(item.price)}">
+
+            <div class="form-group">
+                <label for="customerName">Your Name *</label>
+                <input type="text" id="customerName" required autocomplete="name">
+            </div>
+            <div class="form-group">
+                <label for="customerEmail">Email *</label>
+                <input type="email" id="customerEmail" required autocomplete="email">
+            </div>
+            <div class="form-group">
+                <label for="customerPhone">Phone (optional)</label>
+                <input type="tel" id="customerPhone" autocomplete="tel">
+            </div>
+            <div class="form-group">
+                <label for="message">Message (optional)</label>
+                <textarea id="message" placeholder="Any questions or special requests..."></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">Send Request</button>
+            <div class="success-msg" id="successMsg">
+                Thank you! Your request has been sent. Jalen will be in touch soon.
+            </div>
+            <div class="error-msg" id="errorMsg"></div>
+        </form>`;
+
+    document.getElementById('purchaseForm').addEventListener('submit', submitRequest);
+})();
+
+async function submitRequest(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.disabled    = true;
+    btn.textContent = 'Sending…';
+    document.getElementById('errorMsg').style.display = 'none';
+
+    const orderData = {
+        item_id:        parseInt(document.getElementById('itemId').value),
+        item_name:      document.getElementById('itemName').value,
+        item_price:     parseFloat(document.getElementById('itemPrice').value),
+        customer_name:  document.getElementById('customerName').value,
+        customer_email: document.getElementById('customerEmail').value,
+        customer_phone: document.getElementById('customerPhone').value || null,
+        message:        document.getElementById('message').value || null,
+        status:         'pending'
+    };
+
+    try {
+        const { error } = await sb.from('orders').insert([orderData]);
+        if (error) throw error;
+
+        document.getElementById('successMsg').style.display = 'block';
+        document.getElementById('purchaseForm').reset();
+        btn.textContent = 'Request Sent ✓';
+        // Scroll to success message
+        document.getElementById('successMsg').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } catch (err) {
+        const errEl = document.getElementById('errorMsg');
+        errEl.textContent = 'Something went wrong: ' + err.message;
+        errEl.style.display = 'block';
+        btn.disabled    = false;
+        btn.textContent = 'Send Request';
+    }
+}
+
+function showNotFound() {
+    document.getElementById('photoSection').style.display = 'none';
+    document.getElementById('itemContent').innerHTML = `
+        <div class="not-found">
+            <p style="font-size:2.5rem">🪵</p>
+            <p>Item not found or no longer available.</p>
+            <p style="margin-top:.75rem"><a href="/jalenswoodshop/">← Back to shop</a></p>
+        </div>`;
+}
+</script>
+</body>
+</html>
