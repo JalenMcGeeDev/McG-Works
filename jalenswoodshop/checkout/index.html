@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout — Jalen's Woodshop</title>
+<script src="https://js.stripe.com/v3/"></script>
+<style>
+:root {
+    --brown-dark:  #3d2f20;
+    --brown-mid:   #5d4e37;
+    --brown-warm:  #8b7355;
+    --brown-light: #b8976a;
+    --cream:       #f5f1e8;
+    --cream-dark:  #e8dcc8;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Georgia, serif; background: var(--cream); color: #222; min-height: 100vh; }
+
+/* HEADER */
+.shop-header {
+    background: linear-gradient(135deg, var(--brown-mid) 0%, var(--brown-dark) 100%);
+    padding: 1rem 1.5rem;
+    display: flex; align-items: center; justify-content: center; position: relative;
+}
+.back-btn {
+    background: rgba(255,255,255,.12); border: none; color: #fff; padding: .4rem .85rem;
+    border-radius: 6px; font-size: .88rem; cursor: pointer; text-decoration: none;
+    display: inline-flex; align-items: center; gap: .3rem; flex-shrink: 0; position: absolute; left: 1.25rem;
+}
+.back-btn:hover { background: rgba(255,255,255,.22); }
+.shop-header-brand { display: flex; align-items: center; gap: .85rem; text-decoration: none; }
+.shop-header img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,.3); flex-shrink: 0; }
+.shop-header-name { font-size: 1.19rem; font-weight: 700; color: #fff; line-height: 1.2; }
+.shop-header-sub  { font-size: .91rem; color: rgba(255,255,255,.6); }
+.cart-btn {
+    position: absolute; right: 1.25rem;
+    background: rgba(255,255,255,.12); border: none; color: #fff; padding: .4rem .7rem;
+    border-radius: 6px; font-size: .88rem; cursor: pointer; text-decoration: none;
+    display: inline-flex; align-items: center; gap: .35rem; flex-shrink: 0;
+}
+
+/* LAYOUT */
+.page-wrap { max-width: 680px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+h2 { font-size: 1.3rem; color: var(--brown-dark); margin-bottom: 1.25rem; }
+
+/* CART ITEMS */
+.cart-list { background: #fff; border-radius: 12px; border: 1px solid var(--cream-dark); overflow: hidden; margin-bottom: 1.5rem; }
+.cart-item { display: flex; align-items: center; gap: .9rem; padding: .85rem 1rem; border-bottom: 1px solid var(--cream-dark); }
+.cart-item:last-child { border-bottom: none; }
+.cart-item img { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; flex-shrink: 0; background: var(--cream); }
+.cart-item-info { flex: 1; }
+.cart-item-name { font-weight: 600; font-size: .95rem; }
+.cart-item-tagline { font-size: .8rem; color: var(--brown-warm); font-style: italic; }
+.cart-item-price { font-weight: 700; color: var(--brown-dark); white-space: nowrap; margin-left: .5rem; }
+.cart-item-remove { background: none; border: none; color: #bbb; font-size: 1.1rem; cursor: pointer; padding: .25rem; margin-left: .25rem; }
+.cart-item-remove:hover { color: #c0392b; }
+.cart-total { display: flex; justify-content: space-between; padding: .85rem 1rem; font-weight: 700; font-size: 1rem; border-top: 2px solid var(--cream-dark); background: var(--cream); }
+.empty-cart { text-align: center; padding: 2.5rem 1rem; color: #888; }
+.empty-cart a { color: var(--brown-mid); }
+
+/* METHOD CARDS */
+.method-cards { display: flex; flex-direction: column; gap: .75rem; margin-bottom: 1.5rem; }
+.method-card { background: #fff; border: 2px solid var(--cream-dark); border-radius: 12px; padding: 1rem 1.1rem; cursor: pointer; transition: border-color .15s; display: flex; align-items: flex-start; gap: .8rem; }
+.method-card:hover { border-color: var(--brown-warm); }
+.method-card.selected { border-color: var(--brown-dark); background: #fffdf9; }
+.method-card input[type=radio] { margin-top: .2rem; accent-color: var(--brown-dark); flex-shrink: 0; }
+.method-card-title { font-weight: 700; font-size: .95rem; color: var(--brown-dark); }
+.method-card-sub { font-size: .82rem; color: #666; margin-top: .15rem; }
+.method-badge { display: inline-block; font-size: .7rem; font-weight: 700; padding: .15rem .5rem; border-radius: 20px; margin-left: .4rem; vertical-align: middle; }
+.badge-quote { background: #fff3cd; color: #856404; }
+.badge-free { background: #d4edda; color: #155724; }
+.badge-paid { background: #d1ecf1; color: #0c5460; }
+
+/* RATE OPTIONS */
+.rate-options { display: flex; flex-direction: column; gap: .5rem; margin-top: .75rem; }
+.rate-option { display: flex; align-items: center; justify-content: space-between; padding: .65rem .9rem;
+    background: #fff; border: 2px solid var(--cream-dark); border-radius: 9px; cursor: pointer; transition: border-color .15s; }
+.rate-option:hover { border-color: var(--brown-warm); }
+.rate-option.selected { border-color: var(--brown-dark); background: #fffdf9; }
+.rate-option input[type=radio] { accent-color: var(--brown-dark); flex-shrink: 0; }
+.rate-option-label { flex: 1; margin-left: .7rem; }
+.rate-carrier { font-weight: 700; font-size: .88rem; color: var(--brown-dark); }
+.rate-days { font-size: .78rem; color: #888; }
+.rate-price { font-weight: 700; font-size: .95rem; white-space: nowrap; }
+
+/* ORDER TOTALS */
+.order-totals { background: #fff; border-radius: 12px; border: 1px solid var(--cream-dark); overflow: hidden; margin-bottom: 1.5rem; }
+.total-row { display: flex; justify-content: space-between; padding: .7rem 1rem; font-size: .92rem; border-bottom: 1px solid var(--cream-dark); }
+.total-row:last-child { border-bottom: none; }
+.total-row.grand { font-weight: 700; font-size: 1rem; background: var(--cream); }
+
+/* DETAIL SECTIONS */
+.detail-section { background: #fff; border-radius: 12px; border: 1px solid var(--cream-dark); padding: 1.25rem; margin-bottom: 1.5rem; display: none; }
+.detail-section.visible { display: block; }
+.form-group { margin-bottom: .9rem; }
+.form-group label { display: block; font-size: .73rem; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--brown-mid); margin-bottom: .35rem; }
+.form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: .65rem .8rem; border: 1.5px solid var(--cream-dark); border-radius: 8px;
+    font-size: .92rem; font-family: inherit; background: #fff; color: #333; transition: border-color .2s;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--brown-warm); }
+.form-row { display: flex; gap: .75rem; }
+.form-row .form-group { flex: 1; }
+
+/* SLOT PICKER */
+.slot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+.slot-btn { padding: .65rem .5rem; background: #fff; border: 2px solid var(--cream-dark); border-radius: 8px; font-size: .88rem; font-family: inherit; cursor: pointer; text-align: center; transition: border-color .15s, background .15s; }
+.slot-btn:hover { border-color: var(--brown-warm); }
+.slot-btn.selected { border-color: var(--brown-dark); background: var(--cream); font-weight: 700; }
+
+/* STRIPE CARD */
+.card-element-wrap { padding: .65rem .8rem; border: 1.5px solid var(--cream-dark); border-radius: 8px; background: #fff; transition: border-color .2s; }
+.card-element-wrap.focused { border-color: var(--brown-warm); }
+
+/* CTA */
+.cta-btn { display: block; width: 100%; padding: 1rem; background: var(--brown-dark); color: #fff; border: none; border-radius: 40px; font-size: 1rem; font-weight: 700; font-family: inherit; cursor: pointer; transition: background .2s; margin-top: 1.25rem; }
+.cta-btn:hover:not(:disabled) { background: var(--brown-mid); }
+.cta-btn:disabled { opacity: .5; cursor: not-allowed; }
+.success-msg { background: #d4edda; color: #155724; padding: 1rem; border-radius: 8px; margin-top: 1rem; text-align: center; font-size: .95rem; display: none; }
+.error-msg { background: #fdecea; color: #c0392b; padding: .9rem 1rem; border-radius: 8px; margin-top: .75rem; font-size: .9rem; display: none; }
+.note { font-size: .82rem; color: #777; margin-top: .5rem; }
+.section-title { font-size: 1rem; font-weight: 700; color: var(--brown-dark); margin-bottom: 1rem; }
+.divider { height: 1px; background: var(--cream-dark); margin: 1.25rem 0; }
+</style>
+</head>
+<body>
+
+<div class="shop-header">
+    <a href="/jalenswoodshop/" class="back-btn">&#8592; Shop</a>
+    <a href="/jalenswoodshop/" class="shop-header-brand">
+        <img src="/jalenswoodshop/photo.jpg" alt="Jalen McGee">
+        <div>
+            <div class="shop-header-name">Jalen's Woodshop</div>
+            <div class="shop-header-sub">Durham, NC · Handcrafted Wood Pieces</div>
+        </div>
+    </a>
+</div>
+
+<div class="page-wrap">
+    <h2>Your Cart</h2>
+
+    <!-- Cart Items -->
+    <div class="cart-list" id="cartList"></div>
+    <div class="order-totals" id="orderTotals" style="display:none">
+        <div class="total-row"><span>Subtotal</span><span id="totSubtotal">—</span></div>
+        <div class="total-row" id="rowShipping" style="display:none"><span id="shippingLabel">Shipping</span><span id="totShipping">—</span></div>
+        <div class="total-row" id="rowTax" style="display:none"><span>Sales Tax</span><span id="totTax">—</span></div>
+        <div class="total-row grand"><span>Total</span><span id="totGrand">—</span></div>
+    </div>
+
+    <!-- Shipping Method -->
+    <div id="checkoutBody" style="display:none">
+        <h2>How would you like to receive it?</h2>
+        <div class="method-cards">
+
+            <label class="method-card" id="card-ship" onclick="selectMethod('ship')">
+                <input type="radio" name="method" value="ship">
+                <div>
+                    <div class="method-card-title">&#x1F4E6; Ship to me</div>
+                    <div class="method-card-sub">Shipping cost calculated based on your address — Jalen will confirm before charging.</div>
+                </div>
+            </label>
+
+            <label class="method-card" id="card-delivery" onclick="selectMethod('delivery')">
+                <input type="radio" name="method" value="delivery">
+                <div>
+                    <div class="method-card-title">&#x1F697; Local delivery &mdash; Triangle NC</div>
+                    <div class="method-card-sub">Delivery within the Triangle area. Cost based on your address — Jalen will confirm before charging.</div>
+                </div>
+            </label>
+
+            <label class="method-card" id="card-pickup" onclick="selectMethod('pickup')">
+                <input type="radio" name="method" value="pickup">
+                <div>
+                    <div class="method-card-title">🏛️ Local pickup — Main Library, Durham <span class="method-badge badge-free">Free</span></div>
+                    <div class="method-card-sub">Pick up at the Main Library, 300 N Roxboro St, Durham NC 27701. Pay now to secure your item.</div>
+                </div>
+            </label>
+
+        </div>
+
+        <!-- Ship / Delivery Details -->
+        <div class="detail-section" id="section-address">
+            <div class="section-title" id="addrTitle">Delivery Address</div>
+            <div class="form-group">
+                <label>Address *</label>
+                <input type="text" id="addrStreet" autocomplete="off" placeholder="Start typing your address&hellip;">
+            </div>
+            <!-- Hidden fields populated by autocomplete -->
+            <input type="hidden" id="addrCity">
+            <input type="hidden" id="addrState">
+            <input type="hidden" id="addrZip">
+            <div class="form-group">
+                <label>Special instructions (optional)</label>
+                <textarea id="addrNote" rows="2" placeholder="Gate code, apt number, etc."></textarea>
+            </div>
+            <!-- Ship-only: rate fetcher -->
+            <div id="ratesFetcher" style="display:none;margin-top:.25rem">
+                <button type="button" class="btn" id="getRatesBtn" onclick="fetchRates()"
+                    style="background:var(--brown-mid);color:#fff;border:none;padding:.6rem 1.1rem;border-radius:8px;font-size:.88rem;font-family:inherit;cursor:pointer;width:100%">
+                    Get Shipping Rate
+                </button>
+                <div id="ratesResult"></div>
+            </div>
+            <!-- Delivery-only: mileage fee -->
+            <div id="deliveryFetcher" style="display:none;margin-top:.25rem">
+                <button type="button" id="getDeliveryBtn" onclick="calcDeliveryFee()"
+                    style="background:var(--brown-mid);color:#fff;border:none;padding:.6rem 1.1rem;border-radius:8px;font-size:.88rem;font-family:inherit;cursor:pointer;width:100%">
+                    &#x1F4CD; Calculate Delivery Fee
+                </button>
+                <div id="deliveryResult"></div>
+            </div>
+        </div>
+
+        <!-- Pickup Details -->
+        <div class="detail-section" id="section-pickup">
+            <div class="section-title">Choose a Pickup Time</div>
+            <div class="form-group">
+                <label>Date *</label>
+                <input type="date" id="pickupDate" min="">
+            </div>
+            <div class="form-group">
+                <label>Time Slot *</label>
+                <div class="slot-grid">
+                    <button type="button" class="slot-btn" id="slot-morning" onclick="selectSlot('8am–11am Eastern')">8am – 11am</button>
+                    <button type="button" class="slot-btn" id="slot-evening" onclick="selectSlot('5pm–8pm Eastern')">5pm – 8pm</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Info (always shown once method selected) -->
+        <div class="detail-section" id="section-contact">
+            <div class="section-title">Your Info</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>First Name *</label>
+                    <input type="text" id="contactFirst" autocomplete="given-name">
+                </div>
+                <div class="form-group">
+                    <label>Last Name *</label>
+                    <input type="text" id="contactLast" autocomplete="family-name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Email *</label>
+                <input type="email" id="contactEmail" autocomplete="email">
+            </div>
+            <div class="form-group">
+                <label>Phone (optional)</label>
+                <input type="tel" id="contactPhone" autocomplete="tel">
+            </div>
+            <div class="form-group">
+                <label>Message (optional)</label>
+                <textarea id="contactMsg" rows="2" placeholder="Any questions or notes…"></textarea>
+            </div>
+        </div>
+
+        <!-- Card payment — all methods -->
+        <div class="detail-section" id="section-payment">
+            <div class="section-title">Payment</div>
+            <div class="form-group">
+                <label>Card Details</label>
+                <div class="card-element-wrap" id="cardElementWrap">
+                    <div id="cardElement"></div>
+                </div>
+            </div>
+        </div>
+
+        <button class="cta-btn" id="submitBtn" onclick="submitOrder()" disabled>Continue</button>
+        <div class="success-msg" id="successMsg"></div>
+        <div class="error-msg" id="errorMsg"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://awccquoyscijmtqtibgr.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3Y2NxdW95c2Npam10cXRpYmdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4MDI0MDUsImV4cCI6MjA4MjM3ODQwNX0.zUBCXRah_oK8P_Q-1sFwZ5altAFUfZMOdBdY-tuXWrE';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const STRIPE_PK = 'pk_live_51SqHAlQ4x4ITVTPzXbvUh7brJUwZdJCXsiLcJ5byEuKk9FCbVUQ1PtV2sy4frNWI62LScJ6Lfs6mGaxUuyNvRQAh00TgErHcSO';
+const _stripe = Stripe(STRIPE_PK);
+let _cardElement = null;
+let _selectedMethod = null;
+let _selectedSlot   = null;
+let _shippingCost   = 0;   // extra cost added on top of subtotal
+let _taxRate        = 0.075; // loaded from settings; default 7.5%
+let _cart = [];
+
+function escHtml(s){ if(!s)return''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function getImageUrl(p){
+    if(!p)return null;
+    if(p.startsWith('http'))return p;
+    const{data}=sb.storage.from('item-images').getPublicUrl(p);
+    return data.publicUrl;
+}
+
+function loadCart(){
+    try{ _cart=JSON.parse(localStorage.getItem('jws_cart')||'[]'); }catch(_){_cart=[];}
+    // Load tax rate from settings
+    sb.from('settings').select('value').eq('key','tax_rate').maybeSingle().then(({data})=>{
+        if(data?.value) _taxRate=parseFloat(data.value)/100||0.075;
+    });
+    renderCart();
+}
+
+function renderCart(){
+    const el=document.getElementById('cartList');
+    if(!_cart.length){
+        el.innerHTML='<div class="empty-cart"><p style="font-size:2.5rem;margin-bottom:.75rem">&#x1F6D2;</p><p>Your cart is empty.<br><a href="/jalenswoodshop/">Browse items</a></p></div>';
+        document.getElementById('checkoutBody').style.display='none';
+        document.getElementById('orderTotals').style.display='none';
+        return;
+    }
+    el.innerHTML=_cart.map(item=>{
+        const img=item.image?`<img src="${escHtml(item.image)}" alt="${escHtml(item.name)}">`:`<div style="width:56px;height:56px;border-radius:8px;background:var(--cream);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0">&#x1FAB5;</div>`;
+        return `<div class="cart-item">
+            ${img}
+            <div class="cart-item-info">
+                <div class="cart-item-name">${escHtml(item.name)}</div>
+                ${item.tagline?`<div class="cart-item-tagline">${escHtml(item.tagline)}</div>`:''}
+            </div>
+            <div class="cart-item-price">$${parseFloat(item.price).toFixed(2)}</div>
+            <button class="cart-item-remove" onclick="removeItem(${item.id})" title="Remove">&times;</button>
+        </div>`;
+    }).join('');
+    document.getElementById('checkoutBody').style.display='block';
+    updateTotals();
+}
+
+function removeItem(id){
+    _cart=_cart.filter(i=>i.id!==id);
+    localStorage.setItem('jws_cart',JSON.stringify(_cart));
+    renderCart();
+}
+
+function checkReadyToPay(){
+    const btn=document.getElementById('submitBtn');
+    if(!btn) return;
+    let ready=false;
+    if(_selectedMethod==='ship'||_selectedMethod==='delivery'){
+        ready=_shippingCost>0;
+    } else if(_selectedMethod==='pickup'){
+        const date=document.getElementById('pickupDate').value;
+        ready=!!(date && _selectedSlot);
+    }
+    btn.disabled=!ready;
+}
+
+function updateTotals(){
+    const subtotal=_cart.reduce((s,i)=>s+parseFloat(i.price),0);
+    const taxBase=subtotal+_shippingCost;
+    const tax=_selectedMethod ? Math.round(taxBase*_taxRate*100)/100 : 0;
+    const grand=taxBase+tax;
+    const totals=document.getElementById('orderTotals');
+    totals.style.display=_cart.length?'block':'none';
+    document.getElementById('totSubtotal').textContent='$'+subtotal.toFixed(2);
+    const rowShip=document.getElementById('rowShipping');
+    if(_shippingCost>0){
+        rowShip.style.display='flex';
+        document.getElementById('totShipping').textContent='$'+_shippingCost.toFixed(2);
+    } else {
+        rowShip.style.display='none';
+    }
+    const rowTax=document.getElementById('rowTax');
+    if(tax>0){
+        rowTax.style.display='flex';
+        document.getElementById('totTax').textContent='$'+tax.toFixed(2);
+    } else {
+        rowTax.style.display='none';
+    }
+    document.getElementById('totGrand').textContent='$'+grand.toFixed(2);
+    const btn=document.getElementById('submitBtn');
+    if(btn && _selectedMethod) btn.textContent='Pay $'+grand.toFixed(2);
+    checkReadyToPay();
+}
+
+function initCard(){
+    if(_cardElement)return;
+    const elements=_stripe.elements();
+    _cardElement=elements.create('card',{style:{base:{fontFamily:'-apple-system,BlinkMacSystemFont,"Segoe UI",Georgia,serif',fontSize:'15px',color:'#333','::placeholder':{color:'#aaa'}},invalid:{color:'#c0392b'}}});
+    _cardElement.mount('#cardElement');
+    _cardElement.on('focus',()=>document.getElementById('cardElementWrap').classList.add('focused'));
+    _cardElement.on('blur',()=>document.getElementById('cardElementWrap').classList.remove('focused'));
+}
+
+function selectMethod(m){
+    _selectedMethod=m;
+    _shippingCost=0;
+    document.querySelectorAll('.method-card').forEach(c=>c.classList.remove('selected'));
+    document.getElementById('card-'+m).classList.add('selected');
+
+    // Address section
+    const showAddr=(m==='ship'||m==='delivery');
+    document.getElementById('section-address').classList.toggle('visible',showAddr);
+    document.getElementById('addrTitle').textContent=m==='delivery'?'Delivery Address':'Shipping Address';
+    document.getElementById('ratesFetcher').style.display=m==='ship'?'block':'none';
+    document.getElementById('deliveryFetcher').style.display=m==='delivery'?'block':'none';
+    document.getElementById('ratesResult').innerHTML='';
+    document.getElementById('deliveryResult').innerHTML='';
+    document.getElementById('getRatesBtn').disabled=false;
+    document.getElementById('getRatesBtn').textContent='\uD83D\uDCCB Get Shipping Rates';
+
+    // Pickup section
+    document.getElementById('section-pickup').classList.toggle('visible',m==='pickup');
+    document.getElementById('section-contact').classList.add('visible');
+
+    // Flat delivery fee
+    if(m==='delivery'){
+        // payment shown after mileage calc
+        document.getElementById('section-payment').classList.remove('visible');
+    } else if(m==='pickup'){
+        showPayment();
+    } else {
+        // ship — payment shown after rate selected
+        document.getElementById('section-payment').classList.remove('visible');
+    }
+
+    updateTotals();
+}
+
+function showPayment(){
+    document.getElementById('section-payment').classList.add('visible');
+    initCard();
+}
+
+async function fetchRates(){
+    const el=document.getElementById('addrStreet');
+    const street=(el.dataset.street||el.value).trim();
+    const city=document.getElementById('addrCity').value.trim();
+    const state=document.getElementById('addrState').value.trim();
+    const zip=document.getElementById('addrZip').value.trim();
+    if(!city||!state||!zip){ alert('Please select your address from the dropdown first.'); return; }
+
+    const btn=document.getElementById('getRatesBtn');
+    const box=document.getElementById('ratesResult');
+    btn.disabled=true;
+    btn.textContent='Fetching rates\u2026';
+    box.innerHTML='';
+    _shippingCost=0;
+    document.getElementById('section-payment').classList.remove('visible');
+    updateTotals();
+
+    try{
+        const res=await fetch(`${SUPABASE_URL}/functions/v1/get-rates`,{
+            method:'POST',
+            headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY},
+            body:JSON.stringify({cart:_cart.map(i=>({id:i.id})),to_street:street,to_city:city,to_state:state,to_zip:zip})
+        });
+        const {rates,error}=await res.json();
+        if(error)throw new Error(error);
+        if(!rates?.length){box.innerHTML='<p style="color:#c0392b;font-size:.82rem;margin-top:.5rem">No FedEx rates available for this address.</p>';return;}
+
+        // Auto-apply the single cheapest FedEx rate
+        const r=rates[0];
+        const days=r.delivery_days?` &middot; est. ${r.delivery_days} day${r.delivery_days!==1?'s':''}`:'';
+        box.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;padding:.55rem .8rem;background:#eaf5ea;border-radius:8px;margin-top:.5rem;font-size:.88rem">
+            <span>&#x2705; <strong>Shipping</strong><span style="opacity:.6">${days}</span></span>
+            <strong>$${parseFloat(r.rate).toFixed(2)}</strong>
+        </div>`;
+        selectRate(parseFloat(r.rate),'Shipping',null);
+
+    }catch(err){
+        box.innerHTML=`<p style="color:#c0392b;font-size:.82rem;margin-top:.5rem">${err.message}</p>`;
+    }finally{
+        btn.disabled=false;
+        btn.innerHTML='&#x1F4CB; Refresh Rates';
+    }
+}
+
+function selectRate(cost,label,el){
+    document.querySelectorAll('.rate-option').forEach(r=>r.classList.remove('selected'));
+    if(el)el.classList.add('selected');
+    _shippingCost=cost;
+    document.getElementById('shippingLabel').textContent='Shipping';
+    showPayment();
+    updateTotals();
+}
+
+function selectSlot(slot){
+    _selectedSlot=slot;
+    document.querySelectorAll('.slot-btn').forEach(b=>b.classList.remove('selected'));
+    document.getElementById(slot.includes('8am')?'slot-morning':'slot-evening').classList.add('selected');
+    checkReadyToPay();
+}
+
+// Set min date to tomorrow
+(()=>{
+    const d=new Date(); d.setDate(d.getDate()+1);
+    document.getElementById('pickupDate').min=d.toISOString().split('T')[0];
+})();
+document.getElementById('pickupDate').addEventListener('change',checkReadyToPay);
+
+async function submitOrder(){
+    const btn=document.getElementById('submitBtn');
+    const errEl=document.getElementById('errorMsg');
+    errEl.style.display='none';
+
+    if(!_selectedMethod){ errEl.textContent='Please select a delivery method.'; errEl.style.display='block'; return; }
+    if(_selectedMethod==='ship'&&_shippingCost===0){ errEl.textContent='Please get shipping rates first.'; errEl.style.display='block'; return; }
+    if(_selectedMethod==='delivery'&&_shippingCost===0){ errEl.textContent='Please calculate your delivery fee first.'; errEl.style.display='block'; return; }
+
+    const firstName=document.getElementById('contactFirst').value.trim();
+    const lastName=document.getElementById('contactLast').value.trim();
+    const email=document.getElementById('contactEmail').value.trim();
+    const phone=document.getElementById('contactPhone').value.trim();
+    const msg=document.getElementById('contactMsg').value.trim();
+
+    if(!firstName||!lastName){ errEl.textContent='Please enter your name.'; errEl.style.display='block'; return; }
+    if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ errEl.textContent='Please enter a valid email.'; errEl.style.display='block'; return; }
+
+    let shippingAddress=null;
+    if(_selectedMethod==='ship'||_selectedMethod==='delivery'){
+        const el=document.getElementById('addrStreet');
+        const street=(el.dataset.street||el.value).trim();
+        const city=document.getElementById('addrCity').value.trim();
+        const state=document.getElementById('addrState').value.trim();
+        const zip=document.getElementById('addrZip').value.trim();
+        const note=document.getElementById('addrNote').value.trim();
+        if(!street){ errEl.textContent='Please enter your address.'; errEl.style.display='block'; return; }
+        if(!city||!state||!zip){ errEl.textContent='Please select your address from the autocomplete dropdown.'; errEl.style.display='block'; return; }
+        shippingAddress={street,city,state,zip,note:note||null};
+    }
+
+    let pickupDate=null;
+    if(_selectedMethod==='pickup'){
+        pickupDate=document.getElementById('pickupDate').value;
+        if(!pickupDate){ errEl.textContent='Please select a pickup date.'; errEl.style.display='block'; return; }
+        if(!_selectedSlot){ errEl.textContent='Please select a pickup time slot.'; errEl.style.display='block'; return; }
+    }
+
+    const customerName=`${firstName} ${lastName}`;
+    const subtotal=_cart.reduce((s,i)=>s+parseFloat(i.price),0);
+    const grand=subtotal+_shippingCost;
+
+    btn.disabled=true;
+    btn.textContent='Processing\u2026';
+
+    try{
+        // Create PaymentIntent
+        const res=await fetch(`${SUPABASE_URL}/functions/v1/create-payment`,{
+            method:'POST',
+            headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY},
+            body:JSON.stringify({
+                cart:_cart.map(i=>({id:i.id,name:i.name,price:i.price})),
+                customer_name:customerName,
+                customer_email:email,
+                shipping_method:_selectedMethod,
+                pickup_date:pickupDate||undefined,
+                pickup_slot:_selectedSlot||undefined,
+                shipping_cost:_shippingCost||undefined
+            })
+        });
+        const data=await res.json();
+        if(!res.ok)throw new Error(data.error||'Could not start payment');
+
+        const{paymentIntent,error:stripeErr}=await _stripe.confirmCardPayment(data.client_secret,{
+            payment_method:{card:_cardElement,billing_details:{name:customerName,email}},
+            receipt_email:email
+        });
+        if(stripeErr)throw new Error(stripeErr.message);
+
+        // Save order
+        await sb.from('orders').insert([{
+            item_id:_cart.length===1?_cart[0].id:null,
+            item_name:_cart.map(i=>i.name).join(', '),
+            item_price:grand,
+            customer_name:customerName,
+            customer_email:email,
+            customer_phone:phone||null,
+            message:msg||null,
+            status:'paid',
+            shipping_method:_selectedMethod,
+            shipping_address:shippingAddress||null,
+            pickup_date:pickupDate||null,
+            pickup_slot:_selectedSlot||null,
+            cart_items:_cart,
+            stripe_session_id:paymentIntent.id,
+            shipping_cost:_shippingCost||null
+        }]);
+
+        localStorage.removeItem('jws_cart');
+        document.getElementById('successMsg').textContent='Payment confirmed! Check your email for details.';
+        document.getElementById('successMsg').style.display='block';
+        btn.textContent='Paid \u2713';
+        setTimeout(()=>window.location.href='/jalenswoodshop/success',2000);
+
+    }catch(err){
+        errEl.textContent=err.message;
+        errEl.style.display='block';
+        btn.disabled=false;
+        btn.textContent='Pay $'+grand.toFixed(2);
+    }
+}
+
+loadCart();
+
+// ── Google Places Autocomplete ──────────────────────────────
+function initAutocomplete() {
+    const input = document.getElementById('addrStreet');
+    if (!input || !window.google) return;
+    const ac = new google.maps.places.Autocomplete(input, {
+        types: ['address'],
+        componentRestrictions: { country: 'us' },
+        fields: ['address_components', 'formatted_address']
+    });
+    ac.addListener('place_changed', () => {
+        const place = ac.getPlace();
+        if (!place.address_components) return;
+        let streetNumber = '', route = '', city = '', state = '', zip = '';
+        for (const c of place.address_components) {
+            const t = c.types[0];
+            if (t === 'street_number')  streetNumber = c.long_name;
+            else if (t === 'route')     route        = c.long_name;
+            else if (t === 'locality')  city         = c.long_name;
+            else if (t === 'administrative_area_level_1') state = c.short_name;
+            else if (t === 'postal_code') zip         = c.long_name;
+        }
+        input.value = place.formatted_address || [streetNumber, route, city, state, zip].filter(Boolean).join(', ');
+        document.getElementById('addrCity').value  = city;
+        document.getElementById('addrState').value = state;
+        document.getElementById('addrZip').value   = zip;
+        // Store street-only in a data attribute for API calls
+        input.dataset.street = [streetNumber, route].filter(Boolean).join(' ');
+        // Trigger rate/fee refresh when address changes
+        if (_selectedMethod === 'ship' && zip) {
+            document.getElementById('ratesResult').innerHTML = '';
+            document.getElementById('section-payment').classList.remove('visible');
+            _shippingCost = 0;
+            updateTotals();
+        }
+        if (_selectedMethod === 'delivery' && zip) {
+            calcDeliveryFee();
+        }
+    });
+}
+
+function calcDeliveryFee(){
+    const el=document.getElementById('addrStreet');
+    const street=(el.dataset.street||el.value).trim();
+    const city=document.getElementById('addrCity').value.trim();
+    const state=document.getElementById('addrState').value.trim();
+    const zip=document.getElementById('addrZip').value.trim();
+    if(!city||!state||!zip){ alert('Please select your address from the dropdown first.'); return; }
+
+    const btn=document.getElementById('getDeliveryBtn');
+    const box=document.getElementById('deliveryResult');
+    btn.disabled=true;
+    btn.textContent='Calculating\u2026';
+    box.innerHTML='';
+    _shippingCost=0;
+    document.getElementById('section-payment').classList.remove('visible');
+    updateTotals();
+
+    fetch(`${SUPABASE_URL}/functions/v1/calc-delivery`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY},
+        body:JSON.stringify({street,city,state,zip})
+    })
+    .then(r=>r.json())
+    .then(({fee,error})=>{
+        if(error){
+            box.innerHTML='<p style="color:#c0392b;font-size:.82rem;margin-top:.5rem">'+error+'</p>';
+            return;
+        }
+        box.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;padding:.55rem .8rem;background:#eaf5ea;border-radius:8px;margin-top:.5rem;font-size:.88rem"><span>&#x2705; Delivery fee calculated</span><strong>$'+fee.toFixed(2)+'</strong></div>';
+        _shippingCost=fee;
+        document.getElementById('shippingLabel').textContent='Delivery fee';
+        showPayment();
+        updateTotals();
+    })
+    .catch(err=>{
+        box.innerHTML='<p style="color:#c0392b;font-size:.82rem;margin-top:.5rem">'+err.message+'</p>';
+    })
+    .finally(()=>{
+        btn.disabled=false;
+        btn.textContent='\uD83D\uDCCD Recalculate Delivery Fee';
+    });
+}
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKLU5-TcLjrglaU7E4sNoLNgstvclkMrQ&libraries=places&callback=initAutocomplete&loading=async" async></script>
+</body>
+</html>

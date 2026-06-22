@@ -344,6 +344,7 @@
         }
 
         .img-upload-area:hover { border-color: var(--brown-warm); background: #fdf9f3; }
+        .upload-drag-over { border-color: var(--brown-dark) !important; background: #faf3e8 !important; }
 
         .img-upload-area input[type="file"] {
             position: absolute;
@@ -591,7 +592,7 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: #f0ebe0;
+            background: var(--cream);
             z-index: 300;
             overflow-y: auto;
         }
@@ -599,25 +600,214 @@
         .edit-page-nav {
             background: linear-gradient(135deg, var(--brown-mid), var(--brown-dark));
             color: #fff;
-            padding: 1rem 1.25rem;
+            padding: 0.85rem 1.1rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 0.75rem;
             position: sticky;
             top: 0;
             z-index: 10;
         }
 
-        .edit-page-nav h2 { font-size: 1rem; font-weight: 700; }
+        .ep-back-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: #fff;
+            padding: 0.45rem 0.9rem;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .ep-back-btn:hover { background: rgba(255,255,255,0.25); }
+
+        .edit-page-nav h2 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            flex: 1;
+            text-align: center;
+        }
+
+        .ep-save-btn {
+            background: var(--brown-light);
+            border: none;
+            color: #fff;
+            padding: 0.5rem 1.1rem;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .ep-save-btn:hover:not(:disabled) { background: #a07848; }
+        .ep-save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .edit-page-body {
-            padding: 1.25rem;
-            max-width: 640px;
+            padding: 1.5rem 1.25rem 3rem;
+            max-width: 760px;
             margin: 0 auto;
         }
 
         .edit-page-body .field textarea {
             min-height: 180px;
+        }
+
+        /* star button on photo thumbnails */
+        .star-btn {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            background: rgba(0,0,0,0.55);
+            border: none;
+            border-radius: 0 6px 0 0;
+            width: 28px;
+            height: 28px;
+            font-size: 0.8rem;
+            line-height: 28px;
+            text-align: center;
+            cursor: pointer;
+            padding: 0;
+            color: #fff;
+        }
+
+        .star-btn.is-main { background: rgba(180,130,20,0.9); }
+
+        /* larger photo thumbnails in edit page */
+        #editCurrentPreviews .img-preview-wrap {
+            width: 100px;
+            height: 100px;
+            cursor: zoom-in;
+        }
+
+        /* ── PHOTO LIGHTBOX ─────────────────────────────────── */
+        #photoLightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(0,0,0,0.92);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .lb-inner {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 600px;
+            width: 100%;
+            gap: .75rem;
+        }
+
+        #lbImg {
+            width: 100%;
+            max-height: 65vh;
+            object-fit: contain;
+            border-radius: 10px;
+            display: block;
+            user-select: none;
+        }
+
+        .lb-close {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255,255,255,.15);
+            border: none;
+            color: #fff;
+            font-size: 1.2rem;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            cursor: pointer;
+            line-height: 38px;
+            text-align: center;
+            padding: 0;
+        }
+
+        .lb-close:hover { background: rgba(255,255,255,.3); }
+
+        .lb-arrow {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,.13);
+            border: none;
+            color: #fff;
+            font-size: 2rem;
+            width: 48px;
+            height: 64px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .lb-arrow:hover { background: rgba(255,255,255,.25); }
+        .lb-prev { left: .5rem; }
+        .lb-next { right: .5rem; }
+        .lb-arrow:disabled { opacity: .2; cursor: default; }
+
+        .lb-actions {
+            display: flex;
+            gap: .75rem;
+        }
+
+        .lb-btn {
+            padding: .55rem 1.1rem;
+            border-radius: 8px;
+            border: none;
+            font-size: .88rem;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .lb-star-btn { background: var(--brown-light); color: #fff; }
+        .lb-star-btn.is-main { background: #b48214; }
+        .lb-del-btn { background: #c0392b; color: #fff; }
+
+        .lb-counter {
+            color: rgba(255,255,255,.55);
+            font-size: .82rem;
+        }
+
+        .video-preview-wrap {
+            position: relative;
+            margin-bottom: 0.75rem;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #1e1510;
+        }
+
+        .video-preview-wrap video {
+            width: 100%;
+            max-height: 220px;
+            display: block;
+            border-radius: 10px;
+        }
+
+        .video-preview-wrap .img-preview-remove {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 24px;
+            height: 24px;
+            font-size: 0.8rem;
+            line-height: 24px;
+        }
+
+        .ep-danger-zone {
+            border-top: 1px solid var(--cream-dark);
+            margin-top: 2.5rem;
+            padding-top: 1.5rem;
         }
     </style>
 </head>
@@ -660,7 +850,10 @@
             <span class="tab-icon">➕</span>Add
         </div>
         <div class="tab" onclick="switchTab('orders')" id="tab-orders">
-            <span class="tab-icon">📋</span>Orders
+            <span class="tab-icon">&#x1F4CB;</span>Orders
+        </div>
+        <div class="tab" onclick="switchTab('settings')" id="tab-settings">
+            <span class="tab-icon">&#x2699;&#xFE0F;</span>Settings
         </div>
     </div>
 
@@ -724,32 +917,67 @@
         </div>
     </div>
 
+    <!-- Settings Panel -->
+    <div class="panel" id="panel-settings">
+        <div style="padding:.25rem 0">
+            <div class="field">
+                <label>Sales Tax Rate (%)</label>
+                <input type="number" id="taxRate" min="0" max="20" step="0.001" placeholder="e.g. 7.5" style="max-width:140px">
+                <small style="display:block;margin-top:.3rem;opacity:.65">Applied to all orders (items + shipping). Default: 7.5%</small>
+            </div>
+            <div class="field" style="margin-top:1.25rem">
+                <label>Pickup Instructions <small style="font-weight:normal;opacity:.65">(sent to customer after pickup order)</small></label>
+                <textarea id="pickupInstructions" rows="5" placeholder="e.g. Meet at the Main Library, 300 N Roxboro St, Durham NC 27701 front entrance. Bring your order confirmation email."></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+        </div>
+    </div>
+
 </div>
 
-<!-- ── EDIT MODAL ─────────────────────────────────────────── -->
-<div class="modal-overlay" id="editModal">
-    <div class="modal-sheet">
-        <div class="modal-header">
-            <h2>Edit Item</h2>
-            <button class="modal-close" onclick="closeEdit()">✕</button>
-        </div>
+<!-- ── FULL-PAGE EDIT / ADD ──────────────────────────────── -->
+<div id="editPage">
+
+    <nav class="edit-page-nav">
+        <button class="ep-back-btn" onclick="closeEdit()">← Back</button>
+        <h2 id="editPageTitle">Edit Item</h2>
+        <button class="ep-save-btn" id="saveEditBtn" onclick="saveEdit()">Save</button>
+    </nav>
+
+    <div class="edit-page-body">
 
         <input type="hidden" id="editId">
 
         <div class="field">
             <label>Item Name *</label>
-            <input type="text" id="editName">
+            <input type="text" id="editName" placeholder="e.g. Walnut Cutting Board">
+        </div>
+
+        <div class="field">
+            <label>Tagline</label>
+            <input type="text" id="editTagline" placeholder="e.g. Hand-carved from white oak">
         </div>
 
         <div class="field">
             <label>Description</label>
-            <textarea id="editDesc"></textarea>
+            <textarea id="editDesc" placeholder="Describe the item…"></textarea>
+        </div>
+
+        <div class="field">
+            <label style="display:flex;align-items:center;justify-content:space-between">
+                <span>Custom message <small style="font-weight:normal;opacity:.65">(shown below price on item page)</small></span>
+                <label style="display:flex;align-items:center;gap:.4rem;font-weight:normal;cursor:pointer">
+                    <input type="checkbox" id="editCustomMsgEnabled" style="width:auto;margin:0">
+                    Show
+                </label>
+            </label>
+            <input type="text" id="editCustomMsg" placeholder="e.g. Handcrafted to order — reach out with any questions">
         </div>
 
         <div class="field-row">
             <div class="field">
                 <label>Price ($) *</label>
-                <input type="number" id="editPrice" min="0" step="0.01">
+                <input type="number" id="editPrice" min="0" step="0.01" placeholder="0.00">
             </div>
             <div class="field">
                 <label>Available</label>
@@ -761,26 +989,42 @@
         </div>
 
         <div class="field">
-            <label>Current Photos</label>
+            <label>Photos <small style="font-weight:normal;opacity:.65">tap ⭐ to set cover (shows first)</small></label>
             <div id="editCurrentPreviews" class="img-preview-row"></div>
-        </div>
-        <div class="field">
-            <label>Add More Photos (optional)</label>
-            <div class="img-upload-area">
-                <input type="file" id="editImage" accept="image/*" multiple onchange="previewImages(this, 'editNewPreviews')">
+            <div class="img-upload-area" id="editPhotoArea" style="margin-top:.6rem">
+                <input type="file" id="editImage" accept="image/*" multiple onchange="previewEditImages(this.files)">
                 <span class="img-upload-icon">📷</span>
-                <span class="img-upload-text">Tap to add more photos</span>
+                <span class="img-upload-text">Tap or drag photos here</span>
             </div>
-            <div id="editNewPreviews" class="img-preview-row"></div>
         </div>
 
-        <div style="display:flex;gap:.75rem;margin-top:.5rem">
-            <button class="btn btn-ghost" style="flex:1" onclick="closeEdit()">Cancel</button>
-            <button class="btn btn-primary" style="flex:2" id="saveEditBtn" onclick="saveEdit()">Save Changes</button>
+        <div class="field">
+            <label>Videos <small style="font-weight:normal;opacity:.65">play on hover on shop page</small></label>
+            <div id="editVideoWrap"></div>
+            <div class="img-upload-area" id="videoUploadArea">
+                <input type="file" id="editVideo" accept="video/*" multiple onchange="previewVideos(this.files)">
+                <span class="img-upload-icon">🎬</span>
+                <span class="img-upload-text">Tap or drag videos here (add multiple)</span>
+        <div class="ep-danger-zone">
+            <button id="deleteBtn" class="btn btn-danger" style="width:100%" onclick="deleteItem()">Delete Item</button>
         </div>
 
-        <button class="btn btn-danger" style="width:100%;margin-top:.75rem" onclick="deleteItem()">Delete Item</button>
     </div>
+</div>
+
+<!-- ── PHOTO LIGHTBOX ──────────────────────────────────── -->
+<div id="photoLightbox" style="display:none" onclick="lbBgClick(event)">
+    <div class="lb-inner">
+        <img id="lbImg" src="" alt="">
+        <div class="lb-actions">
+            <button class="lb-btn lb-star-btn" id="lbStarBtn" onclick="lbStar()">☆ Set as cover</button>
+            <button class="lb-btn lb-del-btn" onclick="lbDelete()">🗑 Delete</button>
+        </div>
+        <div class="lb-counter" id="lbCounter"></div>
+    </div>
+    <button class="lb-close" onclick="closeLightbox()">✕</button>
+    <button class="lb-arrow lb-prev" id="lbPrev" onclick="lbNav(-1)">&#8249;</button>
+    <button class="lb-arrow lb-next" id="lbNext" onclick="lbNav(1)">&#8250;</button>
 </div>
 
 <!-- ── TOAST ──────────────────────────────────────────────── -->
@@ -854,6 +1098,7 @@ async function showApp() {
     document.getElementById('app').style.display  = 'block';
     loadItems();
     loadOrders();
+    loadSettings();
 }
 
 // Restore session if page is refreshed
@@ -904,9 +1149,12 @@ function previewImages(input, containerId) {
 }
 
 async function uploadImage(file) {
-    const ext  = file.name.split('.').pop();
+    const ext  = file.name.split('.').pop().toLowerCase();
     const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-    const { error } = await sb.storage.from('item-images').upload(path, file, { upsert: false });
+    const { error } = await sb.storage.from('item-images').upload(path, file, {
+        upsert: false,
+        contentType: file.type || 'image/jpeg'
+    });
     if (error) throw error;
     return path;
 }
@@ -996,9 +1244,13 @@ async function openEditPage(id) {
     document.getElementById('editDesc').value                = '';
     document.getElementById('editPrice').value               = '';
     document.getElementById('editAvailable').value           = 'true';
+    document.getElementById('editCustomMsg').value           = '';
+    document.getElementById('editCustomMsgEnabled').checked  = false;
     document.getElementById('editImage').value               = '';
-    document.getElementById('editNewPreviews').innerHTML     = '';
+    document.getElementById('editVideo').value               = '';
     document.getElementById('editCurrentPreviews').innerHTML = '';
+    document.getElementById('editVideoWrap').innerHTML       = '';
+    document.getElementById('videoUploadArea').style.display = '';
     document.getElementById('deleteBtn').style.display       = id ? 'block' : 'none';
     document.getElementById('editPageTitle').textContent     = id ? 'Edit Item' : 'Add Item';
 
@@ -1013,7 +1265,9 @@ async function openEditPage(id) {
             document.getElementById('editTagline').value   = data.tagline || '';
             document.getElementById('editDesc').value      = data.description || '';
             document.getElementById('editPrice').value     = data.price;
-            document.getElementById('editAvailable').value = data.available ? 'true' : 'false';
+            document.getElementById('editAvailable').value           = data.available ? 'true' : 'false';
+            document.getElementById('editCustomMsg').value           = data.custom_message || '';
+            document.getElementById('editCustomMsgEnabled').checked  = !!data.custom_message_enabled;
 
             const existingPaths = Array.isArray(data.image_paths) && data.image_paths.length
                 ? data.image_paths
@@ -1023,7 +1277,20 @@ async function openEditPage(id) {
                 return `<div class="img-preview-wrap" data-path="${escHtml(p)}">
                     <img src="${url}" alt="photo ${i+1}">
                     <button class="img-preview-remove" type="button"
-                        onclick="this.closest('.img-preview-wrap').remove()" title="Remove">✕</button>
+                        onclick="this.closest('.img-preview-wrap').remove(); updateStars()" title="Remove">✕</button>
+                    <button class="star-btn${i === 0 ? ' is-main' : ''}" type="button"
+                        onclick="setMainPhoto(this)" title="${i === 0 ? 'Cover photo' : 'Set as cover'}">${i === 0 ? '⭐' : '☆'}</button>
+                </div>`;
+            }).join('');
+
+            const vidPaths = Array.isArray(data.video_paths) && data.video_paths.length
+                ? data.video_paths
+                : (data.video_path ? [data.video_path] : []);
+            document.getElementById('editVideoWrap').innerHTML = vidPaths.map(vp => {
+                const vu = getImageUrl(vp);
+                return `<div class="video-preview-wrap" data-video-path="${escHtml(vp)}">
+                    <video src="${escHtml(vu)}" muted loop controls></video>
+                    <button class="img-preview-remove" type="button" onclick="this.closest('.video-preview-wrap').remove()" title="Remove">✕</button>
                 </div>`;
             }).join('');
         } catch (err) {
@@ -1033,7 +1300,7 @@ async function openEditPage(id) {
     }
 
     document.getElementById('editPage').style.display = 'block';
-    window.scrollTo(0, 0);
+    document.getElementById('editPage').scrollTop = 0;
 }
 
 function closeEdit() {
@@ -1041,14 +1308,77 @@ function closeEdit() {
     _editItem = null;
 }
 
+// ── Edit-page photo preview (adds to unified starred list) ──────
+function previewEditImages(source) {
+    const files = source instanceof FileList ? source : source.files;
+    const container = document.getElementById('editCurrentPreviews');
+    Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = e => {
+            const wrap = document.createElement('div');
+            wrap.className = 'img-preview-wrap';
+            wrap._file = file;
+            wrap.innerHTML = `<img src="${e.target.result}" alt="preview">
+                <button class="img-preview-remove" type="button"
+                    onclick="this.closest('.img-preview-wrap').remove(); updateStars()" title="Remove">✕</button>
+                <button class="star-btn" type="button"
+                    onclick="setMainPhoto(this)" title="Set as cover">☆</button>`;
+            container.appendChild(wrap);
+            updateStars();
+        };
+        reader.readAsDataURL(file);
+    });
+    // reset so same files can be re-selected if needed
+    if (source && source.value !== undefined) source.value = '';
+}
+
+// ── Photo star / ordering ──────────────────────────────────────
+function setMainPhoto(btn) {
+    const wrap = btn.closest('.img-preview-wrap');
+    document.getElementById('editCurrentPreviews').prepend(wrap);
+    updateStars();
+}
+
+function updateStars() {
+    document.querySelectorAll('#editCurrentPreviews .img-preview-wrap').forEach((wrap, i) => {
+        const star = wrap.querySelector('.star-btn');
+        if (!star) return;
+        star.textContent = i === 0 ? '⭐' : '☆';
+        star.title       = i === 0 ? 'Cover photo' : 'Set as cover';
+        star.classList.toggle('is-main', i === 0);
+    });
+}
+
+// ── Video preview helpers ──────────────────────────────────────
+function previewVideos(files) {
+    const wrap = document.getElementById('editVideoWrap');
+    Array.from(files).forEach(file => {
+        if (!file.type.startsWith('video/')) return;
+        const url = URL.createObjectURL(file);
+        const div = document.createElement('div');
+        div.className = 'video-preview-wrap';
+        div._file = file;
+        div.innerHTML = `<video src="${url}" muted loop controls></video>
+            <button class="img-preview-remove" type="button" onclick="this.closest('.video-preview-wrap').remove()" title="Remove">✕</button>`;
+        wrap.appendChild(div);
+    });
+    document.getElementById('editVideo').value = '';
+}
+
+function removeCurrentVideo() {
+    document.getElementById('editVideoWrap').innerHTML = '';
+}
+
 async function saveEdit() {
     const idVal     = document.getElementById('editId').value;
     const isNew     = !idVal;
-    const name      = document.getElementById('editName').value.trim();
-    const tagline   = document.getElementById('editTagline').value.trim();
-    const desc      = document.getElementById('editDesc').value.trim();
-    const price     = parseFloat(document.getElementById('editPrice').value);
-    const available = document.getElementById('editAvailable').value === 'true';
+    const name               = document.getElementById('editName').value.trim();
+    const tagline            = document.getElementById('editTagline').value.trim();
+    const desc               = document.getElementById('editDesc').value.trim();
+    const price              = parseFloat(document.getElementById('editPrice').value);
+    const available          = document.getElementById('editAvailable').value === 'true';
+    const customMsg          = document.getElementById('editCustomMsg').value.trim();
+    const customMsgEnabled   = document.getElementById('editCustomMsgEnabled').checked;
 
     if (!name)        return showToast('Name is required', 'error');
     if (isNaN(price)) return showToast('Price is required', 'error');
@@ -1058,22 +1388,44 @@ async function saveEdit() {
     btn.textContent = 'Saving…';
 
     try {
-        const remaining = Array.from(
-            document.querySelectorAll('#editCurrentPreviews .img-preview-wrap[data-path]')
-        ).map(el => el.dataset.path);
+        // Collect all photo wraps in display order (existing paths + newly chosen files)
+        const allWraps = Array.from(document.querySelectorAll('#editCurrentPreviews .img-preview-wrap'));
+        const uploadJobs = allWraps
+            .filter(w => w._file)
+            .map(w => ({ wrap: w, promise: uploadImage(w._file) }));
+        // Upload new files in parallel
+        await Promise.all(uploadJobs.map(async j => { j.path = await j.promise; }));
+        const allPaths = allWraps.map(w => w.dataset.path || uploadJobs.find(j => j.wrap === w)?.path).filter(Boolean);
 
-        const newFiles = document.getElementById('editImage').files;
-        const newPaths = newFiles.length ? await uploadImages(newFiles) : [];
-        const allPaths = [...remaining, ...newPaths];
+        // Video: collect all wraps, keep existing paths, upload new files
+        const allVideoWraps = Array.from(document.querySelectorAll('#editVideoWrap .video-preview-wrap'));
+        const videoPaths = [];
+        for (const vw of allVideoWraps) {
+            if (vw.dataset.videoPath) {
+                videoPaths.push(vw.dataset.videoPath);
+            } else if (vw._file) {
+                const vFile = vw._file;
+                const ext = (vFile.name.split('.').pop() || 'mp4').toLowerCase();
+                const vPath = `videos/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+                const { error: ve } = await sb.storage.from('item-images').upload(vPath, vFile, { upsert: false });
+                if (ve) throw ve;
+                videoPaths.push(vPath);
+            }
+        }
+        const videoPath = videoPaths[0] || null;
 
         const payload = {
             name,
-            tagline:     tagline || null,
-            description: desc    || null,
+            tagline:                 tagline || null,
+            description:             desc    || null,
             price,
             available,
-            image_path:  allPaths[0] || null,
-            image_paths: allPaths
+            image_path:              allPaths[0] || null,
+            image_paths:             allPaths,
+            video_path:              videoPath,
+            video_paths:             videoPaths.length ? videoPaths : null,
+            custom_message:          customMsg || null,
+            custom_message_enabled:  customMsgEnabled
         };
 
         if (isNew) {
@@ -1128,18 +1480,51 @@ async function loadOrders() {
 }
 
 function renderOrders(orders) {
+    _ordersCache = orders;
     const el = document.getElementById('ordersList');
     if (!orders.length) {
-        el.innerHTML = `<div class="empty-state"><div class="icon">📋</div><p>No orders yet.</p></div>`;
+        el.innerHTML = `<div class="empty-state"><div class="icon">&#x1F4CB;</div><p>No orders yet.</p></div>`;
         return;
     }
 
     el.innerHTML = orders.map(o => {
         const date    = new Date(o.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
         const status  = o.status || 'pending';
-        const badge   = `<span class="status-badge status-${status}">${status}</span>`;
+        const badgeClass = status === 'pending_quote' ? 'status-pending' : `status-${status}`;
+        const badgeLabel = status === 'pending_quote' ? 'Quote Needed' : status;
+        const badge   = `<span class="status-badge ${badgeClass}">${badgeLabel}</span>`;
         const msg     = o.message ? `<div class="order-message">"${escHtml(o.message)}"</div>` : '';
-        const actions = status === 'pending' ? `
+
+        let methodHtml = '';
+        if (o.shipping_method === 'pickup') {
+            methodHtml = `<div class="order-meta">&#x1F3DB;&#xFE0F; Pickup &mdash; ${escHtml(o.pickup_date||'')} &middot; ${escHtml(o.pickup_slot||'')}</div>`;
+        } else if (o.shipping_method === 'delivery') {
+            const addr = o.shipping_address;
+            const addrStr = addr ? `${addr.street}, ${addr.city}, ${addr.state} ${addr.zip}` : '';
+            methodHtml = `<div class="order-meta">&#x1F697; Delivery &mdash; ${escHtml(addrStr)}</div>`;
+        } else if (o.shipping_method === 'ship') {
+            const addr = o.shipping_address;
+            const addrStr = addr ? `${addr.street}, ${addr.city}, ${addr.state} ${addr.zip}` : '';
+            methodHtml = `<div class="order-meta">&#x1F4E6; Ship &mdash; ${escHtml(addrStr)}</div>`;
+        }
+
+        const getRatesBtn = (o.shipping_method === 'ship' && (status === 'pending_quote' || status === 'pending'))
+            ? `<div style="margin-top:.6rem">
+                <button class="btn btn-ghost" id="rates-btn-${o.id}" onclick="getRates(${o.id})">&#x1F4CB; Get Shipping Rates</button>
+                <div id="rates-${o.id}"></div>
+               </div>`
+            : '';
+
+        let cartHtml = '';
+        if (Array.isArray(o.cart_items) && o.cart_items.length > 1) {
+            cartHtml = `<div class="order-meta" style="margin-top:.2rem">${o.cart_items.map(i=>escHtml(i.name)).join(', ')}</div>`;
+        }
+
+        const quoteNote = status === 'pending_quote'
+            ? `<div style="background:#fff3cd;color:#856404;padding:.5rem .75rem;border-radius:6px;font-size:.82rem;margin-top:.5rem">&#x1F4AC; Awaiting shipping quote &mdash; reply to customer to confirm cost.</div>`
+            : '';
+
+        const actions = (status === 'pending' || status === 'pending_quote') ? `
             <div class="order-actions">
                 <button class="btn btn-ghost" onclick="updateOrderStatus(${o.id},'declined')">Decline</button>
                 <button class="btn btn-primary" onclick="updateOrderStatus(${o.id},'complete')">Mark Complete</button>
@@ -1150,18 +1535,22 @@ function renderOrders(orders) {
             <div class="order-header">
                 <div>
                     <div class="order-name">${escHtml(o.customer_name)}</div>
-                    <div class="order-meta">${escHtml(o.item_name)} · ${date}</div>
+                    <div class="order-meta">${escHtml(o.item_name)} &middot; ${date}</div>
                     <div class="order-meta">
                         ${o.customer_email ? `<a href="mailto:${escHtml(o.customer_email)}">${escHtml(o.customer_email)}</a>` : ''}
-                        ${o.customer_phone ? ` · <a href="tel:${escHtml(o.customer_phone)}">${escHtml(o.customer_phone)}</a>` : ''}
+                        ${o.customer_phone ? ` &middot; <a href="tel:${escHtml(o.customer_phone)}">${escHtml(o.customer_phone)}</a>` : ''}
                     </div>
+                    ${methodHtml}
+                    ${cartHtml}
                 </div>
                 <div style="text-align:right">
-                    <div class="order-price">$${parseFloat(o.item_price).toFixed(2)}</div>
+                    <div class="order-price">$${parseFloat(o.item_price||0).toFixed(2)}</div>
                     <div style="margin-top:4px">${badge}</div>
                 </div>
             </div>
             ${msg}
+            ${quoteNote}
+            ${getRatesBtn}
             ${actions}
         </div>`;
     }).join('');
@@ -1171,12 +1560,180 @@ async function updateOrderStatus(id, status) {
     try {
         const { error } = await sb.from('orders').update({ status }).eq('id', id);
         if (error) throw error;
-        showToast(`Order marked as ${status} ✓`, 'success');
+        showToast(`Order marked as ${status} \u2713`, 'success');
         loadOrders();
     } catch (err) {
         showToast('Error: ' + err.message, 'error');
     }
 }
+
+let _ordersCache = [];
+
+async function getRates(orderId) {
+    const o   = _ordersCache.find(x => x.id === orderId);
+    const btn = document.getElementById(`rates-btn-${orderId}`);
+    const box = document.getElementById(`rates-${orderId}`);
+    if (!btn || !box) return;
+    btn.disabled    = true;
+    btn.textContent = 'Fetching\u2026';
+    box.innerHTML   = '';
+    try {
+        const res  = await fetch(`${SUPABASE_URL}/functions/v1/get-rates`, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` },
+            body:    JSON.stringify({ order_id: orderId }),
+        });
+        const { rates, error } = await res.json();
+        if (error) throw new Error(error);
+        if (!rates?.length) { box.innerHTML = '<p style="color:#666;font-size:.82rem;margin-top:.4rem">No rates returned.</p>'; return; }
+
+        const name     = o?.customer_name  || 'there';
+        const email    = o?.customer_email || '';
+        const itemName = o?.item_name      || 'your order';
+
+        box.innerHTML = rates.map((r, i) => {
+            const days    = r.delivery_days ? ` \u00b7 est. ${r.delivery_days} day${r.delivery_days !== 1 ? 's' : ''}` : '';
+            const subject = encodeURIComponent(`Shipping quote \u2014 ${itemName}`);
+            const body    = encodeURIComponent(`Hi ${name},\n\nYour shipping quote for ${itemName} via ${r.carrier} ${r.service} is $${parseFloat(r.rate).toFixed(2)}${r.delivery_days ? ` (est. ${r.delivery_days} days)` : ''}.\n\nReply to confirm and I\u2019ll send a payment link for the shipping cost.\n\nThanks,\nJalen`);
+            return `<div style="display:flex;align-items:center;justify-content:space-between;padding:.4rem .6rem;background:${i===0?'#eaf5ea':'#f5f5f5'};border-radius:6px;margin-top:.3rem;font-size:.82rem;gap:.5rem">
+                <span>${i===0?'<strong>':''}${r.carrier} ${r.service}${i===0?'</strong>':''}<span style="opacity:.6">${days}</span></span>
+                <span style="display:flex;align-items:center;gap:.45rem;white-space:nowrap">
+                    <strong>$${parseFloat(r.rate).toFixed(2)}</strong>
+                    ${email ? `<a href="mailto:${email}?subject=${subject}&body=${body}" style="background:#5d4e37;color:#fff;padding:.18rem .5rem;border-radius:4px;text-decoration:none;font-size:.75rem">Send Quote</a>` : ''}
+                </span>
+            </div>`;
+        }).join('');
+    } catch (err) {
+        box.innerHTML = `<p style="color:#c0392b;font-size:.82rem;margin-top:.4rem">${err.message}</p>`;
+    } finally {
+        btn.disabled    = false;
+        btn.textContent = '\uD83D\uDCCB Get Shipping Rates';
+    }
+}
+
+async function saveSettings() {
+    const taxVal = parseFloat(document.getElementById('taxRate').value);
+    const instrVal = document.getElementById('pickupInstructions').value.trim();
+    try {
+        const upserts = [
+            { key: 'pickup_instructions', value: instrVal },
+        ];
+        if (!isNaN(taxVal) && taxVal >= 0) {
+            upserts.push({ key: 'tax_rate', value: String(taxVal) });
+        }
+        const { error } = await sb.from('settings').upsert(upserts);
+        if (error) throw error;
+        showToast('Settings saved \u2713', 'success');
+    } catch (err) {
+        showToast('Error: ' + err.message, 'error');
+    }
+}
+
+async function savePickupInstructions() {
+    const val = document.getElementById('pickupInstructions').value.trim();
+    try {
+        const { error } = await sb.from('settings').upsert({ key: 'pickup_instructions', value: val });
+        if (error) throw error;
+        showToast('Instructions saved \u2713', 'success');
+    } catch (err) {
+        showToast('Error: ' + err.message, 'error');
+    }
+}
+
+async function loadSettings() {
+    try {
+        const { data } = await sb.from('settings').select('key,value').in('key', ['pickup_instructions','tax_rate']);
+        if (!data) return;
+        const map = Object.fromEntries(data.map(r => [r.key, r.value]));
+        if (map.pickup_instructions) document.getElementById('pickupInstructions').value = map.pickup_instructions;
+        if (map.tax_rate) document.getElementById('taxRate').value = map.tax_rate;
+    } catch (_) {}
+}
+
+// ── Photo Lightbox ────────────────────────────────────────────
+let _lbIndex = 0;
+
+function _lbWraps() {
+    return Array.from(document.querySelectorAll('#editCurrentPreviews .img-preview-wrap'));
+}
+
+function openLightbox(idx) {
+    _lbIndex = idx;
+    _lbRender();
+    document.getElementById('photoLightbox').style.display = 'flex';
+}
+
+function closeLightbox() {
+    document.getElementById('photoLightbox').style.display = 'none';
+}
+
+function lbBgClick(e) {
+    if (e.target === document.getElementById('photoLightbox')) closeLightbox();
+}
+
+function _lbRender() {
+    const wraps = _lbWraps();
+    if (!wraps.length) { closeLightbox(); return; }
+    _lbIndex = Math.max(0, Math.min(_lbIndex, wraps.length - 1));
+    const wrap = wraps[_lbIndex];
+    const img = wrap.querySelector('img');
+    document.getElementById('lbImg').src = img ? img.src : '';
+    document.getElementById('lbCounter').textContent = `${_lbIndex + 1} / ${wraps.length}`;
+    const isMain = _lbIndex === 0;
+    const starBtn = document.getElementById('lbStarBtn');
+    starBtn.textContent = isMain ? '⭐ Cover photo' : '☆ Set as cover';
+    starBtn.classList.toggle('is-main', isMain);
+    document.getElementById('lbPrev').disabled = _lbIndex === 0;
+    document.getElementById('lbNext').disabled = _lbIndex === wraps.length - 1;
+}
+
+function lbNav(dir) {
+    _lbIndex += dir;
+    _lbRender();
+}
+
+function lbStar() {
+    const wraps = _lbWraps();
+    if (!wraps.length) return;
+    const wrap = wraps[_lbIndex];
+    document.getElementById('editCurrentPreviews').prepend(wrap);
+    _lbIndex = 0;
+    updateStars();
+    _lbRender();
+}
+
+function lbDelete() {
+    const wraps = _lbWraps();
+    if (!wraps.length) return;
+    wraps[_lbIndex].remove();
+    updateStars();
+    const remaining = _lbWraps();
+    if (!remaining.length) { closeLightbox(); return; }
+    _lbIndex = Math.min(_lbIndex, remaining.length - 1);
+    _lbRender();
+}
+
+// Open lightbox when clicking a photo thumbnail
+document.getElementById('editCurrentPreviews').addEventListener('click', function(e) {
+    const wrap = e.target.closest('.img-preview-wrap');
+    if (!wrap || e.target.closest('button')) return; // ignore button clicks
+    const idx = _lbWraps().indexOf(wrap);
+    if (idx >= 0) openLightbox(idx);
+});
+
+// ── Drag-and-drop uploads ──────────────────────────────────────
+(function initDragDrop() {
+    function setupDrop(areaId, handler) {
+        const area = document.getElementById(areaId);
+        if (!area) return;
+        area.addEventListener('dragover', e => { e.preventDefault(); area.classList.add('upload-drag-over'); });
+        area.addEventListener('dragleave', e => { if (!area.contains(e.relatedTarget)) area.classList.remove('upload-drag-over'); });
+        area.addEventListener('drop', e => { e.preventDefault(); area.classList.remove('upload-drag-over'); if (e.dataTransfer.files.length) handler(e.dataTransfer.files); });
+    }
+    setupDrop('editPhotoArea',   files => previewEditImages(files));
+    setupDrop('videoUploadArea', files => previewVideos(files));
+    setupDrop('uploadArea',      files => previewImages({ files }, 'addPreviews'));
+})();
 
 // ── Utility ────────────────────────────────────────────────────
 function escHtml(str) {

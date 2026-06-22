@@ -24,7 +24,16 @@
             padding: 3rem 2rem;
             text-align: center;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
         }
+        .cart-btn {
+            position: absolute; top: 1rem; right: 1.25rem;
+            background: rgba(255,255,255,.15); border: none; color: #fff; padding: .45rem .8rem;
+            border-radius: 6px; font-size: .88rem; cursor: pointer; text-decoration: none;
+            display: inline-flex; align-items: center; gap: .35rem;
+        }
+        .cart-btn:hover { background: rgba(255,255,255,.25); }
+        .cart-badge { background: #b8976a; color: #fff; font-size: .7rem; font-weight: 700; border-radius: 20px; padding: .05rem .4rem; min-width: 1.1rem; text-align: center; }
 
         header h1 {
             font-size: 3rem;
@@ -88,6 +97,40 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        /* video overlay on item card */
+        .card-video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.4s;
+            z-index: 1;
+        }
+
+        .card-video-icon {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0,0,0,0.5);
+            color: #fff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        @media (hover: hover) {
+            /* on hover-capable devices the video plays — icon not needed */
+            .card-video-icon { display: none; }
         }
 
         /* ── CAROUSEL ───────────────────────────── */
@@ -375,46 +418,6 @@
         <div class="items-grid" id="itemsGrid"></div>
     </div>
 
-    <div id="purchaseModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 id="modalTitle">Request to Purchase</h2>
-            <form id="purchaseForm">
-                <input type="hidden" id="itemId" name="itemId">
-                <input type="hidden" id="itemName" name="itemName">
-                <input type="hidden" id="itemPrice" name="itemPrice">
-                
-                <div class="form-group">
-                    <label for="customerName">Your Name *</label>
-                    <input type="text" id="customerName" name="customerName" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="customerEmail">Email *</label>
-                    <input type="email" id="customerEmail" name="customerEmail" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="customerPhone">Phone Number</label>
-                    <input type="tel" id="customerPhone" name="customerPhone">
-                </div>
-
-                <div class="form-group">
-                    <label for="message">Message (Optional)</label>
-                    <textarea id="message" name="message" rows="4" placeholder="Any special requests or questions..."></textarea>
-                </div>
-
-                <button type="submit" class="submit-btn" id="submitBtn">Submit Request</button>
-                <div class="success-message" id="successMessage">
-                    Thank you! Your request has been sent successfully.
-                </div>
-                <div class="error-message" id="errorMessage">
-                    Sorry, there was an error submitting your request. Please try again.
-                </div>
-            </form>
-        </div>
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // ═══════════════════════════════════════════════════════════════
@@ -431,31 +434,31 @@
 
         const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const modal = document.getElementById('purchaseModal');
-        const closeBtn = document.querySelector('.close');
-        const form = document.getElementById('purchaseForm');
-        const successMessage = document.getElementById('successMessage');
-        const errorMessage = document.getElementById('errorMessage');
-        const submitBtn = document.getElementById('submitBtn');
         const loading = document.getElementById('loading');
         const itemsGrid = document.getElementById('itemsGrid');
 
         // Get public URL for images stored in Supabase Storage
         function getImageUrl(imagePath) {
             if (!imagePath) return null;
-            
-            // If it's already a full URL, return as is
             if (imagePath.startsWith('http')) return imagePath;
-            
-            // If it's an emoji or very short string, return as is
             if (imagePath.length < 10) return imagePath;
-            
-            // Get public URL from Supabase Storage bucket 'item-images'
-            const { data } = sb.storage
-                .from('item-images')
-                .getPublicUrl(imagePath);
-            
+            const { data } = sb.storage.from('item-images').getPublicUrl(imagePath);
             return data.publicUrl;
+        }
+
+        function playCardVideo(imgWrap) {
+            const video = imgWrap.querySelector('.card-video');
+            if (!video) return;
+            video.style.opacity = '1';
+            video.play().catch(() => {});
+        }
+
+        function pauseCardVideo(imgWrap) {
+            const video = imgWrap.querySelector('.card-video');
+            if (!video) return;
+            video.style.opacity = '0';
+            video.pause();
+            video.currentTime = 0;
         }
 
         async function loadItems() {
@@ -496,28 +499,37 @@
                             return `<div class="carousel-slide"><img src="${u}" alt="${item.name} photo ${i+1}"></div>`;
                         }).join('');
                         const dots = paths.map((_, i) =>
-                            `<span class="carousel-dot${i===0?' active':''}" onclick="goSlide('${cid}',${i})"></span>`
+                            `<span class="carousel-dot${i===0?' active':''}" onclick="event.stopPropagation();event.preventDefault();goSlide('${cid}',${i})"></span>`
                         ).join('');
                         imageContent = `
                             <div class="carousel" id="${cid}" data-idx="0"
                                  ontouchstart="tcStart(event,this)" ontouchend="tcEnd(event,this)">
                                 <div class="carousel-track">${slides}</div>
-                                <button class="carousel-btn prev" onclick="event.stopPropagation();shiftSlide('${cid}',-1)">‹</button>
-                                <button class="carousel-btn next" onclick="event.stopPropagation();shiftSlide('${cid}',1)">›</button>
+                                <button class="carousel-btn prev" onclick="event.stopPropagation();event.preventDefault();shiftSlide('${cid}',-1)">&#8249;</button>
+                                <button class="carousel-btn next" onclick="event.stopPropagation();event.preventDefault();shiftSlide('${cid}',1)">&#8250;</button>
                                 <div class="carousel-dots">${dots}</div>
                             </div>`;
                     }
 
+                    // Video overlay (if item has a video)
+                    const videoUrl = item.video_path ? getImageUrl(item.video_path) : null;
+                    const videoHtml = videoUrl ? `
+                        <video class="card-video" src="${videoUrl}" muted loop playsinline preload="none"></video>
+                        <div class="card-video-icon">▶</div>` : '';
+
+                    const hoverAttrs = videoUrl
+                        ? `onmouseenter="playCardVideo(this)" onmouseleave="pauseCardVideo(this)"`
+                        : '';
+
                     return `
                         <a class="item-card" href="/jalenswoodshop/item?id=${item.id}" style="text-decoration:none;color:inherit;display:block">
-                            <div class="item-image">${imageContent}</div>
+                            <div class="item-image" ${hoverAttrs}>${imageContent}${videoHtml}</div>
                             <div class="item-details">
                                 <h3 class="item-name">${item.name}</h3>
                                 ${item.tagline ? `<p class="item-tagline">${item.tagline}</p>` : ''}
-                                <p class="item-description">${item.description || ''}</p>
                                 <div class="item-footer">
                                     <span class="item-price">$${parseFloat(item.price).toFixed(2)}</span>
-                                    <span class="purchase-btn">View &amp; Request</span>
+                                    <span class="purchase-btn">Buy Now</span>
                                 </div>
                             </div>
                         </a>
@@ -529,78 +541,9 @@
             }
         }
 
-        function openPurchaseModal(itemId, itemName, itemPrice) {
-            document.getElementById('itemId').value = itemId;
-            document.getElementById('itemName').value = itemName;
-            document.getElementById('itemPrice').value = itemPrice;
-            document.getElementById('modalTitle').textContent = `Request to Purchase: ${itemName}`;
-            modal.style.display = 'block';
-        }
-
-        closeBtn.onclick = function() {
-            modal.style.display = 'none';
-            form.reset();
-            successMessage.style.display = 'none';
-            errorMessage.style.display = 'none';
-        }
-
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = 'none';
-                form.reset();
-                successMessage.style.display = 'none';
-                errorMessage.style.display = 'none';
-            }
-        }
-
-        form.onsubmit = async function(e) {
-            e.preventDefault();
-            
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Submitting...';
-            errorMessage.style.display = 'none';
-            successMessage.style.display = 'none';
-
-            const formData = new FormData(form);
-            const orderData = {
-                item_id: parseInt(formData.get('itemId')),
-                item_name: formData.get('itemName'),
-                item_price: parseFloat(formData.get('itemPrice')),
-                customer_name: formData.get('customerName'),
-                customer_email: formData.get('customerEmail'),
-                customer_phone: formData.get('customerPhone') || null,
-                message: formData.get('message') || null,
-                status: 'pending'
-            };
-
-            try {
-                const { data, error } = await sb
-                    .from('orders')
-                    .insert([orderData])
-                    .select();
-
-                if (error) throw error;
-
-                successMessage.style.display = 'block';
-                submitBtn.textContent = 'Submit Request';
-                
-                setTimeout(() => {
-                    modal.style.display = 'none';
-                    form.reset();
-                    successMessage.style.display = 'none';
-                    submitBtn.disabled = false;
-                }, 2000);
-
-            } catch (error) {
-                console.error('Error submitting order:', error);
-                errorMessage.style.display = 'block';
-                errorMessage.textContent = 'Error: ' + (error.message || 'Please try again.');
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Submit Request';
-            }
-        };
-
         loadItems();
+        // Update cart badge
+        try{const n=JSON.parse(localStorage.getItem('jws_cart')||'[]').length;document.getElementById('cartBadge').textContent=n;}catch(_){}
     </script>
     <script>
     // ── Carousel helpers ──────────────────────────────────────────

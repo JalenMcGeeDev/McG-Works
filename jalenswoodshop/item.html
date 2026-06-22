@@ -7,7 +7,6 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪵</text></svg>">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         :root {
             --brown-dark:  #3d2f20;
             --brown-mid:   #5d4e37;
@@ -16,539 +15,233 @@
             --cream:       #f5f1e8;
             --cream-dark:  #e8dcc8;
         }
-
-        body {
-            font-family: 'Georgia', serif;
-            background: var(--cream);
-            color: #3a3a3a;
-            min-height: 100vh;
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Georgia, serif; background: #fff; color: #222; min-height: 100vh; }
+        /* BACK BUTTON */
+        .back-btn { background: rgba(255,255,255,.12); border: none; color: #fff; padding: .4rem .85rem; border-radius: 6px; font-size: .88rem; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: .3rem; flex-shrink: 0; position: absolute; left: 1.25rem; }
+        .back-btn:hover { background: rgba(255,255,255,.22); }
+        /* PAGE LAYOUT */
+        .page-wrap { max-width: 1200px; margin: 0 auto; padding: 2.5rem 1rem 4rem; }
+        .product-grid { display: flex; flex-direction: column; gap: 2rem; }
+        @media (min-width: 860px) {
+            .product-grid { flex-direction: row; align-items: flex-start; gap: 3rem; }
+            .col-photos { flex: 0 0 55%; }
+            .col-details { flex: 1; position: sticky; top: 1.5rem; max-height: calc(100vh - 3rem); overflow-y: auto; scrollbar-width: none; }
+            .col-details::-webkit-scrollbar { display: none; }
         }
-
-        /* ── TOP NAV ──────────────────────────────── */
-        .topnav {
-            background: linear-gradient(135deg, var(--brown-mid) 0%, var(--brown-dark) 100%);
-            color: #fff;
-            padding: 1rem 1.25rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .back-btn {
-            background: rgba(255,255,255,0.15);
-            border: none;
-            color: #fff;
-            padding: 0.45rem 0.9rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-        }
-
-        .back-btn:hover { background: rgba(255,255,255,0.25); }
-
-        .topnav-title {
-            font-size: 0.95rem;
-            font-weight: 700;
-            opacity: 0.85;
-        }
-
-        /* ── PHOTO CAROUSEL ───────────────────────── */
-        .photo-section {
-            position: relative;
-            width: 100%;
-            background: #2a2018;
-            aspect-ratio: 4/3;
-            max-height: 520px;
-            overflow: hidden;
-        }
-
-        .carousel-track {
-            display: flex;
-            height: 100%;
-            transition: transform 0.35s ease;
-        }
-
-        .carousel-slide {
-            flex: 0 0 100%;
-            height: 100%;
-        }
-
-        .carousel-slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .no-photo {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 5rem;
-            background: var(--cream-dark);
-        }
-
-        .carousel-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0,0,0,0.4);
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            font-size: 1.3rem;
-            cursor: pointer;
-            z-index: 2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
+        /* PHOTO COLUMN */
+        .photo-area { display: flex; gap: 10px; }
+        .thumb-col { display: none; flex-direction: column; gap: 8px; flex-shrink: 0; }
+        @media (min-width: 860px) { .thumb-col { display: flex; } }
+        .thumb { width: 70px; height: 70px; border-radius: 6px; overflow: hidden; cursor: pointer; border: 2px solid transparent; flex-shrink: 0; background: var(--cream-dark); }
+        .thumb.active { border-color: var(--brown-dark); }
+        .thumb:hover  { border-color: var(--brown-warm); }
+        .thumb img, .thumb video { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .thumb-video-icon { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; background: #1e1510; color: #fff; }
+        .main-photo { flex: 1; align-self: flex-start; position: relative; border-radius: 12px; overflow: hidden; background: #1a1410; aspect-ratio: 3/2; }
+        .carousel-track { display: flex; position: absolute; inset: 0; transition: transform .32s ease; }
+        .carousel-slide { flex: 0 0 100%; height: 100%; }
+        .carousel-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .carousel-slide video { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .no-photo { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 6rem; background: var(--cream-dark); }
+        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,.88); color: #333; border: none; border-radius: 50%; width: 36px; height: 36px; font-size: 1.2rem; cursor: pointer; z-index: 2; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 6px rgba(0,0,0,.18); }
         .carousel-btn.prev { left: 10px; }
         .carousel-btn.next { right: 10px; }
-
-        .carousel-dots {
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 7px;
-            z-index: 2;
-        }
-
-        .carousel-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.5);
-            cursor: pointer;
-            transition: background 0.2s;
-            border: none;
-        }
-
-        .carousel-dot.active { background: #fff; }
-
-        /* Thumbnail strip */
-        .thumb-strip {
-            display: flex;
-            gap: 6px;
-            padding: 8px 12px;
-            background: #1e1510;
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-
-        .thumb-strip::-webkit-scrollbar { display: none; }
-
-        .thumb {
-            flex-shrink: 0;
-            width: 56px;
-            height: 56px;
-            border-radius: 6px;
-            overflow: hidden;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: border-color 0.2s;
-        }
-
-        .thumb.active { border-color: var(--brown-light); }
-
-        .thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        /* ── ITEM BODY ────────────────────────────── */
-        .item-body {
-            max-width: 680px;
-            margin: 0 auto;
-            padding: 1.75rem 1.25rem 3rem;
-        }
-
-        .item-name {
-            font-size: 2rem;
-            color: var(--brown-dark);
-            font-weight: bold;
-            line-height: 1.2;
-        }
-
-        .item-tagline {
-            font-size: 1rem;
-            color: var(--brown-warm);
-            font-style: italic;
-            margin-top: 0.35rem;
-        }
-
-        .item-price {
-            font-size: 2rem;
-            color: var(--brown-mid);
-            font-weight: bold;
-            margin: 1rem 0;
-        }
-
-        .item-desc-heading {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--brown-warm);
-            margin-bottom: 0.5rem;
-        }
-
-        .item-description {
-            font-size: 1rem;
-            line-height: 1.8;
-            color: #4a4a4a;
-            white-space: pre-wrap;
-        }
-
-        .divider {
-            border: none;
-            border-top: 1px solid var(--cream-dark);
-            margin: 1.5rem 0;
-        }
-
-        /* ── PURCHASE FORM ────────────────────────── */
-        .form-heading {
-            font-size: 1.3rem;
-            color: var(--brown-mid);
-            margin-bottom: 1.25rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.1rem;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 0.78rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--brown-mid);
-            margin-bottom: 0.4rem;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.75rem 0.9rem;
-            border: 2px solid var(--cream-dark);
-            border-radius: 10px;
-            font-size: 0.95rem;
-            font-family: inherit;
-            background: #fff;
-            color: #3a3a3a;
-            transition: border-color 0.2s;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--brown-warm);
-        }
-
-        .form-group textarea { min-height: 90px; resize: vertical; }
-
-        .submit-btn {
-            width: 100%;
-            padding: 1rem;
-            background: linear-gradient(135deg, var(--brown-mid) 0%, var(--brown-dark) 100%);
-            color: #fff;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.05rem;
-            font-family: inherit;
-            font-weight: bold;
-            cursor: pointer;
-            transition: opacity 0.2s;
-            margin-top: 0.25rem;
-        }
-
-        .submit-btn:hover:not(:disabled) { opacity: 0.88; }
-        .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .success-msg {
-            background: #d4edda;
-            color: #155724;
-            padding: 1rem;
-            border-radius: 10px;
-            margin-top: 1rem;
-            text-align: center;
-            display: none;
-        }
-
-        .error-msg {
-            background: #fdecea;
-            color: #c0392b;
-            padding: 1rem;
-            border-radius: 10px;
-            margin-top: 1rem;
-            display: none;
-        }
-
-        /* ── SKELETON ─────────────────────────────── */
-        .skeleton-photo {
-            width: 100%;
-            aspect-ratio: 4/3;
-            max-height: 520px;
-            background: linear-gradient(90deg, var(--cream-dark) 25%, #f0ebe0 50%, var(--cream-dark) 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.2s infinite;
-        }
-
-        @keyframes shimmer {
-            0%   { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-
-        .not-found {
-            text-align: center;
-            padding: 4rem 1rem;
-            color: var(--brown-warm);
-        }
-
-        .not-found p { font-size: 1rem; margin-top: 0.5rem; }
+        .thumb-row { display: flex; gap: 6px; margin-top: 8px; overflow-x: auto; scrollbar-width: none; }
+        .thumb-row::-webkit-scrollbar { display: none; }
+        @media (min-width: 860px) { .thumb-row { display: none; } }
+        .thumb-row .thumb { width: 60px; height: 60px; }
+        .carousel-dots { display: flex; justify-content: center; gap: 6px; margin-top: 8px; }
+        @media (min-width: 860px) { .carousel-dots { display: none; } }
+        .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--cream-dark); border: none; cursor: pointer; transition: background .2s; }
+        .dot.active { background: var(--brown-mid); }
+        /* DETAILS COLUMN */
+        .item-price { font-size: 1.9rem; font-weight: 700; color: #222; line-height: 1; }
+        .item-name { font-size: 1.25rem; font-weight: 400; color: #444; margin-top: .6rem; line-height: 1.4; }
+        .item-tagline { font-size: .9rem; color: var(--brown-warm); margin-top: .25rem; font-style: italic; }
+        .seller-line { display: flex; align-items: center; gap: .4rem; margin-top: .6rem; font-size: .85rem; color: var(--brown-mid); font-weight: 600; }
+        .trust-badge { display: flex; align-items: center; gap: .5rem; margin-top: 1.1rem; padding: .7rem .9rem; border: 1px solid var(--cream-dark); border-radius: 8px; font-size: .85rem; color: #444; background: var(--cream); }
+        .trust-badge .icon { font-size: 1rem; flex-shrink: 0; }
+        .cta-btn { display: block; width: 100%; margin-top: 1.1rem; padding: 1rem; background: var(--brown-dark); color: #fff; border: none; border-radius: 40px; font-size: 1rem; font-weight: 700; font-family: inherit; cursor: pointer; transition: background .2s; letter-spacing: .3px; }
+        .cta-btn:hover { background: var(--brown-mid); }
+        /* ACCORDION */
+        .accordion { border-top: 1px solid #e5e5e5; margin-top: 1.5rem; }
+        .accordion-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; cursor: pointer; font-size: .95rem; font-weight: 600; color: #222; border-bottom: 1px solid #e5e5e5; user-select: none; }
+        .accordion-header .chevron { font-size: .7rem; transition: transform .2s; color: #888; }
+        .accordion-header.open .chevron { transform: rotate(180deg); }
+        .accordion-body { display: none; padding: 1rem 0; font-size: .92rem; line-height: 1.75; color: #555; white-space: pre-wrap; border-bottom: 1px solid #e5e5e5; }
+        .accordion-body.open { display: block; }
+        /* REQUEST FORM */
+        .form-section { display: none; margin-top: 1.25rem; padding: 1.25rem; background: var(--cream); border-radius: 12px; border: 1px solid var(--cream-dark); }
+        .form-section.open { display: block; }
+        .form-section h3 { font-size: 1rem; margin-bottom: 1rem; color: var(--brown-dark); }
+        .form-group { margin-bottom: .9rem; }
+        .form-group label { display: block; font-size: .73rem; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--brown-mid); margin-bottom: .35rem; }
+        .form-group input, .form-group textarea { width: 100%; padding: .65rem .8rem; border: 1.5px solid var(--cream-dark); border-radius: 8px; font-size: .92rem; font-family: inherit; background: #fff; color: #333; transition: border-color .2s; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--brown-warm); }
+        .form-group textarea { min-height: 80px; resize: vertical; }
+        /* STRIPE CARD ELEMENT */
+        .card-element-wrap { padding: .65rem .8rem; border: 1.5px solid var(--cream-dark); border-radius: 8px; background: #fff; transition: border-color .2s; }
+        .card-element-wrap.focused { border-color: var(--brown-warm); }
+        .submit-btn { width: 100%; padding: .85rem; background: var(--brown-dark); color: #fff; border: none; border-radius: 40px; font-size: .95rem; font-weight: 700; font-family: inherit; cursor: pointer; transition: background .2s; }
+        .submit-btn:hover:not(:disabled) { background: var(--brown-mid); }
+        .submit-btn:disabled { opacity: .5; cursor: not-allowed; }
+        .success-msg { background: #d4edda; color: #155724; padding: .9rem 1rem; border-radius: 8px; margin-top: .75rem; text-align: center; font-size: .9rem; display: none; }
+        .error-msg { background: #fdecea; color: #c0392b; padding: .9rem 1rem; border-radius: 8px; margin-top: .75rem; font-size: .9rem; display: none; }
+        /* SKELETON */
+        .skeleton { background: linear-gradient(90deg,#eee 25%,#f5f5f5 50%,#eee 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite; border-radius: 8px; }
+        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+        .skeleton-main { aspect-ratio: 3/2; border-radius: 12px; }
+        .not-found { text-align: center; padding: 5rem 1rem; color: var(--brown-warm); }
         .not-found a { color: var(--brown-mid); }
-
-        @media (min-width: 680px) {
-            .item-name { font-size: 2.5rem; }
+        /* SHOP HEADER */
+        .shop-header {
+            background: linear-gradient(135deg, var(--brown-mid) 0%, var(--brown-dark) 100%);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
         }
+        .shop-header-brand {
+            display: flex;
+            align-items: center;
+            gap: .85rem;
+            text-decoration: none;
+        }
+        .shop-header-brand:hover { opacity: .92; }
+        .shop-header img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,.3);
+            flex-shrink: 0;
+        }
+        .shop-header-text { line-height: 1.2; }
+        .shop-header-name { font-size: 1.19rem; font-weight: 700; color: #fff; }
+        .shop-header-sub  { font-size: .91rem; color: rgba(255,255,255,.6); }
+        /* CART BUTTON */
+        .cart-btn { position: absolute; right: 1.25rem; background: rgba(255,255,255,.12); border: none; color: #fff; padding: .4rem .7rem; border-radius: 6px; font-size: .88rem; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: .35rem; flex-shrink: 0; }
+        .cart-btn:hover { background: rgba(255,255,255,.22); }
+        .cart-badge { background: var(--brown-light); color: #fff; font-size: .7rem; font-weight: 700; border-radius: 20px; padding: .05rem .4rem; min-width: 1.1rem; text-align: center; }
+        /* ADDED CONFIRMATION */
+        .added-confirm { display: none; background: #d4edda; color: #155724; padding: .75rem 1rem; border-radius: 8px; margin-top: .75rem; text-align: center; font-size: .9rem; }
     </style>
 </head>
 <body>
-
-<div class="topnav">
-    <a href="/jalenswoodshop/" class="back-btn">← Shop</a>
-    <span class="topnav-title" id="navTitle">Jalen's Woodshop</span>
+<div class="shop-header">
+    <a href="/jalenswoodshop/" class="back-btn">&#8592; Shop</a>
+    <a href="/jalenswoodshop/" class="shop-header-brand">
+        <img src="/jalenswoodshop/photo.jpg" alt="Jalen McGee">
+        <div class="shop-header-text">
+            <div class="shop-header-name">Jalen&#x2019;s Woodshop</div>
+            <div class="shop-header-sub">Durham, NC &middot; Handcrafted Wood Pieces</div>
+        </div>
+    </a>
+    <a href="/jalenswoodshop/checkout/" class="cart-btn" id="cartBtn">&#x1F6D2; Cart <span class="cart-badge" id="cartBadge">0</span></a>
 </div>
+<div class="page-wrap">
 
-<div id="photoSection" class="skeleton-photo"></div>
-
-<div class="item-body">
-    <div id="itemContent">
-        <!-- populated by JS -->
+    <div class="product-grid" id="productGrid">
+        <div class="col-photos" id="colPhotos">
+            <div class="photo-area">
+                <div class="thumb-col" id="thumbCol"></div>
+                <div class="main-photo" id="mainPhoto"><div class="skeleton skeleton-main"></div></div>
+            </div>
+            <div class="thumb-row" id="thumbRow"></div>
+            <div class="carousel-dots" id="carouselDots"></div>
+        </div>
+        <div class="col-details" id="colDetails">
+            <div class="skeleton" style="height:2rem;width:40%;margin-bottom:.5rem"></div>
+            <div class="skeleton" style="height:1.2rem;margin-bottom:.4rem"></div>
+            <div class="skeleton" style="height:1rem;width:60%"></div>
+        </div>
     </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = 'https://awccquoyscijmtqtibgr.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3Y2NxdW95c2Npam10cXRpYmdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4MDI0MDUsImV4cCI6MjA4MjM3ODQwNX0.zUBCXRah_oK8P_Q-1sFwZ5altAFUfZMOdBdY-tuXWrE';
-
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-function getImageUrl(path) {
-    if (!path) return null;
-    if (path.startsWith('http')) return path;
-    if (path.length < 10) return path;
-    const { data } = sb.storage.from('item-images').getPublicUrl(path);
-    return data.publicUrl;
-}
-
-function escHtml(s) {
-    return String(s ?? '')
-        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-// ── Carousel ─────────────────────────────────────────────────
-let _currentSlide = 0;
-let _totalSlides  = 0;
-
-function goSlide(idx) {
-    if (_totalSlides === 0) return;
-    _currentSlide = (idx + _totalSlides) % _totalSlides;
-    document.querySelector('.carousel-track').style.transform =
-        `translateX(-${_currentSlide * 100}%)`;
-    document.querySelectorAll('.carousel-dot').forEach((d, i) =>
-        d.classList.toggle('active', i === _currentSlide));
-    document.querySelectorAll('.thumb').forEach((t, i) =>
-        t.classList.toggle('active', i === _currentSlide));
-}
-
-function shift(dir) { goSlide(_currentSlide + dir); }
-
-// Touch swipe
-let _tx = 0;
-function tcStart(e) { _tx = e.touches[0].clientX; }
-function tcEnd(e) {
-    const diff = _tx - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 40) shift(diff > 0 ? 1 : -1);
-}
-
-// ── Load item ─────────────────────────────────────────────────
-(async () => {
-    const params = new URLSearchParams(location.search);
-    const id     = params.get('id');
-
-    if (!id) return showNotFound();
-
-    const { data: item, error } = await sb
-        .from('items')
-        .select('*')
-        .eq('id', id)
-        .eq('available', true)
-        .single();
-
-    if (error || !item) return showNotFound();
-
-    // Update page title
-    document.title = `${item.name} — Jalen's Woodshop`;
-    document.getElementById('navTitle').textContent = item.name;
-
-    // Photos
-    const paths = Array.isArray(item.image_paths) && item.image_paths.length
-        ? item.image_paths
-        : (item.image_path || item.image_url ? [item.image_path || item.image_url] : []);
-
-    const photoSection = document.getElementById('photoSection');
-    photoSection.className = 'photo-section';
-
-    if (!paths.length) {
-        photoSection.innerHTML = `<div class="no-photo">🪵</div>`;
+const SUPABASE_URL='https://awccquoyscijmtqtibgr.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3Y2NxdW95c2Npam10cXRpYmdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4MDI0MDUsImV4cCI6MjA4MjM3ODQwNX0.zUBCXRah_oK8P_Q-1sFwZ5altAFUfZMOdBdY-tuXWrE';
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+function getImageUrl(p){if(!p)return null;if(p.startsWith('http'))return p;if(p.length<10)return p;const{data}=sb.storage.from('item-images').getPublicUrl(p);return data.publicUrl;}
+function escHtml(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+let _cur=0,_total=0;
+function goSlide(idx){if(!_total)return;_cur=(idx+_total)%_total;document.querySelector('.carousel-track').style.transform='translateX(-'+(_cur*100)+'%)';document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===_cur));document.querySelectorAll('.thumb').forEach((t,i)=>t.classList.toggle('active',i===_cur));}
+function shift(dir){goSlide(_cur+dir);}
+let _tx=0;
+function tcStart(e){_tx=e.touches[0].clientX;}
+function tcEnd(e){const d=_tx-e.changedTouches[0].clientX;if(Math.abs(d)>40)shift(d>0?1:-1);}
+function toggleAccordion(el){el.classList.toggle('open');el.nextElementSibling.classList.toggle('open');}
+(async()=>{
+    const id=new URLSearchParams(location.search).get('id');
+    if(!id)return showNotFound();
+    const{data:item,error}=await sb.from('items').select('*').eq('id',id).eq('available',true).single();
+    if(error||!item)return showNotFound();
+    document.title=item.name+" \u2014 Jalen\u2019s Woodshop";
+    _itemData={id:item.id,name:item.name,price:item.price,tagline:item.tagline||null,image:Array.isArray(item.image_paths)&&item.image_paths.length?getImageUrl(item.image_paths[0]):(item.image_path?getImageUrl(item.image_path):null)};
+    updateCartBadge();
+    if(getCart().find(i=>i.id===item.id)){const btn=document.getElementById('addToCartBtn');if(btn){btn.textContent='Added \u2713';btn.style.background='var(--brown-warm)';}}
+    const bc=document.getElementById('breadcrumbName');if(bc)bc.textContent=item.name;
+    const imgPaths=Array.isArray(item.image_paths)&&item.image_paths.length?item.image_paths:(item.image_path?[item.image_path]:[]);
+    const slides=imgPaths.map(p=>({type:'image',url:getImageUrl(p)}));
+    if(item.video_path)slides.push({type:'video',url:getImageUrl(item.video_path)});
+    _total=slides.length;
+    const mainPhoto=document.getElementById('mainPhoto');
+    const thumbCol=document.getElementById('thumbCol');
+    const thumbRow=document.getElementById('thumbRow');
+    const dotsEl=document.getElementById('carouselDots');
+    if(!_total){
+        mainPhoto.innerHTML='<div class="no-photo">&#x1FAB5;</div>';
     } else {
-        _totalSlides = paths.length;
-
-        const slides = paths.map((p, i) => {
-            const u = getImageUrl(p);
-            return `<div class="carousel-slide"><img src="${escHtml(u)}" alt="${escHtml(item.name)} photo ${i+1}" loading="${i===0?'eager':'lazy'}"></div>`;
-        }).join('');
-
-        const dots = _totalSlides > 1 ? `
-            <div class="carousel-dots">
-                ${paths.map((_, i) => `<button class="carousel-dot${i===0?' active':''}" onclick="goSlide(${i})"></button>`).join('')}
-            </div>` : '';
-
-        const arrows = _totalSlides > 1 ? `
-            <button class="carousel-btn prev" onclick="shift(-1)">‹</button>
-            <button class="carousel-btn next" onclick="shift(1)">›</button>` : '';
-
-        photoSection.innerHTML = `
-            <div class="carousel-track" ontouchstart="tcStart(event)" ontouchend="tcEnd(event)">
-                ${slides}
-            </div>
-            ${arrows}
-            ${dots}`;
-
-        // Thumbnail strip (only if >1 photo)
-        if (_totalSlides > 1) {
-            const strip = document.createElement('div');
-            strip.className = 'thumb-strip';
-            strip.innerHTML = paths.map((p, i) => {
-                const u = getImageUrl(p);
-                return `<div class="thumb${i===0?' active':''}" onclick="goSlide(${i})">
-                    <img src="${escHtml(u)}" alt="photo ${i+1}" loading="lazy">
-                </div>`;
-            }).join('');
-            photoSection.insertAdjacentElement('afterend', strip);
-        }
+        let slideHtml='';
+        slides.forEach((s,i)=>{
+            if(s.type==='video') slideHtml+='<div class="carousel-slide"><video src="'+escHtml(s.url)+'" controls playsinline preload="metadata"></video></div>';
+            else slideHtml+='<div class="carousel-slide"><img src="'+escHtml(s.url)+'" alt="'+escHtml(item.name)+' '+(i+1)+'" loading="'+(i===0?'eager':'lazy')+'"></div>';
+        });
+        const arrows=_total>1?'<button class="carousel-btn prev" onclick="shift(-1)">‹</button><button class="carousel-btn next" onclick="shift(1)">›</button>':'';
+        mainPhoto.innerHTML='<div class="carousel-track" ontouchstart="tcStart(event)" ontouchend="tcEnd(event)">'+slideHtml+'</div>'+arrows;
+        slides.forEach((s,i)=>{
+            const inner=s.type==='video'?'<div class="thumb-video-icon">▶</div>':'<img src="'+escHtml(s.url)+'" alt="photo '+(i+1)+'" loading="lazy">';
+            const cls=i===0?'thumb active':'thumb';
+            const tc=document.createElement('div');tc.className=cls;tc.innerHTML=inner;tc.onclick=()=>goSlide(i);thumbCol.appendChild(tc);
+            const tr=document.createElement('div');tr.className=cls;tr.innerHTML=inner;tr.onclick=()=>goSlide(i);thumbRow.appendChild(tr);
+        });
+        if(_total>1)slides.forEach((_,i)=>{const d=document.createElement('button');d.className=i===0?'dot active':'dot';d.onclick=()=>goSlide(i);dotsEl.appendChild(d);});
     }
-
-    // Item content
-    document.getElementById('itemContent').innerHTML = `
-        <h1 class="item-name">${escHtml(item.name)}</h1>
-        ${item.tagline ? `<p class="item-tagline">${escHtml(item.tagline)}</p>` : ''}
-        <p class="item-price">$${parseFloat(item.price).toFixed(2)}</p>
-
-        ${item.description ? `
-        <p class="item-desc-heading">About this piece</p>
-        <p class="item-description">${escHtml(item.description)}</p>
-        ` : ''}
-
-        <hr class="divider">
-
-        <h2 class="form-heading">Request to Purchase</h2>
-
-        <form id="purchaseForm">
-            <input type="hidden" id="itemId"    value="${escHtml(item.id)}">
-            <input type="hidden" id="itemName"  value="${escHtml(item.name)}">
-            <input type="hidden" id="itemPrice" value="${escHtml(item.price)}">
-
-            <div class="form-group">
-                <label for="customerName">Your Name *</label>
-                <input type="text" id="customerName" required autocomplete="name">
-            </div>
-            <div class="form-group">
-                <label for="customerEmail">Email *</label>
-                <input type="email" id="customerEmail" required autocomplete="email">
-            </div>
-            <div class="form-group">
-                <label for="customerPhone">Phone (optional)</label>
-                <input type="tel" id="customerPhone" autocomplete="tel">
-            </div>
-            <div class="form-group">
-                <label for="message">Message (optional)</label>
-                <textarea id="message" placeholder="Any questions or special requests..."></textarea>
-            </div>
-
-            <button type="submit" class="submit-btn" id="submitBtn">Send Request</button>
-            <div class="success-msg" id="successMsg">
-                Thank you! Your request has been sent. Jalen will be in touch soon.
-            </div>
-            <div class="error-msg" id="errorMsg"></div>
-        </form>`;
-
-    document.getElementById('purchaseForm').addEventListener('submit', submitRequest);
+    const descAccordion=item.description
+        ?'<div class="accordion"><div class="accordion-header open" onclick="toggleAccordion(this)">Item details <span class="chevron">▼</span></div><div class="accordion-body open">'+escHtml(item.description)+'</div></div>'
+        :'';
+    document.getElementById('colDetails').innerHTML=
+        '<p class="item-price">$'+parseFloat(item.price).toFixed(2)+'</p>'+
+        '<h1 class="item-name">'+escHtml(item.name)+'</h1>'+
+        (item.tagline?'<p class="item-tagline">'+escHtml(item.tagline)+'</p>':'')+
+        (item.custom_message_enabled && item.custom_message
+            ? '<div class="trust-badge"><span class="icon">&#x1F91D;</span>'+escHtml(item.custom_message)+'</div>'
+            : '')+
+        '<button class="cta-btn" id="addToCartBtn" onclick="addToCart()">Add to Cart</button>'+
+        '<div class="added-confirm" id="addedConfirm">Added! <a href="/jalenswoodshop/checkout/">Go to checkout →</a></div>'+
+        descAccordion;
 })();
-
-async function submitRequest(e) {
-    e.preventDefault();
-    const btn = document.getElementById('submitBtn');
-    btn.disabled    = true;
-    btn.textContent = 'Sending…';
-    document.getElementById('errorMsg').style.display = 'none';
-
-    const orderData = {
-        item_id:        parseInt(document.getElementById('itemId').value),
-        item_name:      document.getElementById('itemName').value,
-        item_price:     parseFloat(document.getElementById('itemPrice').value),
-        customer_name:  document.getElementById('customerName').value,
-        customer_email: document.getElementById('customerEmail').value,
-        customer_phone: document.getElementById('customerPhone').value || null,
-        message:        document.getElementById('message').value || null,
-        status:         'pending'
-    };
-
-    try {
-        const { error } = await sb.from('orders').insert([orderData]);
-        if (error) throw error;
-
-        document.getElementById('successMsg').style.display = 'block';
-        document.getElementById('purchaseForm').reset();
-        btn.textContent = 'Request Sent ✓';
-        // Scroll to success message
-        document.getElementById('successMsg').scrollIntoView({ behavior: 'smooth', block: 'center' });
-    } catch (err) {
-        const errEl = document.getElementById('errorMsg');
-        errEl.textContent = 'Something went wrong: ' + err.message;
-        errEl.style.display = 'block';
-        btn.disabled    = false;
-        btn.textContent = 'Send Request';
-    }
+// ── Cart helpers ──────────────────────────────────────────────
+function getCart(){try{return JSON.parse(localStorage.getItem('jws_cart')||'[]');}catch(_){return[];}}
+function saveCart(c){localStorage.setItem('jws_cart',JSON.stringify(c));}
+function updateCartBadge(){const n=getCart().length;const b=document.getElementById('cartBadge');if(b)b.textContent=n;}
+function addToCart(){
+    const cart=getCart();
+    // item data is captured from the outer async IIFE scope via closure on _itemData
+    if(!_itemData)return;
+    if(cart.find(i=>i.id===_itemData.id)){document.getElementById('addedConfirm').style.display='block';return;}
+    cart.push(_itemData);
+    saveCart(cart);
+    updateCartBadge();
+    const btn=document.getElementById('addToCartBtn');
+    btn.textContent='Added ✓';
+    btn.style.background='var(--brown-warm)';
+    document.getElementById('addedConfirm').style.display='block';
 }
-
-function showNotFound() {
-    document.getElementById('photoSection').style.display = 'none';
-    document.getElementById('itemContent').innerHTML = `
-        <div class="not-found">
-            <p style="font-size:2.5rem">🪵</p>
-            <p>Item not found or no longer available.</p>
-            <p style="margin-top:.75rem"><a href="/jalenswoodshop/">← Back to shop</a></p>
-        </div>`;
+let _itemData=null;
+function showNotFound(){
+    document.getElementById('productGrid').innerHTML='<div class="not-found" style="width:100%"><p style="font-size:3rem;margin-bottom:1rem">&#x1FAB5;</p><p style="color:#888">Item not found or no longer available.</p><p style="margin-top:.75rem"><a href="/jalenswoodshop/">← Back to shop</a></p></div>';
 }
 </script>
 </body>

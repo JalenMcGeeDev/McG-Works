@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Confirmed — Jalen's Woodshop</title>
+<style>
+    :root {
+        --brown-dark:  #3d2f20;
+        --brown-mid:   #5d4e37;
+        --brown-warm:  #8b7355;
+        --brown-light: #b8976a;
+        --cream:       #f5f1e8;
+        --cream-dark:  #e8dcc8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Georgia, serif;
+        background: var(--cream);
+        color: #222;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1.25rem;
+        text-align: center;
+    }
+    .card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 3rem 2.5rem;
+        max-width: 480px;
+        width: 100%;
+        box-shadow: 0 4px 24px rgba(0,0,0,.08);
+    }
+    .icon { font-size: 3.5rem; margin-bottom: 1.25rem; }
+    h1 {
+        font-size: 1.6rem;
+        color: var(--brown-dark);
+        margin-bottom: .6rem;
+    }
+    p {
+        color: #555;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+    .item-info {
+        background: var(--cream);
+        border-radius: 10px;
+        padding: .9rem 1.1rem;
+        margin: 1.25rem 0 1.75rem;
+        text-align: left;
+    }
+    .item-info .label { font-size: .78rem; color: var(--brown-warm); text-transform: uppercase; letter-spacing: .05em; }
+    .item-info .value { font-weight: 600; color: var(--brown-dark); font-size: 1rem; margin-top: .1rem; }
+    .back-btn {
+        display: inline-block;
+        background: var(--brown-dark);
+        color: #fff;
+        text-decoration: none;
+        padding: .75rem 1.75rem;
+        border-radius: 8px;
+        font-size: .95rem;
+        font-weight: 600;
+        margin-top: .5rem;
+    }
+    .back-btn:hover { background: var(--brown-mid); }
+</style>
+</head>
+<body>
+<div class="card">
+    <div class="icon">🪵</div>
+    <h1>Order Confirmed!</h1>
+    <p>Payment received. Jalen will be in touch soon to arrange delivery or pickup.</p>
+    <div class="item-info" id="itemInfo" style="display:none">
+        <div class="label">Item</div>
+        <div class="value" id="itemName">—</div>
+    </div>
+    <p style="font-size:.88rem;color:#888">A receipt has been sent to your email by Stripe.</p>
+    <a href="/jalenswoodshop/" class="back-btn">← Back to Shop</a>
+</div>
+
+<script>
+// Optionally pull the item name from the Checkout session for a nicer confirmation.
+// This is best-effort — the order is already recorded by the webhook.
+(async () => {
+    const sessionId = new URLSearchParams(location.search).get('session_id');
+    if (!sessionId) return;
+    try {
+        const sb = window._sb = window._sb || (() => {
+            // lightweight fetch wrapper — we only need one public read
+            return null;
+        })();
+        // Could fetch session details from a lightweight endpoint, but
+        // the Stripe receipt email already covers confirmation details.
+        // Nothing extra needed here.
+    } catch (_) {}
+})();
+</script>
+</body>
+</html>
