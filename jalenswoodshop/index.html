@@ -80,6 +80,8 @@
             align-items: center;
             justify-content: center;
             font-size: 4rem;
+            position: relative;
+            overflow: hidden;
         }
 
         .item-image img {
@@ -87,6 +89,76 @@
             height: 100%;
             object-fit: cover;
         }
+
+        /* ── CAROUSEL ───────────────────────────── */
+        .carousel {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .carousel-track {
+            display: flex;
+            height: 100%;
+            transition: transform 0.3s ease;
+        }
+
+        .carousel-slide {
+            flex: 0 0 100%;
+            height: 100%;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            pointer-events: none;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.35);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 1rem;
+            cursor: pointer;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .carousel-btn.prev { left: 6px; }
+        .carousel-btn.next { right: 6px; }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: 7px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 5px;
+            z-index: 2;
+        }
+
+        .carousel-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.55);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .carousel-dot.active { background: #fff; }
 
         .item-details {
             padding: 1.5rem;
@@ -397,20 +469,36 @@
                 }
 
                 itemsGrid.innerHTML = data.map(item => {
-                    // Get image from either image_path (new) or image_url (old) column
-                    const imagePath = item.image_path || item.image_url;
-                    const imageUrl = getImageUrl(imagePath);
-                    
+                    // Gather all image paths (multi-photo or legacy single)
+                    const paths = Array.isArray(item.image_paths) && item.image_paths.length
+                        ? item.image_paths
+                        : (item.image_path || item.image_url ? [item.image_path || item.image_url] : []);
+
                     let imageContent;
-                    if (!imageUrl) {
-                        // No image - show default emoji
-                        imageContent = '<div style="font-size: 4rem;">🪵</div>';
-                    } else if (imageUrl.startsWith('http')) {
-                        // It's a full URL - show as image
-                        imageContent = `<img src="${imageUrl}" alt="${item.name}">`;
+                    if (!paths.length) {
+                        imageContent = '<div style="font-size:4rem;display:flex;align-items:center;justify-content:center;height:100%">🪵</div>';
+                    } else if (paths.length === 1) {
+                        const url = getImageUrl(paths[0]);
+                        imageContent = url && url.startsWith('http')
+                            ? `<img src="${url}" alt="${item.name}">`
+                            : `<div style="font-size:4rem;display:flex;align-items:center;justify-content:center;height:100%">${url || '🪵'}</div>`;
                     } else {
-                        // It's an emoji or short text - show as text
-                        imageContent = `<div style="font-size: 4rem;">${imageUrl}</div>`;
+                        const cid = `carousel-${item.id}`;
+                        const slides = paths.map((p, i) => {
+                            const u = getImageUrl(p);
+                            return `<div class="carousel-slide"><img src="${u}" alt="${item.name} photo ${i+1}"></div>`;
+                        }).join('');
+                        const dots = paths.map((_, i) =>
+                            `<span class="carousel-dot${i===0?' active':''}" onclick="goSlide('${cid}',${i})"></span>`
+                        ).join('');
+                        imageContent = `
+                            <div class="carousel" id="${cid}" data-idx="0"
+                                 ontouchstart="tcStart(event,this)" ontouchend="tcEnd(event,this)">
+                                <div class="carousel-track">${slides}</div>
+                                <button class="carousel-btn prev" onclick="event.stopPropagation();shiftSlide('${cid}',-1)">‹</button>
+                                <button class="carousel-btn next" onclick="event.stopPropagation();shiftSlide('${cid}',1)">›</button>
+                                <div class="carousel-dots">${dots}</div>
+                            </div>`;
                     }
 
                     return `
@@ -507,6 +595,30 @@
         };
 
         loadItems();
+    </script>
+    <script>
+    // ── Carousel helpers ──────────────────────────────────────────
+    function goSlide(id, idx) {
+        const c     = document.getElementById(id);
+        const total = c.querySelectorAll('.carousel-slide').length;
+        idx = (idx + total) % total;
+        c.dataset.idx = idx;
+        c.querySelector('.carousel-track').style.transform = `translateX(-${idx * 100}%)`;
+        c.querySelectorAll('.carousel-dot').forEach((d, i) =>
+            d.classList.toggle('active', i === idx));
+    }
+
+    function shiftSlide(id, dir) {
+        const c = document.getElementById(id);
+        goSlide(id, parseInt(c.dataset.idx) + dir);
+    }
+
+    // Touch swipe support
+    function tcStart(e, el) { el._tx = e.touches[0].clientX; }
+    function tcEnd(e, el) {
+        const diff = el._tx - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 40) shiftSlide(el.id, diff > 0 ? 1 : -1);
+    }
     </script>
 </body>
 </html>

@@ -518,6 +518,46 @@
             justify-content: center;
         }
 
+        /* ── MULTI IMAGE PREVIEW ──────────────────────────── */
+        .img-preview-row {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.75rem;
+        }
+
+        .img-preview-wrap {
+            position: relative;
+            width: 72px;
+            height: 72px;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .img-preview-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .img-preview-remove {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.65rem;
+            line-height: 18px;
+            text-align: center;
+            cursor: pointer;
+            padding: 0;
+        }
+
         /* ── LOADING STATE ───────────────────────────────── */
         .skeleton {
             background: linear-gradient(90deg, var(--cream-dark) 25%, #f0ebe0 50%, var(--cream-dark) 75%);
@@ -629,13 +669,13 @@
             </div>
 
             <div class="field">
-                <label>Photo</label>
+                <label>Photos</label>
                 <div class="img-upload-area" id="uploadArea">
-                    <input type="file" id="addImage" accept="image/*" onchange="previewImage(this)">
+                    <input type="file" id="addImage" accept="image/*" multiple onchange="previewImages(this, 'addPreviews')">
                     <span class="img-upload-icon">📷</span>
-                    <span class="img-upload-text">Tap to choose a photo</span>
+                    <span class="img-upload-text">Tap to choose photos (select multiple)</span>
                 </div>
-                <img id="imgPreview" alt="Preview">
+                <div id="addPreviews" class="img-preview-row"></div>
             </div>
 
             <button class="btn btn-primary" id="addBtn" onclick="addItem()">Add Item</button>
@@ -687,13 +727,17 @@
         </div>
 
         <div class="field">
-            <label>Replace Photo (optional)</label>
+            <label>Current Photos</label>
+            <div id="editCurrentPreviews" class="img-preview-row"></div>
+        </div>
+        <div class="field">
+            <label>Add More Photos (optional)</label>
             <div class="img-upload-area">
-                <input type="file" id="editImage" accept="image/*" onchange="previewEditImage(this)">
+                <input type="file" id="editImage" accept="image/*" multiple onchange="previewImages(this, 'editNewPreviews')">
                 <span class="img-upload-icon">📷</span>
-                <span class="img-upload-text">Tap to replace photo</span>
+                <span class="img-upload-text">Tap to add more photos</span>
             </div>
-            <img id="editImgPreview" alt="Preview" style="display:none;width:100%;max-height:120px;object-fit:cover;border-radius:8px;margin-top:.75rem">
+            <div id="editNewPreviews" class="img-preview-row"></div>
         </div>
 
         <div style="display:flex;gap:.75rem;margin-top:.5rem">
@@ -810,28 +854,19 @@ function getImageUrl(path) {
     return data.publicUrl;
 }
 
-function previewImage(input) {
-    if (input.files && input.files[0]) {
+function previewImages(input, containerId) {
+    const container = document.getElementById(containerId);
+    Array.from(input.files).forEach(file => {
         const reader = new FileReader();
         reader.onload = e => {
-            const img = document.getElementById('imgPreview');
-            img.src = e.target.result;
-            img.style.display = 'block';
+            const wrap = document.createElement('div');
+            wrap.className = 'img-preview-wrap';
+            wrap.innerHTML = `<img src="${e.target.result}" alt="preview">
+                <button class="img-preview-remove" type="button" onclick="this.closest('.img-preview-wrap').remove()" title="Remove">✕</button>`;
+            container.appendChild(wrap);
         };
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-
-function previewEditImage(input) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = e => {
-            const img = document.getElementById('editImgPreview');
-            img.src = e.target.result;
-            img.style.display = 'block';
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
+        reader.readAsDataURL(file);
+    });
 }
 
 async function uploadImage(file) {
@@ -840,6 +875,10 @@ async function uploadImage(file) {
     const { error } = await sb.storage.from('item-images').upload(path, file, { upsert: false });
     if (error) throw error;
     return path;
+}
+
+async function uploadImages(files) {
+    return Promise.all(Array.from(files).map(uploadImage));
 }
 
 // ── Load Items ─────────────────────────────────────────────────
@@ -914,11 +953,11 @@ async function toggleAvailable(id, available, checkbox) {
 
 // ── Add Item ───────────────────────────────────────────────────
 async function addItem() {
-    const name      = document.getElementById('addName').value.trim();
-    const desc      = document.getElementById('addDesc').value.trim();
-    const price     = parseFloat(document.getElementById('addPrice').value);
-    const available = document.getElementById('addAvailable').value === 'true';
-    const imageFile = document.getElementById('addImage').files[0];
+    const name       = document.getElementById('addName').value.trim();
+    const desc       = document.getElementById('addDesc').value.trim();
+    const price      = parseFloat(document.getElementById('addPrice').value);
+    const available  = document.getElementById('addAvailable').value === 'true';
+    const imageFiles = document.getElementById('addImage').files;
 
     if (!name)          return showToast('Name is required', 'error');
     if (isNaN(price))   return showToast('Price is required', 'error');
@@ -928,21 +967,22 @@ async function addItem() {
     btn.textContent = 'Saving…';
 
     try {
-        let image_path = null;
-        if (imageFile) image_path = await uploadImage(imageFile);
+        let image_paths = [];
+        if (imageFiles.length) image_paths = await uploadImages(imageFiles);
 
         const { error } = await sb.from('items').insert([{
-            name, description: desc || null, price, available, image_path
+            name, description: desc || null, price, available,
+            image_path:  image_paths[0] || null,
+            image_paths: image_paths
         }]);
 
         if (error) throw error;
 
         showToast('Item added! ✓', 'success');
-        // Reset form
         ['addName','addDesc','addPrice'].forEach(id => document.getElementById(id).value = '');
         document.getElementById('addAvailable').value = 'true';
         document.getElementById('addImage').value = '';
-        document.getElementById('imgPreview').style.display = 'none';
+        document.getElementById('addPreviews').innerHTML = '';
         loadItems();
         switchTab('items');
     } catch (err) {
@@ -968,7 +1008,21 @@ async function openEdit(id) {
         document.getElementById('editPrice').value        = data.price;
         document.getElementById('editAvailable').value    = data.available ? 'true' : 'false';
         document.getElementById('editImage').value        = '';
-        document.getElementById('editImgPreview').style.display = 'none';
+        document.getElementById('editNewPreviews').innerHTML = '';
+
+        // Show current photos with remove buttons
+        const currentPreviews = document.getElementById('editCurrentPreviews');
+        const existingPaths = Array.isArray(data.image_paths) && data.image_paths.length
+            ? data.image_paths
+            : (data.image_path ? [data.image_path] : []);
+        currentPreviews.innerHTML = existingPaths.map((p, i) => {
+            const url = getImageUrl(p);
+            return `<div class="img-preview-wrap" data-path="${escHtml(p)}">
+                <img src="${url}" alt="photo ${i+1}">
+                <button class="img-preview-remove" type="button"
+                    onclick="removeExistingPhoto(this, '${escHtml(p)}')" title="Remove">✕</button>
+            </div>`;
+        }).join('');
 
         document.getElementById('editModal').classList.add('open');
     } catch (err) {
@@ -997,8 +1051,21 @@ async function saveEdit() {
     btn.textContent = 'Saving…';
 
     try {
-        let updates = { name, description: desc || null, price, available };
-        if (imageFile) updates.image_path = await uploadImage(imageFile);
+        // Collect remaining existing paths (ones not removed by user)
+        const remaining = Array.from(
+            document.querySelectorAll('#editCurrentPreviews .img-preview-wrap[data-path]')
+        ).map(el => el.dataset.path);
+
+        // Upload any newly added images
+        const newFiles = document.getElementById('editImage').files;
+        const newPaths = newFiles.length ? await uploadImages(newFiles) : [];
+
+        const allPaths = [...remaining, ...newPaths];
+        const updates = {
+            name, description: desc || null, price, available,
+            image_path:  allPaths[0] || null,
+            image_paths: allPaths
+        };
 
         const { error } = await sb.from('items').update(updates).eq('id', id);
         if (error) throw error;
@@ -1012,6 +1079,10 @@ async function saveEdit() {
 
     btn.disabled    = false;
     btn.textContent = 'Save Changes';
+}
+
+function removeExistingPhoto(btn, path) {
+    btn.closest('.img-preview-wrap').remove();
 }
 
 async function deleteItem() {
