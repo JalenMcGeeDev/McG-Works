@@ -390,6 +390,96 @@
             display: none;
         }
 
+        /* ── CUSTOM REQUEST SECTION ──────────────────────── */
+        .custom-section {
+            background: linear-gradient(135deg, #3d2f20 0%, #5d4e37 100%);
+            color: #f5f1e8;
+            padding: 3rem 1.5rem;
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .custom-section h2 {
+            font-size: 1.9rem;
+            margin-bottom: .5rem;
+            letter-spacing: 1px;
+        }
+
+        .custom-section p {
+            font-size: 1rem;
+            opacity: .85;
+            max-width: 520px;
+            margin: 0 auto 2rem;
+            line-height: 1.7;
+        }
+
+        .custom-form {
+            max-width: 520px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: .85rem;
+            text-align: left;
+        }
+
+        .custom-form input,
+        .custom-form textarea,
+        .custom-form select {
+            width: 100%;
+            padding: .75rem 1rem;
+            border: 1.5px solid rgba(255,255,255,.2);
+            border-radius: 8px;
+            background: rgba(255,255,255,.1);
+            color: #f5f1e8;
+            font-family: inherit;
+            font-size: .95rem;
+        }
+
+        .custom-form input::placeholder,
+        .custom-form textarea::placeholder {
+            color: rgba(245,241,232,.5);
+        }
+
+        .custom-form input:focus,
+        .custom-form textarea:focus {
+            outline: none;
+            border-color: #b8976a;
+            background: rgba(255,255,255,.15);
+        }
+
+        .custom-form textarea { min-height: 110px; resize: vertical; }
+
+        .custom-submit {
+            background: #b8976a;
+            color: #fff;
+            border: none;
+            border-radius: 40px;
+            padding: .85rem 2rem;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background .2s;
+        }
+
+        .custom-submit:hover:not(:disabled) { background: #a07848; }
+        .custom-submit:disabled { opacity: .6; cursor: not-allowed; }
+
+        .custom-success {
+            background: rgba(255,255,255,.15);
+            border-radius: 10px;
+            padding: 1.25rem 1.5rem;
+            margin-top: .5rem;
+            font-size: .95rem;
+            display: none;
+        }
+
+        .custom-error {
+            color: #ffb3ae;
+            font-size: .88rem;
+            display: none;
+        }
+
         @media (max-width: 768px) {
             header h1 {
                 font-size: 2rem;
@@ -418,6 +508,22 @@
         <div class="items-grid" id="itemsGrid"></div>
     </div>
 
+    <!-- ── CUSTOM REQUEST SECTION ─────────────────────────── -->
+    <section class="custom-section">
+        <h2>&#x1FAB5; Request a Custom Piece</h2>
+        <p>Have something specific in mind? I make custom cutting boards, bowls, boxes, and more. Tell me what you're looking for and I'll reach out to discuss.</p>
+        <form class="custom-form" id="customForm" onsubmit="submitCustomRequest(event)">
+            <input type="text" id="crName" placeholder="Your name *" required>
+            <input type="email" id="crEmail" placeholder="Your email *" required>
+            <input type="tel" id="crPhone" placeholder="Phone number (optional)">
+            <textarea id="crDesc" placeholder="Describe what you have in mind — type of piece, wood preference, size, occasion, etc. *" required></textarea>
+            <div class="custom-error" id="crError"></div>
+            <button type="submit" class="custom-submit" id="crSubmit">Send Request</button>
+        </form>
+        <div class="custom-success" id="crSuccess">
+            &#x2705; Request sent! I'll be in touch soon.
+        </div>
+    </section></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // ═══════════════════════════════════════════════════════════════
@@ -544,6 +650,50 @@
         loadItems();
         // Update cart badge
         try{const n=JSON.parse(localStorage.getItem('jws_cart')||'[]').length;document.getElementById('cartBadge').textContent=n;}catch(_){}
+
+        async function submitCustomRequest(e) {
+            e.preventDefault();
+            const btn = document.getElementById('crSubmit');
+            const errEl = document.getElementById('crError');
+            const name  = document.getElementById('crName').value.trim();
+            const email = document.getElementById('crEmail').value.trim();
+            const phone = document.getElementById('crPhone').value.trim();
+            const desc  = document.getElementById('crDesc').value.trim();
+            errEl.style.display = 'none';
+            btn.disabled = true; btn.textContent = 'Sending\u2026';
+            try {
+                const { error } = await sb.from('orders').insert([{
+                    customer_name:  name,
+                    customer_email: email,
+                    customer_phone: phone || null,
+                    item_name:      'Custom Request',
+                    message:        desc,
+                    status:         'pending',
+                    shipping_method: 'custom_request'
+                }]);
+                if (error) throw error;
+
+                // Fire-and-forget notification email
+                fetch(`${SUPABASE_URL}/functions/v1/notify-order`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY },
+                    body: JSON.stringify({
+                        type: 'custom_request',
+                        customer_name: name,
+                        customer_email: email,
+                        customer_phone: phone || null,
+                        message: desc
+                    })
+                }).catch(() => {});
+
+                document.getElementById('customForm').style.display = 'none';
+                document.getElementById('crSuccess').style.display = 'block';
+            } catch (err) {
+                errEl.textContent = 'Something went wrong. Please try again.';
+                errEl.style.display = 'block';
+                btn.disabled = false; btn.textContent = 'Send Request';
+            }
+        }
     </script>
     <script>
     // ── Carousel helpers ──────────────────────────────────────────

@@ -582,6 +582,28 @@ async function submitOrder(){
         }]);
 
         localStorage.removeItem('jws_cart');
+
+        // Fire-and-forget notification email
+        const taxAmount=Math.round((_shippingCost>0?grand*_taxRate:subtotal*_taxRate)*100)/100;
+        fetch(`${SUPABASE_URL}/functions/v1/notify-order`,{
+            method:'POST',
+            headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY},
+            body:JSON.stringify({
+                type:'order',
+                customer_name:customerName,
+                customer_email:email,
+                customer_phone:phone||null,
+                shipping_method:_selectedMethod,
+                item_name:_cart.map(i=>i.name).join(', '),
+                cart_items:_cart,
+                shipping_address:shippingAddress||null,
+                pickup_date:pickupDate||null,
+                pickup_slot:_selectedSlot||null,
+                amount_total:(grand+taxAmount).toFixed(2),
+                message:msg||null
+            })
+        }).catch(()=>{});
+
         document.getElementById('successMsg').textContent='Payment confirmed! Check your email for details.';
         document.getElementById('successMsg').style.display='block';
         btn.textContent='Paid \u2713';

@@ -17,8 +17,7 @@
         }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Georgia, serif; background: #fff; color: #222; min-height: 100vh; }
         /* BACK BUTTON */
-        .back-btn { background: rgba(255,255,255,.12); border: none; color: #fff; padding: .4rem .85rem; border-radius: 6px; font-size: .88rem; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: .3rem; flex-shrink: 0; position: absolute; left: 1.25rem; }
-        .back-btn:hover { background: rgba(255,255,255,.22); }
+        .back-btn-old { display: none; } /* replaced by header flex layout */
         /* PAGE LAYOUT */
         .page-wrap { max-width: 1200px; margin: 0 auto; padding: 2.5rem 1rem 4rem; }
         .product-grid { display: flex; flex-direction: column; gap: 2rem; }
@@ -96,32 +95,38 @@
         /* SHOP HEADER */
         .shop-header {
             background: linear-gradient(135deg, var(--brown-mid) 0%, var(--brown-dark) 100%);
-            padding: 1rem 1.5rem;
+            padding: .75rem 1rem;
             display: flex;
             align-items: center;
-            justify-content: center;
-            position: relative;
+            justify-content: space-between;
+            gap: .5rem;
         }
         .shop-header-brand {
             display: flex;
             align-items: center;
-            gap: .85rem;
+            gap: .6rem;
             text-decoration: none;
+            flex: 1;
+            justify-content: center;
+            min-width: 0;
         }
         .shop-header-brand:hover { opacity: .92; }
         .shop-header img {
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid rgba(255,255,255,.3);
             flex-shrink: 0;
         }
-        .shop-header-text { line-height: 1.2; }
-        .shop-header-name { font-size: 1.19rem; font-weight: 700; color: #fff; }
-        .shop-header-sub  { font-size: .91rem; color: rgba(255,255,255,.6); }
+        .shop-header-text { line-height: 1.2; min-width: 0; }
+        .shop-header-name { font-size: 1rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .shop-header-sub  { font-size: .78rem; color: rgba(255,255,255,.6); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        /* BACK + CART BUTTONS */
+        .back-btn { background: rgba(255,255,255,.12); border: none; color: #fff; padding: .4rem .7rem; border-radius: 6px; font-size: .82rem; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: .3rem; flex-shrink: 0; white-space: nowrap; }
+        .back-btn:hover { background: rgba(255,255,255,.22); }
         /* CART BUTTON */
-        .cart-btn { position: absolute; right: 1.25rem; background: rgba(255,255,255,.12); border: none; color: #fff; padding: .4rem .7rem; border-radius: 6px; font-size: .88rem; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: .35rem; flex-shrink: 0; }
+        .cart-btn { background: rgba(255,255,255,.12); border: none; color: #fff; padding: .4rem .7rem; border-radius: 6px; font-size: .82rem; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: .35rem; flex-shrink: 0; white-space: nowrap; }
         .cart-btn:hover { background: rgba(255,255,255,.22); }
         .cart-badge { background: var(--brown-light); color: #fff; font-size: .7rem; font-weight: 700; border-radius: 20px; padding: .05rem .4rem; min-width: 1.1rem; text-align: center; }
         /* ADDED CONFIRMATION */
