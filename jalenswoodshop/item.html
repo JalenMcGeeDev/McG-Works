@@ -122,6 +122,9 @@
         .shop-header-text { line-height: 1.2; min-width: 0; }
         .shop-header-name { font-size: 1rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .shop-header-sub  { font-size: .78rem; color: rgba(255,255,255,.6); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        @media (max-width: 600px) {
+            .shop-header-text { display: none; }
+        }
         /* BACK + CART BUTTONS */
         .back-btn { background: rgba(255,255,255,.12); border: none; color: #fff; padding: .4rem .7rem; border-radius: 6px; font-size: .82rem; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: .3rem; flex-shrink: 0; white-space: nowrap; }
         .back-btn:hover { background: rgba(255,255,255,.22); }
