@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery — Jalen's Woodshop</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪵</text></svg>">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --brown-dark:  #3d2f20;
+            --brown-mid:   #5d4e37;
+            --brown-warm:  #8b7355;
+            --brown-light: #b8976a;
+            --cream:       #f5f1e8;
+            --cream-dark:  #e8dcc8;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Georgia, serif;
+            background: #f5f1e8;
+            color: #222;
+            min-height: 100vh;
+        }
+
+        /* ── HEADER ── */
+        .shop-header {
+            background: linear-gradient(135deg, var(--brown-mid) 0%, var(--brown-dark) 100%);
+            padding: .75rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: .5rem;
+        }
+        .shop-header-brand {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            text-decoration: none;
+            flex: 1;
+            justify-content: center;
+            min-width: 0;
+        }
+        .shop-header-brand:hover { opacity: .92; }
+        .shop-header img {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,.3);
+            flex-shrink: 0;
+        }
+        .shop-header-text { line-height: 1.2; min-width: 0; }
+        .shop-header-name { font-size: 1rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .shop-header-sub  { font-size: .78rem; color: rgba(255,255,255,.6); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        @media (max-width: 600px) { .shop-header-text { display: none; } }
+        .back-btn {
+            background: rgba(255,255,255,.12); border: none; color: #fff; padding: .4rem .7rem;
+            border-radius: 6px; font-size: .82rem; cursor: pointer; text-decoration: none;
+            display: inline-flex; align-items: center; gap: .3rem; flex-shrink: 0; white-space: nowrap;
+        }
+        .back-btn:hover { background: rgba(255,255,255,.22); }
+        .cart-btn {
+            background: rgba(255,255,255,.12); border: none; color: #fff; padding: .4rem .7rem;
+            border-radius: 6px; font-size: .82rem; cursor: pointer; text-decoration: none;
+            display: inline-flex; align-items: center; gap: .35rem; flex-shrink: 0; white-space: nowrap;
+        }
+        .cart-btn:hover { background: rgba(255,255,255,.22); }
+        .cart-badge {
+            background: var(--brown-light); color: #fff; font-size: .7rem; font-weight: 700;
+            border-radius: 20px; padding: .05rem .4rem; min-width: 1.1rem; text-align: center;
+        }
+
+        /* ── PAGE HEADING ── */
+        .page-heading {
+            text-align: center;
+            padding: 2.5rem 1rem 1.5rem;
+        }
+        .page-heading h1 {
+            font-size: 2rem;
+            color: var(--brown-dark);
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+        .page-heading p {
+            margin-top: .5rem;
+            color: var(--brown-warm);
+            font-size: .95rem;
+            font-style: italic;
+        }
+
+        /* ── GALLERY GRID ── */
+        .gallery-wrap {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem 4rem;
+        }
+
+        /* Masonry via CSS columns */
+        .gallery-masonry {
+            column-count: 4;
+            column-gap: 12px;
+        }
+        @media (max-width: 1100px) { .gallery-masonry { column-count: 3; } }
+        @media (max-width: 700px)  { .gallery-masonry { column-count: 2; } }
+        @media (max-width: 440px)  { .gallery-masonry { column-count: 1; } }
+
+        .gallery-item {
+            break-inside: avoid;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            display: block;
+            text-decoration: none;
+            cursor: pointer;
+            background: var(--cream-dark);
+        }
+
+        .gallery-item img {
+            display: block;
+            width: 100%;
+            height: auto;
+            transition: transform .35s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.04);
+        }
+
+        /* Hover overlay */
+        .gallery-item-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(30,18,8,.78) 0%, transparent 55%);
+            opacity: 0;
+            transition: opacity .28s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: .9rem;
+        }
+        .gallery-item:hover .gallery-item-overlay { opacity: 1; }
+        .gallery-item-name {
+            color: #fff;
+            font-size: .9rem;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+        .gallery-item-price {
+            color: var(--cream-dark);
+            font-size: .8rem;
+            margin-top: .2rem;
+        }
+
+        /* Product index badge (top-left) */
+        .gallery-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(255,255,255,.82);
+            color: var(--brown-dark);
+            font-size: .7rem;
+            font-weight: 700;
+            padding: .2rem .5rem;
+            border-radius: 20px;
+            opacity: 0;
+            transition: opacity .28s ease;
+        }
+        .gallery-item:hover .gallery-badge { opacity: 1; }
+
+        /* Image count badge (top-right) */
+        .gallery-count {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0,0,0,.45);
+            color: #fff;
+            font-size: .7rem;
+            font-weight: 700;
+            padding: .2rem .5rem;
+            border-radius: 20px;
+        }
+
+        /* ── STATES ── */
+        .state-loading {
+            text-align: center;
+            padding: 5rem 1rem;
+            color: var(--brown-warm);
+            font-size: 1.1rem;
+        }
+        .state-empty {
+            text-align: center;
+            padding: 5rem 1rem;
+            color: var(--brown-warm);
+        }
+        .state-empty p { font-size: 3rem; margin-bottom: .75rem; }
+
+        /* Skeleton */
+        .skeleton-grid {
+            column-count: 4;
+            column-gap: 12px;
+        }
+        @media (max-width: 1100px) { .skeleton-grid { column-count: 3; } }
+        @media (max-width: 700px)  { .skeleton-grid { column-count: 2; } }
+        @media (max-width: 440px)  { .skeleton-grid { column-count: 1; } }
+
+        .skeleton-item {
+            break-inside: avoid;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            background: linear-gradient(90deg,#e2d8cb 25%,#ede6db 50%,#e2d8cb 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.3s infinite;
+        }
+        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    </style>
+</head>
+<body>
+
+<div class="shop-header">
+    <a href="/jalenswoodshop/" class="back-btn">&#8592; Shop</a>
+    <a href="/jalenswoodshop/" class="shop-header-brand">
+        <img src="/jalenswoodshop/photo.jpg" alt="Jalen McGee">
+        <div class="shop-header-text">
+            <div class="shop-header-name">Jalen&#x2019;s Woodshop</div>
+            <div class="shop-header-sub">Durham, NC &middot; Handcrafted Wood Pieces</div>
+        </div>
+    </a>
+    <a href="/jalenswoodshop/checkout/" class="cart-btn" id="cartBtn">&#x1F6D2; Cart <span class="cart-badge" id="cartBadge">0</span></a>
+</div>
+
+<div class="page-heading">
+    <h1>📷 Gallery</h1>
+    <p id="gallerySubtitle">A look at every piece from the shop</p>
+</div>
+
+<div class="gallery-wrap">
+    <!-- Skeleton shown while loading -->
+    <div class="skeleton-grid" id="skeletonGrid">
+        <div class="skeleton-item" style="height:260px"></div>
+        <div class="skeleton-item" style="height:180px"></div>
+        <div class="skeleton-item" style="height:320px"></div>
+        <div class="skeleton-item" style="height:200px"></div>
+        <div class="skeleton-item" style="height:280px"></div>
+        <div class="skeleton-item" style="height:160px"></div>
+        <div class="skeleton-item" style="height:240px"></div>
+        <div class="skeleton-item" style="height:300px"></div>
+    </div>
+
+    <div class="gallery-masonry" id="galleryGrid" style="display:none"></div>
+
+    <div class="state-empty" id="stateEmpty" style="display:none">
+        <p>&#x1FAB5;</p>
+        <p style="color:#888">No items in the shop yet. Check back soon!</p>
+        <p style="margin-top:.75rem"><a href="/jalenswoodshop/" style="color:var(--brown-mid)">&#8592; Back to shop</a></p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://awccquoyscijmtqtibgr.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3Y2NxdW95c2Npam10cXRpYmdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4MDI0MDUsImV4cCI6MjA4MjM3ODQwNX0.zUBCXRah_oK8P_Q-1sFwZ5altAFUfZMOdBdY-tuXWrE';
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+function getImageUrl(p) {
+    if (!p) return null;
+    if (p.startsWith('http')) return p;
+    if (p.length < 10) return p;
+    const { data } = sb.storage.from('item-images').getPublicUrl(p);
+    return data.publicUrl;
+}
+
+function esc(s) {
+    return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+(async () => {
+    // Update cart badge
+    try {
+        const n = JSON.parse(localStorage.getItem('jws_cart') || '[]').length;
+        document.getElementById('cartBadge').textContent = n;
+    } catch (_) {}
+
+    const { data, error } = await sb
+        .from('items')
+        .select('id, name, price, image_paths, image_path')
+        .eq('available', true)
+        .order('created_at', { ascending: false });
+
+    document.getElementById('skeletonGrid').style.display = 'none';
+
+    if (error || !data || !data.length) {
+        document.getElementById('stateEmpty').style.display = 'block';
+        return;
+    }
+
+    // Build flat list of all photos across all items
+    const photos = [];
+    data.forEach(item => {
+        const paths = Array.isArray(item.image_paths) && item.image_paths.length
+            ? item.image_paths
+            : (item.image_path ? [item.image_path] : []);
+
+        paths.forEach((p, photoIdx) => {
+            const url = getImageUrl(p);
+            if (url) {
+                photos.push({
+                    url,
+                    itemId: item.id,
+                    itemName: item.name,
+                    itemPrice: parseFloat(item.price).toFixed(2),
+                    photoIndex: photoIdx,
+                    totalPhotos: paths.length
+                });
+            }
+        });
+    });
+
+    if (!photos.length) {
+        document.getElementById('stateEmpty').style.display = 'block';
+        return;
+    }
+
+    const subtitle = document.getElementById('gallerySubtitle');
+    subtitle.textContent = `${photos.length} photo${photos.length !== 1 ? 's' : ''} across ${data.length} piece${data.length !== 1 ? 's' : ''}`;
+
+    const grid = document.getElementById('galleryGrid');
+    grid.innerHTML = photos.map(ph => `
+        <a class="gallery-item" href="/jalenswoodshop/item?id=${esc(ph.itemId)}">
+            <img
+                src="${esc(ph.url)}"
+                alt="${esc(ph.itemName)}${ph.totalPhotos > 1 ? ' — photo ' + (ph.photoIndex + 1) : ''}"
+                loading="lazy"
+            >
+            <div class="gallery-badge">${esc(ph.itemName)}</div>
+            ${ph.totalPhotos > 1
+                ? `<div class="gallery-count">${ph.photoIndex + 1} / ${ph.totalPhotos}</div>`
+                : ''}
+            <div class="gallery-item-overlay">
+                <div class="gallery-item-name">${esc(ph.itemName)}</div>
+                <div class="gallery-item-price">$${esc(ph.itemPrice)}</div>
+            </div>
+        </a>
+    `).join('');
+
+    grid.style.display = '';
+})();
+</script>
+</body>
+</html>
