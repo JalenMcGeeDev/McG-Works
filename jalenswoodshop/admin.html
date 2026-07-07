@@ -989,7 +989,10 @@
         </div>
 
         <div class="field">
-            <label>Photos <small style="font-weight:normal;opacity:.65">tap ⭐ to set cover (shows first)</small></label>
+            <label style="display:flex;align-items:center;justify-content:space-between">
+                <span>Photos <small style="font-weight:normal;opacity:.65">tap ⭐ to set cover (shows first)</small></span>
+                <button type="button" id="downloadAllBtn" onclick="downloadAllImages()" style="font-size:.75rem;font-weight:600;background:rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.15);border-radius:6px;padding:.25rem .6rem;cursor:pointer;display:none">⬇ Download all</button>
+            </label>
             <div id="editCurrentPreviews" class="img-preview-row"></div>
             <div class="img-upload-area" id="editPhotoArea" style="margin-top:.6rem">
                 <input type="file" id="editImage" accept="image/*" multiple onchange="previewEditImages(this.files)">
@@ -1272,6 +1275,7 @@ async function openEditPage(id) {
             const existingPaths = Array.isArray(data.image_paths) && data.image_paths.length
                 ? data.image_paths
                 : (data.image_path ? [data.image_path] : []);
+            document.getElementById('downloadAllBtn').style.display = existingPaths.length ? '' : 'none';
             document.getElementById('editCurrentPreviews').innerHTML = existingPaths.map((p, i) => {
                 const url = getImageUrl(p);
                 return `<div class="img-preview-wrap" data-path="${escHtml(p)}">
@@ -1714,6 +1718,34 @@ function lbDelete() {
 }
 
 // Open lightbox when clicking a photo thumbnail
+async function downloadAllImages() {
+    const wraps = Array.from(document.querySelectorAll('#editCurrentPreviews .img-preview-wrap'));
+    if (!wraps.length) { showToast('No images to download', 'error'); return; }
+    const itemName = (document.getElementById('editName').value.trim() || 'item').replace(/[^a-z0-9]/gi, '_');
+    const btn = document.getElementById('downloadAllBtn');
+    btn.textContent = '⏳ Downloading…';
+    btn.disabled = true;
+    for (let i = 0; i < wraps.length; i++) {
+        const url = wraps[i].querySelector('img').src;
+        try {
+            const res = await fetch(url);
+            const blob = await res.blob();
+            const ext = blob.type.split('/')[1] || 'jpg';
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `${itemName}_${i + 1}.${ext}`;
+            a.click();
+            URL.revokeObjectURL(a.href);
+            await new Promise(r => setTimeout(r, 300));
+        } catch (_) {
+            showToast(`Could not download image ${i + 1}`, 'error');
+        }
+    }
+    btn.textContent = '⬇ Download all';
+    btn.disabled = false;
+    showToast(`Downloaded ${wraps.length} image${wraps.length !== 1 ? 's' : ''} ✓`, 'success');
+}
+
 document.getElementById('editCurrentPreviews').addEventListener('click', function(e) {
     const wrap = e.target.closest('.img-preview-wrap');
     if (!wrap || e.target.closest('button')) return; // ignore button clicks
