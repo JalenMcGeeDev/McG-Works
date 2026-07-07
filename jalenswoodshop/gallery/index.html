@@ -275,19 +275,20 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const SUPABASE_URL = 'https://awccquoyscijmtqtibgr.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3Y2NxdW95c2Npam10cXRpYmdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4MDI0MDUsImV4cCI6MjA4MjM3ODQwNX0.zUBCXRah_oK8P_Q-1sFwZ5altAFUfZMOdBdY-tuXWrE';
-
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+<script src="/jalenswoodshop/jws-api.js" defer></script>
+<script defer>
+// Requires Supabase Pro. When false, uses original full-size images.
+const USE_IMAGE_TRANSFORMS = false;
+const THUMB_WIDTH = 600;
+const THUMB_QUALITY = 70;
 
 function getImageUrl(p) {
-    if (!p) return null;
-    if (p.startsWith('http')) return p;
-    if (p.length < 10) return p;
-    const { data } = sb.storage.from('item-images').getPublicUrl(p);
-    return data.publicUrl;
+    return JWS_API.thumbUrl('item-images', p, {
+        enabled: USE_IMAGE_TRANSFORMS,
+        width: THUMB_WIDTH,
+        quality: THUMB_QUALITY,
+        resize: 'cover'
+    });
 }
 
 function esc(s) {
@@ -305,14 +306,19 @@ function esc(s) {
         document.getElementById('cartBadge').textContent = n;
     } catch (_) {}
 
-    const { data, error } = await sb
-        .from('items')
-        .select('id, name, price, image_paths, image_path, available')
-        .order('created_at', { ascending: false });
+    let data;
+    try {
+        data = await JWS_API.select('items', {
+            select: 'id,name,price,image_paths,image_path,available',
+            order: 'created_at.desc'
+        });
+    } catch (_) {
+        data = null;
+    }
 
     document.getElementById('skeletonGrid').style.display = 'none';
 
-    if (error || !data || !data.length) {
+    if (!data || !data.length) {
         document.getElementById('stateEmpty').style.display = 'block';
         return;
     }

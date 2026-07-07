@@ -166,12 +166,12 @@
         </div>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const SUPABASE_URL='https://awccquoyscijmtqtibgr.supabase.co';
-const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3Y2NxdW95c2Npam10cXRpYmdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4MDI0MDUsImV4cCI6MjA4MjM3ODQwNX0.zUBCXRah_oK8P_Q-1sFwZ5altAFUfZMOdBdY-tuXWrE';
-const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-function getImageUrl(p){if(!p)return null;if(p.startsWith('http'))return p;if(p.length<10)return p;const{data}=sb.storage.from('item-images').getPublicUrl(p);return data.publicUrl;}
+<script src="/jalenswoodshop/jws-api.js" defer></script>
+<script defer>
+// Requires Supabase Pro. When false, uses original full-size images.
+const USE_IMAGE_TRANSFORMS=false;
+function getImageUrl(p){return JWS_API.imageUrl('item-images',p);}
+function getThumbUrl(p,width){return JWS_API.thumbUrl('item-images',p,{enabled:USE_IMAGE_TRANSFORMS,width:width||1200,quality:75,resize:'contain'});}
 function escHtml(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 let _cur=0,_total=0;
 function goSlide(idx){if(!_total)return;_cur=(idx+_total)%_total;document.querySelector('.carousel-track').style.transform='translateX(-'+(_cur*100)+'%)';document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===_cur));document.querySelectorAll('.thumb').forEach((t,i)=>t.classList.toggle('active',i===_cur));}
@@ -183,15 +183,19 @@ function toggleAccordion(el){el.classList.toggle('open');el.nextElementSibling.c
 (async()=>{
     const id=new URLSearchParams(location.search).get('id');
     if(!id)return showNotFound();
-    const{data:item,error}=await sb.from('items').select('*').eq('id',id).eq('available',true).single();
-    if(error||!item)return showNotFound();
+    const item = await JWS_API.selectOne('items', {
+        select: 'id,name,tagline,price,description,custom_message,custom_message_enabled,image_paths,image_path,video_path',
+        id: 'eq.' + id,
+        available: 'eq.true'
+    });
+    if(!item)return showNotFound();
     document.title=item.name+" \u2014 Jalen\u2019s Woodshop";
     _itemData={id:item.id,name:item.name,price:item.price,tagline:item.tagline||null,image:Array.isArray(item.image_paths)&&item.image_paths.length?getImageUrl(item.image_paths[0]):(item.image_path?getImageUrl(item.image_path):null)};
     updateCartBadge();
     if(getCart().find(i=>i.id===item.id)){const btn=document.getElementById('addToCartBtn');if(btn){btn.textContent='Added \u2713';btn.style.background='var(--brown-warm)';}}
     const bc=document.getElementById('breadcrumbName');if(bc)bc.textContent=item.name;
     const imgPaths=Array.isArray(item.image_paths)&&item.image_paths.length?item.image_paths:(item.image_path?[item.image_path]:[]);
-    const slides=imgPaths.map(p=>({type:'image',url:getImageUrl(p)}));
+    const slides=imgPaths.map(p=>({type:'image',url:getThumbUrl(p,1200)}));
     if(item.video_path)slides.push({type:'video',url:getImageUrl(item.video_path)});
     _total=slides.length;
     const mainPhoto=document.getElementById('mainPhoto');
@@ -204,12 +208,13 @@ function toggleAccordion(el){el.classList.toggle('open');el.nextElementSibling.c
         let slideHtml='';
         slides.forEach((s,i)=>{
             if(s.type==='video') slideHtml+='<div class="carousel-slide"><video src="'+escHtml(s.url)+'" controls playsinline preload="metadata"></video></div>';
-            else slideHtml+='<div class="carousel-slide"><img src="'+escHtml(s.url)+'" alt="'+escHtml(item.name)+' '+(i+1)+'" loading="'+(i===0?'eager':'lazy')+'"></div>';
+            else slideHtml+='<div class="carousel-slide"><img src="'+escHtml(s.url)+'" alt="'+escHtml(item.name)+' '+(i+1)+'" '+(i===0?'fetchpriority="high" loading="eager"':'loading="lazy"')+' decoding="async"></div>';
         });
         const arrows=_total>1?'<button class="carousel-btn prev" onclick="shift(-1)">‹</button><button class="carousel-btn next" onclick="shift(1)">›</button>':'';
         mainPhoto.innerHTML='<div class="carousel-track" ontouchstart="tcStart(event)" ontouchend="tcEnd(event)">'+slideHtml+'</div>'+arrows;
         slides.forEach((s,i)=>{
-            const inner=s.type==='video'?'<div class="thumb-video-icon">▶</div>':'<img src="'+escHtml(s.url)+'" alt="photo '+(i+1)+'" loading="lazy">';
+            const thumbUrl = s.type==='image' ? getThumbUrl(imgPaths[i]||'', 200) : s.url;
+            const inner=s.type==='video'?'<div class="thumb-video-icon">▶</div>':'<img src="'+escHtml(thumbUrl)+'" alt="photo '+(i+1)+'" loading="lazy" decoding="async">';
             const cls=i===0?'thumb active':'thumb';
             const tc=document.createElement('div');tc.className=cls;tc.innerHTML=inner;tc.onclick=()=>goSlide(i);thumbCol.appendChild(tc);
             const tr=document.createElement('div');tr.className=cls;tr.innerHTML=inner;tr.onclick=()=>goSlide(i);thumbRow.appendChild(tr);

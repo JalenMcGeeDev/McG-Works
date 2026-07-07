@@ -525,32 +525,36 @@
             &#x2705; Request sent! I'll be in touch soon.
         </div>
     </section></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
+    <script src="/jalenswoodshop/jws-api.js" defer></script>
+    <script defer>
         // ═══════════════════════════════════════════════════════════════
-        // 🔧 CONFIGURATION - FILL IN YOUR SUPABASE DETAILS BELOW
+        // 🔧 CONFIGURATION
         // ═══════════════════════════════════════════════════════════════
-        // Get these from: Supabase Dashboard → Settings → API
-        
-        const SUPABASE_URL = 'https://awccquoyscijmtqtibgr.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3Y2NxdW95c2Npam10cXRpYmdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4MDI0MDUsImV4cCI6MjA4MjM3ODQwNX0.zUBCXRah_oK8P_Q-1sFwZ5altAFUfZMOdBdY-tuXWrE';
-        
+        // Requires Supabase Pro. When false, uses original full-size images.
+        const USE_IMAGE_TRANSFORMS = false;
+        const THUMB_WIDTH = 700;
+        const THUMB_QUALITY = 70;
+
         // ═══════════════════════════════════════════════════════════════
         // ⚠️  DO NOT EDIT ANYTHING BELOW THIS LINE
         // ═══════════════════════════════════════════════════════════════
 
-        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
         const loading = document.getElementById('loading');
         const itemsGrid = document.getElementById('itemsGrid');
 
-        // Get public URL for images stored in Supabase Storage
+        // Public URL for images stored in Supabase Storage
         function getImageUrl(imagePath) {
-            if (!imagePath) return null;
-            if (imagePath.startsWith('http')) return imagePath;
-            if (imagePath.length < 10) return imagePath;
-            const { data } = sb.storage.from('item-images').getPublicUrl(imagePath);
-            return data.publicUrl;
+            return JWS_API.imageUrl('item-images', imagePath);
+        }
+
+        // Optimized thumbnail URL (falls back to original when transforms disabled)
+        function getThumbUrl(imagePath, width) {
+            return JWS_API.thumbUrl('item-images', imagePath, {
+                enabled: USE_IMAGE_TRANSFORMS,
+                width: width || THUMB_WIDTH,
+                quality: THUMB_QUALITY,
+                resize: 'cover'
+            });
         }
 
         function playCardVideo(imgWrap) {
@@ -570,13 +574,11 @@
 
         async function loadItems() {
             try {
-                const { data, error } = await sb
-                    .from('items')
-                    .select('*')
-                    .eq('available', true)
-                    .order('created_at', { ascending: false });
-
-                if (error) throw error;
+                const data = await JWS_API.select('items', {
+                    select: 'id,name,tagline,price,image_paths,image_path,image_url,video_path',
+                    available: 'eq.true',
+                    order: 'created_at.desc'
+                });
 
                 loading.style.display = 'none';
 
@@ -585,25 +587,34 @@
                     return;
                 }
 
-                itemsGrid.innerHTML = data.map(item => {
+                itemsGrid.innerHTML = data.map((item, itemIdx) => {
                     // Gather all image paths (multi-photo or legacy single)
                     const paths = Array.isArray(item.image_paths) && item.image_paths.length
                         ? item.image_paths
                         : (item.image_path || item.image_url ? [item.image_path || item.image_url] : []);
 
+                    // Only the very first image of the very first item is high-priority / eager.
+                    const isHero = itemIdx === 0;
+                    const heroAttrs = isHero ? 'fetchpriority="high" loading="eager"' : 'loading="lazy"';
+                    const imgSizing = 'width="700" height="525" decoding="async"';
+
                     let imageContent;
                     if (!paths.length) {
                         imageContent = '<div style="font-size:4rem;display:flex;align-items:center;justify-content:center;height:100%">🪵</div>';
                     } else if (paths.length === 1) {
-                        const url = getImageUrl(paths[0]);
+                        const url = getThumbUrl(paths[0]);
                         imageContent = url && url.startsWith('http')
-                            ? `<img src="${url}" alt="${item.name}">`
+                            ? `<img src="${url}" alt="${item.name}" ${heroAttrs} ${imgSizing}>`
                             : `<div style="font-size:4rem;display:flex;align-items:center;justify-content:center;height:100%">${url || '🪵'}</div>`;
                     } else {
                         const cid = `carousel-${item.id}`;
+                        // Only the FIRST slide has a real `src`. Others carry `data-src` and hydrate on interaction.
                         const slides = paths.map((p, i) => {
-                            const u = getImageUrl(p);
-                            return `<div class="carousel-slide"><img src="${u}" alt="${item.name} photo ${i+1}"></div>`;
+                            const u = getThumbUrl(p);
+                            if (i === 0) {
+                                return `<div class="carousel-slide"><img src="${u}" alt="${item.name} photo 1" ${heroAttrs} ${imgSizing}></div>`;
+                            }
+                            return `<div class="carousel-slide"><img data-src="${u}" alt="${item.name} photo ${i+1}" ${imgSizing}></div>`;
                         }).join('');
                         const dots = paths.map((_, i) =>
                             `<span class="carousel-dot${i===0?' active':''}" onclick="event.stopPropagation();event.preventDefault();goSlide('${cid}',${i})"></span>`
@@ -663,7 +674,7 @@
             errEl.style.display = 'none';
             btn.disabled = true; btn.textContent = 'Sending\u2026';
             try {
-                const { error } = await sb.from('orders').insert([{
+                await JWS_API.insert('orders', [{
                     customer_name:  name,
                     customer_email: email,
                     customer_phone: phone || null,
@@ -672,12 +683,11 @@
                     status:         'pending',
                     shipping_method: 'custom_request'
                 }]);
-                if (error) throw error;
 
                 // Fire-and-forget notification email
-                fetch(`${SUPABASE_URL}/functions/v1/notify-order`, {
+                fetch(`${JWS_API.URL}/functions/v1/notify-order`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY },
+                    headers: { 'Content-Type': 'application/json', 'apikey': JWS_API.KEY, 'Authorization': 'Bearer ' + JWS_API.KEY },
                     body: JSON.stringify({
                         type: 'custom_request',
                         customer_name: name,
@@ -698,8 +708,15 @@
     </script>
     <script>
     // ── Carousel helpers ──────────────────────────────────────────
+    function hydrateCarouselImages(carouselEl) {
+        carouselEl.querySelectorAll('img[data-src]').forEach(img => {
+            img.src = img.getAttribute('data-src');
+            img.removeAttribute('data-src');
+        });
+    }
     function goSlide(id, idx) {
         const c     = document.getElementById(id);
+        hydrateCarouselImages(c);
         const total = c.querySelectorAll('.carousel-slide').length;
         idx = (idx + total) % total;
         c.dataset.idx = idx;
