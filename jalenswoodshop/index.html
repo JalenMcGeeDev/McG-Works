@@ -525,8 +525,8 @@
             &#x2705; Request sent! I'll be in touch soon.
         </div>
     </section></script>
-    <script src="/jalenswoodshop/jws-api.js" defer></script>
-    <script defer>
+    <script src="/jalenswoodshop/jws-api.js"></script>
+    <script>
         // ═══════════════════════════════════════════════════════════════
         // 🔧 CONFIGURATION
         // ═══════════════════════════════════════════════════════════════
@@ -575,7 +575,7 @@
         async function loadItems() {
             try {
                 const data = await JWS_API.select('items', {
-                    select: 'id,name,tagline,price,image_paths,image_path,image_url,video_path',
+                    select: 'id,name,tagline,price,image_paths,image_path,video_path',
                     available: 'eq.true',
                     order: 'created_at.desc'
                 });
@@ -591,7 +591,7 @@
                     // Gather all image paths (multi-photo or legacy single)
                     const paths = Array.isArray(item.image_paths) && item.image_paths.length
                         ? item.image_paths
-                        : (item.image_path || item.image_url ? [item.image_path || item.image_url] : []);
+                        : (item.image_path ? [item.image_path] : []);
 
                     // Only the very first image of the very first item is high-priority / eager.
                     const isHero = itemIdx === 0;
@@ -654,8 +654,8 @@
                     `;
                 }).join('');
             } catch (error) {
-                console.error('Error loading items:', error);
-                loading.textContent = 'Error loading items. Please refresh the page.';
+                console.error('Error loading items:', error.message || error);
+                loading.textContent = 'Error loading items: ' + (error.message || error) + '. Please refresh the page.';
             }
         }
 
