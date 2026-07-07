@@ -169,6 +169,24 @@
         }
         .gallery-item:hover .gallery-badge { opacity: 1; }
 
+        /* Sold / not-for-sale items */
+        .gallery-item--sold {
+            cursor: default;
+        }
+        .gallery-item--sold:hover img { transform: none; }
+        .gallery-item--sold:hover .gallery-item-overlay { opacity: 1; }
+        .gallery-sold-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(0,0,0,.55);
+            color: #fff;
+            font-size: .7rem;
+            font-weight: 700;
+            padding: .2rem .5rem;
+            border-radius: 20px;
+        }
+
         /* Image count badge (top-right) */
         .gallery-count {
             position: absolute;
@@ -289,8 +307,7 @@ function esc(s) {
 
     const { data, error } = await sb
         .from('items')
-        .select('id, name, price, image_paths, image_path')
-        .eq('available', true)
+        .select('id, name, price, image_paths, image_path, available')
         .order('created_at', { ascending: false });
 
     document.getElementById('skeletonGrid').style.display = 'none';
@@ -315,6 +332,7 @@ function esc(s) {
                     itemId: item.id,
                     itemName: item.name,
                     itemPrice: parseFloat(item.price).toFixed(2),
+                    available: item.available,
                     photoIndex: photoIdx,
                     totalPhotos: paths.length
                 });
@@ -331,23 +349,33 @@ function esc(s) {
     subtitle.textContent = `${photos.length} photo${photos.length !== 1 ? 's' : ''} across ${data.length} piece${data.length !== 1 ? 's' : ''}`;
 
     const grid = document.getElementById('galleryGrid');
-    grid.innerHTML = photos.map(ph => `
-        <a class="gallery-item" href="/jalenswoodshop/item?id=${esc(ph.itemId)}">
+    grid.innerHTML = photos.map(ph => {
+        const tag     = ph.available ? 'a' : 'div';
+        const href    = ph.available ? ` href="/jalenswoodshop/item?id=${esc(ph.itemId)}"` : '';
+        const classes = 'gallery-item' + (ph.available ? '' : ' gallery-item--sold');
+        const badge   = ph.available
+            ? `<div class="gallery-badge">${esc(ph.itemName)}</div>`
+            : `<div class="gallery-sold-badge">Not for sale</div>`;
+        const priceEl = ph.available
+            ? `<div class="gallery-item-price">$${esc(ph.itemPrice)}</div>`
+            : `<div class="gallery-item-price" style="opacity:.75">Not for sale</div>`;
+        return `
+        <${tag} class="${classes}"${href}>
             <img
                 src="${esc(ph.url)}"
                 alt="${esc(ph.itemName)}${ph.totalPhotos > 1 ? ' — photo ' + (ph.photoIndex + 1) : ''}"
                 loading="lazy"
             >
-            <div class="gallery-badge">${esc(ph.itemName)}</div>
+            ${badge}
             ${ph.totalPhotos > 1
                 ? `<div class="gallery-count">${ph.photoIndex + 1} / ${ph.totalPhotos}</div>`
                 : ''}
             <div class="gallery-item-overlay">
                 <div class="gallery-item-name">${esc(ph.itemName)}</div>
-                <div class="gallery-item-price">$${esc(ph.itemPrice)}</div>
+                ${priceEl}
             </div>
-        </a>
-    `).join('');
+        </${tag}>`;
+    }).join('');
 
     grid.style.display = '';
 })();
