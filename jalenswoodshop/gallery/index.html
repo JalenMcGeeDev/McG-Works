@@ -273,6 +273,9 @@
         <p style="color:#888">No items in the shop yet. Check back soon!</p>
         <p style="margin-top:.75rem"><a href="/jalenswoodshop/" style="color:var(--brown-mid)">&#8592; Back to shop</a></p>
     </div>
+
+    <!-- Sentinel: when this enters the viewport, the next batch of images is rendered -->
+    <div id="gallerySentinel" style="height:1px;margin-top:2rem"></div>
 </div>
 
 <script src="/jalenswoodshop/jws-api.js"></script>
@@ -355,35 +358,68 @@ function esc(s) {
     subtitle.textContent = `${photos.length} photo${photos.length !== 1 ? 's' : ''} across ${data.length} piece${data.length !== 1 ? 's' : ''}`;
 
     const grid = document.getElementById('galleryGrid');
-    grid.innerHTML = photos.map(ph => {
-        const tag     = ph.available ? 'a' : 'div';
-        const href    = ph.available ? ` href="/jalenswoodshop/item?id=${esc(ph.itemId)}"` : '';
-        const classes = 'gallery-item' + (ph.available ? '' : ' gallery-item--sold');
-        const badge   = ph.available
-            ? `<div class="gallery-badge">${esc(ph.itemName)}</div>`
-            : `<div class="gallery-sold-badge">Not for sale</div>`;
-        const priceEl = ph.available
-            ? `<div class="gallery-item-price">$${esc(ph.itemPrice)}</div>`
-            : `<div class="gallery-item-price" style="opacity:.75">Not for sale</div>`;
-        return `
-        <${tag} class="${classes}"${href}>
-            <img
-                src="${esc(ph.url)}"
-                alt="${esc(ph.itemName)}${ph.totalPhotos > 1 ? ' — photo ' + (ph.photoIndex + 1) : ''}"
-                loading="lazy"
-            >
-            ${badge}
-            ${ph.totalPhotos > 1
-                ? `<div class="gallery-count">${ph.photoIndex + 1} / ${ph.totalPhotos}</div>`
-                : ''}
-            <div class="gallery-item-overlay">
-                <div class="gallery-item-name">${esc(ph.itemName)}</div>
-                ${priceEl}
-            </div>
-        </${tag}>`;
-    }).join('');
+    const CHUNK = 20;
+    let rendered = 0;
 
+    function renderChunk() {
+        const batch = photos.slice(rendered, rendered + CHUNK);
+        if (!batch.length) {
+            // All rendered — disconnect sentinel
+            if (window._galleryObserver) window._galleryObserver.disconnect();
+            document.getElementById('gallerySentinel').style.display = 'none';
+            return;
+        }
+        const fragment = document.createDocumentFragment();
+        batch.forEach((ph, batchIdx) => {
+            const globalIdx = rendered + batchIdx;
+            const tag     = ph.available ? 'a' : 'div';
+            const href    = ph.available ? ` href="/jalenswoodshop/item?id=${esc(ph.itemId)}"` : '';
+            const classes = 'gallery-item' + (ph.available ? '' : ' gallery-item--sold');
+            const badge   = ph.available
+                ? `<div class="gallery-badge">${esc(ph.itemName)}</div>`
+                : `<div class="gallery-sold-badge">Not for sale</div>`;
+            const priceEl = ph.available
+                ? `<div class="gallery-item-price">$${esc(ph.itemPrice)}</div>`
+                : `<div class="gallery-item-price" style="opacity:.75">Not for sale</div>`;
+            // First 8 images load eagerly (above the fold), rest lazy
+            const loadAttr = globalIdx < 8 ? 'eager' : 'lazy';
+            const el = document.createElement(tag);
+            el.className = classes;
+            if (href) el.href = `/jalenswoodshop/item?id=${esc(ph.itemId)}`;
+            el.innerHTML = `
+                <img
+                    src="${esc(ph.url)}"
+                    alt="${esc(ph.itemName)}${ph.totalPhotos > 1 ? ' \u2014 photo ' + (ph.photoIndex + 1) : ''}"
+                    loading="${loadAttr}"
+                    decoding="async"
+                >
+                ${badge}
+                ${ph.totalPhotos > 1
+                    ? `<div class="gallery-count">${ph.photoIndex + 1} / ${ph.totalPhotos}</div>`
+                    : ''}
+                <div class="gallery-item-overlay">
+                    <div class="gallery-item-name">${esc(ph.itemName)}</div>
+                    ${priceEl}
+                </div>`;
+            fragment.appendChild(el);
+        });
+        grid.appendChild(fragment);
+        rendered += batch.length;
+    }
+
+    // Render first chunk immediately, then watch the sentinel
+    renderChunk();
     grid.style.display = '';
+
+    if (rendered < photos.length) {
+        const sentinel = document.getElementById('gallerySentinel');
+        window._galleryObserver = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting) renderChunk();
+        }, { rootMargin: '400px' });
+        window._galleryObserver.observe(sentinel);
+    } else {
+        document.getElementById('gallerySentinel').style.display = 'none';
+    }
 })();
 </script>
 </body>
