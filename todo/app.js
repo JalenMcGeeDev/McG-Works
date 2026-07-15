@@ -636,6 +636,7 @@
     var el = document.getElementById('panel-picker');
     el.innerHTML = '';
     el.appendChild(mkAddForm());
+    if (addOpen) return; // form takes the full view
 
     if (loading) {
       el.appendChild(h('div', { className: 'loading' }, 'Loading your tasks…'));
