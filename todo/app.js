@@ -6,11 +6,85 @@
   const SB_URL = 'https://awccquoyscijmtqtibgr.supabase.co';
   const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3Y2NxdW95c2Npam10cXRpYmdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4MDI0MDUsImV4cCI6MjA4MjM3ODQwNX0.zUBCXRah_oK8P_Q-1sFwZ5altAFUfZMOdBdY-tuXWrE';
   const TABLE  = 'vibecheck_tasks';
-  const HDR    = {
-    apikey:          SB_KEY,
-    Authorization:   'Bearer ' + SB_KEY,
-    'Content-Type':  'application/json',
-  };
+
+  // ── Auth state ─────────────────────────────────────────────────────────
+  let session  = null;
+
+  function getHeaders(extra) {
+    var tok = session ? session.access_token : SB_KEY;
+    return Object.assign({
+      apikey:         SB_KEY,
+      Authorization:  'Bearer ' + tok,
+      'Content-Type': 'application/json',
+    }, extra || {});
+  }
+
+  function saveSession(s) {
+    session = s;
+    try { localStorage.setItem('jt_session', JSON.stringify(s)); } catch (_) {}
+  }
+
+  function clearSession() {
+    session = null;
+    try { localStorage.removeItem('jt_session'); } catch (_) {}
+  }
+
+  async function sbSignUp(name, email, password) {
+    const r = await fetch(SB_URL + '/auth/v1/signup', {
+      method:  'POST',
+      headers: { apikey: SB_KEY, 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ email: email, password: password, data: { full_name: name } }),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error_description || data.msg || 'Sign up failed');
+    return data;
+  }
+
+  async function sbSignIn(email, password) {
+    const r = await fetch(SB_URL + '/auth/v1/token?grant_type=password', {
+      method:  'POST',
+      headers: { apikey: SB_KEY, 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ email: email, password: password }),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error_description || data.msg || 'Sign in failed');
+    return data;
+  }
+
+  async function sbRefreshToken(refreshToken) {
+    const r = await fetch(SB_URL + '/auth/v1/token?grant_type=refresh_token', {
+      method:  'POST',
+      headers: { apikey: SB_KEY, 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ refresh_token: refreshToken }),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error('refresh failed');
+    return data;
+  }
+
+  async function initAuth() {
+    try {
+      var stored = localStorage.getItem('jt_session');
+      if (!stored) return false;
+      var s = JSON.parse(stored);
+      if (s.expires_at && (s.expires_at - 60) > Date.now() / 1000) {
+        session = s;
+        return true;
+      }
+      if (!s.refresh_token) return false;
+      var refreshed = await sbRefreshToken(s.refresh_token);
+      saveSession({
+        access_token:  refreshed.access_token,
+        refresh_token: refreshed.refresh_token,
+        expires_at:    refreshed.expires_in ? (Date.now() / 1000 + refreshed.expires_in) : null,
+        user:          refreshed.user,
+      });
+      return true;
+    } catch (_) {
+      clearSession();
+      return false;
+    }
+  }
 
   // ── Metadata ───────────────────────────────────────────────────────────
   const LEVELS = {
@@ -43,11 +117,15 @@
   // Drag state
   var drag = { id: null, el: null, ghost: null, pid: null, elLeft: 0, elTop: 0, initX: 0, initY: 0, overId: null, overBefore: false, overEl: null, overGroupEl: null, overGroupLevel: null };
 
+  // Auth UI state
+  var authMode  = 'signin'; // 'signin' | 'signup'
+  var authError = '';
+
   // ── Supabase REST helpers ──────────────────────────────────────────────
   async function sbLoad() {
     const r = await fetch(
       `${SB_URL}/rest/v1/${TABLE}?select=*&order=sort_order.asc.nullslast,created.asc`,
-      { headers: HDR }
+      { headers: getHeaders() }
     );
     if (!r.ok) throw new Error('load ' + r.status);
     return r.json();
@@ -56,7 +134,7 @@
   async function sbInsert(row) {
     const r = await fetch(`${SB_URL}/rest/v1/${TABLE}`, {
       method:  'POST',
-      headers: { ...HDR, Prefer: 'return=representation' },
+      headers: getHeaders({ Prefer: 'return=representation' }),
       body:    JSON.stringify(row),
     });
     if (!r.ok) throw new Error('insert ' + r.status);
@@ -66,7 +144,7 @@
   async function sbPatch(id, patch) {
     const r = await fetch(
       `${SB_URL}/rest/v1/${TABLE}?id=eq.${encodeURIComponent(id)}`,
-      { method: 'PATCH', headers: { ...HDR, Prefer: 'return=minimal' }, body: JSON.stringify(patch) }
+      { method: 'PATCH', headers: getHeaders({ Prefer: 'return=minimal' }), body: JSON.stringify(patch) }
     );
     if (!r.ok) throw new Error('patch ' + r.status);
   }
@@ -74,7 +152,7 @@
   async function sbDelete(id) {
     const r = await fetch(
       `${SB_URL}/rest/v1/${TABLE}?id=eq.${encodeURIComponent(id)}`,
-      { method: 'DELETE', headers: HDR }
+      { method: 'DELETE', headers: getHeaders() }
     );
     if (!r.ok) throw new Error('delete ' + r.status);
   }
@@ -82,7 +160,7 @@
   async function sbDeleteDone() {
     const r = await fetch(
       `${SB_URL}/rest/v1/${TABLE}?done=eq.true`,
-      { method: 'DELETE', headers: HDR }
+      { method: 'DELETE', headers: getHeaders() }
     );
     if (!r.ok) throw new Error('deleteDone ' + r.status);
   }
@@ -396,6 +474,163 @@
     );
   }
 
+  // ── Auth UI ────────────────────────────────────────────────────────────
+  function renderAuth() {
+    var overlay = document.getElementById('auth-overlay');
+    overlay.innerHTML = '';
+    var isUp = authMode === 'signup';
+    var card = h('div', { className: 'auth-card' },
+      h('h1', { className: 'auth-title' }, "Jalen's To-Dos"),
+      h('p',  { className: 'auth-subtitle' }, isUp ? 'Create your account' : 'Welcome back'),
+    );
+    if (authError) {
+      card.appendChild(h('div', { className: 'auth-error' }, authError));
+    }
+    if (isUp) {
+      card.appendChild(h('div', { className: 'auth-field' },
+        h('label', { className: 'auth-label', for: 'auth-name' }, 'Your name'),
+        h('input', { type: 'text', id: 'auth-name', className: 'auth-input',
+          placeholder: 'What should we call you?', autocomplete: 'name' }),
+      ));
+    }
+    card.appendChild(h('div', { className: 'auth-field' },
+      h('label', { className: 'auth-label', for: 'auth-email' }, 'Email'),
+      h('input', { type: 'email', id: 'auth-email', className: 'auth-input',
+        placeholder: 'you@example.com', autocomplete: 'email' }),
+    ));
+    card.appendChild(h('div', { className: 'auth-field' },
+      h('label', { className: 'auth-label', for: 'auth-password' }, 'Password'),
+      h('input', { type: 'password', id: 'auth-password', className: 'auth-input',
+        placeholder: isUp ? 'Create a password' : 'Your password',
+        autocomplete: isUp ? 'new-password' : 'current-password' }),
+    ));
+    card.appendChild(h('button', { className: 'auth-submit', 'data-action': 'auth-submit' },
+      isUp ? 'Create account' : 'Sign in'
+    ));
+    card.appendChild(h('p', { className: 'auth-toggle' },
+      isUp ? 'Already have an account? ' : "Don't have an account? ",
+      h('button', { className: 'auth-toggle-btn', 'data-action': 'auth-toggle' },
+        isUp ? 'Sign in' : 'Create account'
+      ),
+    ));
+    overlay.appendChild(card);
+    setTimeout(function () {
+      var first = overlay.querySelector('.auth-input');
+      if (first) first.focus();
+    }, 0);
+  }
+
+  async function doAuth() {
+    var emailEl = document.getElementById('auth-email');
+    var passEl  = document.getElementById('auth-password');
+    var nameEl  = document.getElementById('auth-name');
+    var email    = emailEl    ? emailEl.value.trim()    : '';
+    var password = passEl     ? passEl.value            : '';
+    var name     = nameEl     ? nameEl.value.trim()     : '';
+
+    if (!email || !password) {
+      authError = 'Please fill in all fields.';
+      renderAuth();
+      return;
+    }
+    if (authMode === 'signup' && !name) {
+      authError = 'Please enter your name.';
+      renderAuth();
+      return;
+    }
+
+    var btn = document.querySelector('#auth-overlay .auth-submit');
+    if (btn) { btn.disabled = true; btn.textContent = authMode === 'signup' ? 'Creating\u2026' : 'Signing in\u2026'; }
+
+    try {
+      var data;
+      if (authMode === 'signup') {
+        data = await sbSignUp(name, email, password);
+        if (!data.access_token) {
+          // Email confirmation required
+          var overlay = document.getElementById('auth-overlay');
+          overlay.innerHTML = '';
+          overlay.appendChild(h('div', { className: 'auth-card' },
+            h('h1', { className: 'auth-title' }, 'Check your email'),
+            h('p',  { className: 'auth-subtitle' },
+              'A confirmation link was sent to ' + email + '. Click it to activate your account, then sign in here.'
+            ),
+            h('button', { className: 'auth-submit', 'data-action': 'auth-goto-signin' }, 'Back to Sign in'),
+          ));
+          return;
+        }
+      } else {
+        data = await sbSignIn(email, password);
+      }
+      saveSession({
+        access_token:  data.access_token,
+        refresh_token: data.refresh_token,
+        expires_at:    data.expires_in ? (Date.now() / 1000 + data.expires_in) : null,
+        user:          data.user,
+      });
+      startApp();
+    } catch (err) {
+      authError = err.message || 'Something went wrong. Try again.';
+      renderAuth();
+    }
+  }
+
+  function updateHeader() {
+    var header = document.querySelector('.app-header');
+    if (!header || !session) return;
+    var existing = header.querySelector('.user-info');
+    if (existing) existing.remove();
+    var meta = session.user && session.user.user_metadata;
+    var name = (meta && meta.full_name)
+      ? meta.full_name.split(' ')[0]
+      : (session.user && session.user.email ? session.user.email : 'You');
+    header.appendChild(h('div', { className: 'user-info' },
+      h('span',  { className: 'user-name' }, 'Hi, ' + name),
+      h('button', { className: 'sign-out-btn', 'data-action': 'sign-out' }, 'Sign out'),
+    ));
+  }
+
+  async function doSignOut() {
+    if (session) {
+      fetch(SB_URL + '/auth/v1/logout', {
+        method:  'POST',
+        headers: { apikey: SB_KEY, Authorization: 'Bearer ' + session.access_token },
+      }).catch(function () {});
+    }
+    clearSession();
+    tasks   = [];
+    loading = true;
+    view    = 'picker';
+    picker  = { level: null, time: null };
+    addOpen = false;
+    var ui = document.querySelector('.user-info');
+    if (ui) ui.remove();
+    document.getElementById('app').hidden = true;
+    document.getElementById('auth-overlay').hidden = false;
+    authMode  = 'signin';
+    authError = '';
+    renderAuth();
+  }
+
+  function startApp() {
+    document.getElementById('auth-overlay').hidden = true;
+    document.getElementById('app').hidden = false;
+    updateHeader();
+    tasks   = [];
+    loading = true;
+    renderCurrent();
+    sbLoad().then(function (rows) {
+      tasks   = rows;
+      loading = false;
+      initSortOrders();
+      renderCurrent();
+    }).catch(function () {
+      loading = false;
+      showErr();
+      renderCurrent();
+    });
+  }
+
   // ── Render: picker panel ───────────────────────────────────────────────
   function renderPicker() {
     var el = document.getElementById('panel-picker');
@@ -542,6 +777,7 @@
       done:       false,
       created:    Date.now(),
       sort_order: maxOrder + 1000,
+      user_id:    session ? session.user.id : null,
     };
 
     tasks.push(task);
@@ -835,7 +1071,33 @@
       case 'delete':      doDelete(id);   break;
       case 'clear-done':  doClearDone();  break;
       case 'dismiss-error': hideErr();    break;
+      case 'sign-out':      doSignOut();  break;
     }
+  });
+
+  // ── Auth overlay events ────────────────────────────────────────────────
+  document.getElementById('auth-overlay').addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    switch (btn.dataset.action) {
+      case 'auth-toggle':
+        authMode  = authMode === 'signin' ? 'signup' : 'signin';
+        authError = '';
+        renderAuth();
+        break;
+      case 'auth-submit':
+        doAuth();
+        break;
+      case 'auth-goto-signin':
+        authMode  = 'signin';
+        authError = '';
+        renderAuth();
+        break;
+    }
+  });
+
+  document.getElementById('auth-overlay').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') doAuth();
   });
 
   // ── Drag-to-reorder (pointer events — works on desktop, Android, iOS) ──────────────
@@ -954,16 +1216,13 @@
   });
 
   // ── Bootstrap ─────────────────────────────────────────────────────────
-  renderCurrent();
-
-  sbLoad().then(function (rows) {
-    tasks   = rows;
-    loading = false;
-    initSortOrders();
-    renderCurrent();
-  }).catch(function () {
-    loading = false;
-    showErr();
-    renderCurrent();
+  initAuth().then(function (authenticated) {
+    if (authenticated) {
+      startApp();
+    } else {
+      document.getElementById('app').hidden = true;
+      document.getElementById('auth-overlay').hidden = false;
+      renderAuth();
+    }
   });
 })();
