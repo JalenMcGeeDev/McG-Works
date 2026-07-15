@@ -1,0 +1,25 @@
+{
+  "name": "Jalen's To-Dos",
+  "short_name": "To-Dos",
+  "description": "Personal task manager organized by focus level",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#F5F6F3",
+  "theme_color": "#1E2229",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
