@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jalen's To-Dos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="app-header">
+      <h1 class="app-title">Jalen's To-Dos</h1>
+    </header>
+
+    <div id="save-error" class="save-error hidden" role="alert" aria-live="polite">
+      Couldn't save your latest change. It's still here on screen — try again in a moment.
+      <button class="save-error-close" aria-label="Dismiss" data-action="dismiss-error">×</button>
+    </div>
+
+    <div class="tab-bar" role="tablist" aria-label="Views">
+      <button class="tab active" id="tab-picker" role="tab" aria-selected="true"
+              aria-controls="panel-picker" data-action="switch-tab" data-value="picker">
+        Get To-Dos
+      </button>
+      <button class="tab" id="tab-all" role="tab" aria-selected="false"
+              aria-controls="panel-all" data-action="switch-tab" data-value="all">
+        All Tasks
+      </button>
+      <button class="tab" id="tab-add" data-action="toggle-add">
+        Add Task
+      </button>
+    </div>
+
+    <main>
+      <section id="panel-picker" role="tabpanel" aria-labelledby="tab-picker"></section>
+      <section id="panel-all"    role="tabpanel" aria-labelledby="tab-all" hidden></section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,593 @@
+/* ── Reset & base ─────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #F5F6F3;
+  --card:        #ffffff;
+  --border:      #E7E7E2;
+  --ink:         #1E2229;
+  --ink-sec:     #6B7078;
+  --ink-muted:   #8A8E95;
+  --urgent:      #C0303C;
+  --urgent-bg:   #FBE3E5;
+  --r:           12px;
+  --r-sm:        8px;
+
+  /* Level colours */
+  --l1:          #4338CA;
+  --l1-bg:       #EEF2FF;
+  --l1-border:   #C7D2FE;
+  --l2:          #0E9594;
+  --l2-bg:       #ECFDF5;
+  --l2-border:   #6EE7D0;
+  --l3:          #D28A1F;
+  --l3-bg:       #FFFBEB;
+  --l3-border:   #FDE68A;
+}
+
+html {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+body { min-height: 100vh; padding-bottom: 80px; }
+
+/* ── Layout ───────────────────────────────────────────────────────────── */
+.app {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* ── Header ───────────────────────────────────────────────────────────── */
+.app-header { padding: 32px 0 20px; }
+
+.app-title {
+  font-size: clamp(24px, 5vw, 30px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+.app-tagline {
+  font-size: 14px;
+  color: var(--ink-sec);
+  margin-top: 5px;
+}
+
+/* ── Save error ───────────────────────────────────────────────────────── */
+.save-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--urgent-bg);
+  color: var(--urgent);
+  border: 1px solid #F5C2C7;
+  border-radius: var(--r-sm);
+  padding: 10px 14px;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+.save-error.hidden { display: none; }
+
+.save-error-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  color: var(--urgent);
+  padding: 0 2px;
+  flex-shrink: 0;
+}
+.save-error-close:focus-visible { outline: 2px solid var(--urgent); outline-offset: 2px; }
+
+/* ── Tab bar ──────────────────────────────────────────────────────────── */
+.tab-bar {
+  display: flex;
+  background: var(--border);
+  border-radius: 10px;
+  padding: 3px;
+  gap: 2px;
+  margin-bottom: 20px;
+}
+
+.tab {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-sec);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.tab.active { background: var(--ink); color: #fff; }
+.tab:focus-visible { outline: 2px solid var(--l1); outline-offset: 2px; }
+
+/* ── Add trigger & form ───────────────────────────────────────────────── */
+.add-trigger {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border: 1.5px dashed var(--border);
+  border-radius: var(--r);
+  background: transparent;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--ink-sec);
+  cursor: pointer;
+  text-align: center;
+  margin-bottom: 20px;
+  transition: border-color 0.15s, color 0.15s;
+}
+.add-trigger:hover { border-color: var(--l1); color: var(--l1); }
+.add-trigger:focus-visible { outline: 2px solid var(--l1); outline-offset: 2px; border-color: var(--l1); color: var(--l1); }
+
+.add-form-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.add-title-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+  align-items: center;
+}
+
+.add-title-input {
+  flex: 1;
+  min-width: 0;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--ink);
+  background: var(--card);
+  outline: none;
+}
+.add-title-input:focus { border-color: var(--l1); box-shadow: 0 0 0 3px var(--l1-bg); }
+
+.add-submit-btn {
+  padding: 9px 18px;
+  background: var(--ink);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-sm);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.add-submit-btn:focus-visible { outline: 2px solid var(--l1); outline-offset: 2px; }
+
+.add-cancel-btn {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--ink-muted);
+  cursor: pointer;
+  border-radius: var(--r-sm);
+  padding: 4px 6px;
+  flex-shrink: 0;
+}
+.add-cancel-btn:focus-visible { outline: 2px solid var(--l1); outline-offset: 2px; }
+
+.chips-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--ink-muted);
+  margin-bottom: 6px;
+}
+.form-row { margin-bottom: 12px; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.chip {
+  padding: 5px 12px;
+  border-radius: 99px;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-sec);
+  cursor: pointer;
+  transition: all 0.1s;
+}
+.chip:focus-visible { outline: 2px solid var(--l1); outline-offset: 2px; }
+.chip.sel-l1 { background: var(--l1-bg); border-color: var(--l1); color: var(--l1); }
+.chip.sel-l2 { background: var(--l2-bg); border-color: var(--l2); color: var(--l2); }
+.chip.sel-l3 { background: var(--l3-bg); border-color: var(--l3); color: var(--l3); }
+.chip.sel    { background: var(--ink); border-color: var(--ink); color: #fff; }
+
+.form-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-top: 4px;
+}
+
+.priority-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--ink-sec);
+  cursor: pointer;
+  user-select: none;
+}
+.add-priority-check {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--urgent);
+  cursor: pointer;
+}
+
+.due-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--ink-sec);
+  cursor: pointer;
+}
+.due-date-input {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--ink);
+  background: var(--card);
+  outline: none;
+}
+.due-date-input:focus { border-color: var(--l1); box-shadow: 0 0 0 3px var(--l1-bg); }
+
+/* ── Vibe cards ───────────────────────────────────────────────────────── */
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+  margin-bottom: 10px;
+}
+
+.vibe-cards { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+
+.vibe-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: var(--r);
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  font-family: inherit;
+  transition: border-color 0.15s, background 0.15s;
+}
+.vibe-card:focus-visible { outline: 2px solid var(--l1); outline-offset: 2px; }
+.vibe-card.sel-l1 { border-color: var(--l1); background: var(--l1-bg); }
+.vibe-card.sel-l2 { border-color: var(--l2); background: var(--l2-bg); }
+.vibe-card.sel-l3 { border-color: var(--l3); background: var(--l3-bg); }
+
+.vibe-emoji { font-size: 26px; line-height: 1; flex-shrink: 0; }
+.vibe-text { flex: 1; min-width: 0; }
+.vibe-name { font-size: 15px; font-weight: 600; color: var(--ink); }
+.vibe-desc { font-size: 13px; color: var(--ink-sec); margin-top: 1px; }
+.vibe-count { font-size: 12px; color: var(--ink-muted); flex-shrink: 0; white-space: nowrap; }
+
+/* ── Time pills ───────────────────────────────────────────────────────── */
+.time-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+
+.time-pill {
+  padding: 7px 14px;
+  border-radius: 99px;
+  border: 1.5px solid var(--border);
+  background: var(--card);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-sec);
+  cursor: pointer;
+  transition: all 0.1s;
+}
+.time-pill.sel { background: var(--ink); border-color: var(--ink); color: #fff; }
+.time-pill:focus-visible { outline: 2px solid var(--l1); outline-offset: 2px; }
+
+/* ── Picker results ───────────────────────────────────────────────────── */
+.results-header {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+  margin-bottom: 10px;
+}
+
+.top-result {
+  border-radius: var(--r);
+  padding: 4px;
+  margin-bottom: 16px;
+}
+.top-result.lv-1 { background: var(--l1-bg); border: 2px solid var(--l1); }
+.top-result.lv-2 { background: var(--l2-bg); border: 2px solid var(--l2); }
+.top-result.lv-3 { background: var(--l3-bg); border: 2px solid var(--l3); }
+
+.top-result .task-card {
+  background: transparent;
+  border: none;
+  margin-bottom: 0;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 16px;
+  font-size: 15px;
+  color: var(--ink-sec);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+}
+
+/* ── Task card ────────────────────────────────────────────────────────── */
+.task-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 12px 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  margin-bottom: 6px;
+}
+.task-card.done { opacity: 0.6; }
+
+.task-cb {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+  cursor: pointer;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  transition: background 0.1s, border-color 0.1s;
+}
+.task-cb:focus-visible { outline: 2px solid var(--l1); outline-offset: 2px; }
+.task-cb.ck-l1 { background: var(--l1); border-color: var(--l1); }
+.task-cb.ck-l2 { background: var(--l2); border-color: var(--l2); }
+.task-cb.ck-l3 { background: var(--l3); border-color: var(--l3); }
+.cb-check { color: #fff; font-size: 11px; line-height: 1; }
+
+.task-body { flex: 1; min-width: 0; }
+.task-title { font-size: 15px; font-weight: 500; word-break: break-word; }
+.task-title.done { text-decoration: line-through; color: var(--ink-muted); }
+
+.task-badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+
+.badge {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--ink-sec);
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+.badge-urgent   { background: var(--urgent-bg); color: var(--urgent); border-color: #F5C2C7; }
+.badge-priority { background: #FFF0F1; color: var(--urgent); border-color: #FFCDD1; }
+.badge-lv-1     { background: var(--l1-bg); color: var(--l1); border-color: var(--l1-border); }
+.badge-lv-2     { background: var(--l2-bg); color: var(--l2); border-color: var(--l2-border); }
+.badge-lv-3     { background: var(--l3-bg); color: var(--l3); border-color: var(--l3-border); }
+
+.task-edit,
+.task-del {
+  background: none;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 5px 10px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.task-edit { color: var(--ink-sec); }
+.task-del  { color: var(--urgent); border-color: #FFCDD1; }
+.task-card:hover .task-edit,
+.task-card:hover .task-del,
+.task-card:focus-within .task-edit,
+.task-card:focus-within .task-del { opacity: 1; }
+.task-edit:focus-visible,
+.task-del:focus-visible { outline: 2px solid var(--l1); outline-offset: 2px; opacity: 1; }
+
+/* ── Inline edit card ─────────────────────────────────────────────────── */
+.edit-form-card {
+  border: 2px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px;
+  margin-bottom: 6px;
+  background: var(--card);
+}
+.edit-form-card.edit-lv-1 { border-color: var(--l1); background: var(--l1-bg); }
+.edit-form-card.edit-lv-2 { border-color: var(--l2); background: var(--l2-bg); }
+.edit-form-card.edit-lv-3 { border-color: var(--l3); background: var(--l3-bg); }
+
+/* When editing inside the coloured top-result, blend in seamlessly */
+.top-result .edit-form-card {
+  background: transparent;
+  border: none;
+  padding: 6px 4px 4px;
+  margin-bottom: 0;
+}
+
+/* ── All-tasks groups ─────────────────────────────────────────────────── */
+.group-sec { margin-bottom: 24px; }
+
+.group-hdr {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 10px;
+}
+.group-emoji { font-size: 17px; line-height: 1; }
+.group-name {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+.group-name.g-l1 { color: var(--l1); }
+.group-name.g-l2 { color: var(--l2); }
+.group-name.g-l3 { color: var(--l3); }
+.group-count { font-size: 12px; color: var(--ink-muted); }
+
+.group-empty {
+  font-size: 14px;
+  color: var(--ink-muted);
+  padding: 10px 0 10px 4px;
+  text-align: center;
+}
+
+/* ── Done section ─────────────────────────────────────────────────────── */
+.done-sec {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+.done-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.done-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--ink-muted);
+}
+.clear-btn {
+  font-size: 13px;
+  color: var(--urgent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.clear-btn:focus-visible { outline: 2px solid var(--l1); outline-offset: 2px; }
+
+/* ── Drag to reorder ──────────────────────────────────────────────────── */
+.drag-handle {
+  color: var(--ink-muted);
+  font-size: 18px;
+  cursor: grab;
+  padding: 2px 6px 2px 0;
+  flex-shrink: 0;
+  touch-action: none;
+  user-select: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  line-height: 1;
+  align-self: center;
+}
+.drag-handle:active { cursor: grabbing; }
+.task-card:hover .drag-handle,
+.task-card:focus-within .drag-handle { opacity: 1; }
+@media (hover: none) { .drag-handle { opacity: 0.4; } }
+
+.task-card.drop-above { box-shadow: 0 -3px 0 0 var(--l1), 0 1px 3px rgba(0,0,0,0.06); }
+.task-card.drop-below { box-shadow: 0 3px 0 0 var(--l1), 0 1px 3px rgba(0,0,0,0.06); }
+
+.group-sec.drag-over-group {
+  border-radius: var(--r);
+  outline: 2px dashed var(--l1);
+  outline-offset: 4px;
+}
+
+/* ── Loading ──────────────────────────────────────────────────────────── */
+.loading {
+  text-align: center;
+  padding: 60px 16px;
+  font-size: 15px;
+  color: var(--ink-sec);
+}
+
+/* ── Reduced motion ───────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+
+/* ── Mobile & touch ───────────────────────────────────────────────────── */
+
+/* Touch devices: no hover state, so always show action buttons */
+@media (hover: none) {
+  .task-edit,
+  .task-del { opacity: 1; }
+
+  /* Larger tap targets */
+  .chip      { padding: 9px 14px; }
+  .time-pill { padding: 10px 16px; }
+  .vibe-card { padding: 18px 16px; }
+  .task-cb   { width: 26px; height: 26px; }
+  .tab       { padding: 10px 8px; }
+}
+
+/* Small screens */
+@media (max-width: 480px) {
+  /* Prevent iOS auto-zoom on input focus (requires ≥ 16px) */
+  .add-title-input,
+  .edit-title-input { font-size: 16px; }
+
+  /* Tighter header */
+  .app-header { padding: 20px 0 14px; }
+
+  /* Slightly smaller tab text so all three labels fit */
+  .tab { font-size: 13px; padding: 8px 6px; }
+
+  /* Stack priority checkbox and due date vertically */
+  .form-bottom { flex-direction: column; align-items: flex-start; gap: 10px; }
+
+  /* Trim vibe card description so count doesn't orphan */
+  .vibe-desc { font-size: 12px; }
+
+  /* Give task action buttons more breathing room */
+  .task-card { padding: 14px; }
+
+  /* Add / edit form title row: stack on very tight screens */
+  .add-title-row { flex-wrap: wrap; }
+  .add-title-input { min-width: 0; flex-basis: 100%; }
+  .add-submit-btn, .add-cancel-btn { flex: 1; }
+}
