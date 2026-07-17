@@ -111,8 +111,10 @@
   let picker  = { level: null, time: null };
   let addOpen = false;
   let addForm   = { title: '', level: 2, size: 'M', cat: 'personal', priority: false, due: '' };
-  let editingId = null;
-  let editForm  = { title: '', level: 2, size: 'M', cat: 'personal', priority: false, due: '' };
+  let editingId   = null;
+  let editForm    = { title: '', level: 2, size: 'M', cat: 'personal', priority: false, due: '' };
+  let importOpen   = false;
+  let importResult = null; // { imported: N, skipped: M } after a bulk import
 
   // Drag state
   var drag = { id: null, el: null, ghost: null, pid: null, elLeft: 0, elTop: 0, initX: 0, initY: 0, overId: null, overBefore: false, overEl: null, overGroupEl: null, overGroupLevel: null };
@@ -351,6 +353,7 @@
 
   // ── Render: add form ───────────────────────────────────────────────────
   function mkAddForm() {
+    if (importOpen) return mkImportForm();
     if (!addOpen) return document.createDocumentFragment();
 
     return h('div', { className: 'add-form-panel' },
@@ -421,6 +424,9 @@
           'Due:',
           h('input', { type: 'date', className: 'due-date-input', value: addForm.due }),
         ),
+      ),
+      h('div', { className: 'import-link-row' },
+        h('button', { className: 'import-link-btn', 'data-action': 'open-import' }, 'Bulk import via CSV'),
       ),
     );
   }
@@ -629,6 +635,167 @@
       showErr();
       renderCurrent();
     });
+  }
+
+  // ── CSV bulk import ─────────────────────────────────────────────────────
+  function parseCSV(text) {
+    var rows = [];
+    var lines = text.split('\n');
+    lines.forEach(function (line) {
+      line = line.trim();
+      if (!line) return;
+      var fields = [];
+      var i = 0;
+      while (i < line.length) {
+        if (line[i] === '"') {
+          var j = i + 1;
+          var field = '';
+          while (j < line.length) {
+            if (line[j] === '"' && line[j + 1] === '"') { field += '"'; j += 2; }
+            else if (line[j] === '"') { j++; break; }
+            else { field += line[j]; j++; }
+          }
+          fields.push(field);
+          if (j < line.length && line[j] === ',') j++;
+          i = j;
+        } else {
+          var end = line.indexOf(',', i);
+          if (end === -1) { fields.push(line.slice(i).trim()); break; }
+          else { fields.push(line.slice(i, end).trim()); i = end + 1; }
+        }
+      }
+      rows.push(fields);
+    });
+    return rows;
+  }
+
+  function csvRowToTask(fields) {
+    var title = (fields[0] || '').trim();
+    if (!title) return null;
+
+    var level = parseInt(fields[1], 10);
+    if (level !== 1 && level !== 2 && level !== 3) level = 2;
+
+    var size = (fields[2] || '').trim().toUpperCase();
+    if (size !== 'S' && size !== 'M' && size !== 'L') size = 'M';
+
+    var cat = (fields[3] || '').trim().toLowerCase();
+    if (cat !== 'work' && cat !== 'personal') cat = 'personal';
+
+    var priority = (fields[4] || '').trim().toLowerCase() === 'true';
+
+    var due = (fields[5] || '').trim();
+    if (due && !/^\d{4}-\d{2}-\d{2}$/.test(due)) due = '';
+
+    return {
+      id:         crypto.randomUUID(),
+      title:      title,
+      level:      level,
+      size:       size,
+      cat:        cat,
+      priority:   priority,
+      due:        due || null,
+      done:       false,
+      created:    Date.now(),
+      sort_order: null,
+      user_id:    session ? session.user.id : null,
+    };
+  }
+
+  function mkImportForm() {
+    var placeholder = [
+      'title,level,size,cat,priority,due',
+      'Clean the garage,3,L,personal,,',
+      'Review Q3 report,1,M,work,true,2026-07-20',
+      'Call dentist,2,S,personal,,',
+    ].join('\n');
+
+    var panel = h('div', { className: 'add-form-panel' },
+      h('div', { className: 'import-header' },
+        h('span', { className: 'import-title' }, 'Bulk Import'),
+        h('div', { className: 'import-actions' },
+          h('button', { className: 'add-submit-btn', 'data-action': 'submit-import' }, 'Import'),
+          h('button', { className: 'add-cancel-btn', 'data-action': 'cancel-import' }, 'Cancel'),
+        ),
+      ),
+      h('textarea', {
+        className:    'import-textarea',
+        placeholder:  placeholder,
+        'aria-label': 'CSV tasks to import',
+        rows:         '8',
+      }),
+    );
+
+    if (importResult) {
+      var ok   = importResult.imported > 0;
+      var msg  = ok
+        ? '\u2713 Imported ' + importResult.imported + ' task' + (importResult.imported !== 1 ? 's' : '')
+        : 'Nothing imported — check your format';
+      if (importResult.skipped > 0)
+        msg += ' \u00b7 ' + importResult.skipped + ' row' + (importResult.skipped !== 1 ? 's' : '') + ' skipped (no title)';
+      panel.appendChild(h('p', { className: 'import-result' + (ok ? '' : ' import-result-warn') }, msg));
+    }
+    return panel;
+  }
+
+  async function doImport() {
+    var ta = document.querySelector('.import-textarea');
+    if (!ta) return;
+    var text = ta.value.trim();
+    if (!text) return;
+
+    var rows     = parseCSV(text);
+    var newTasks = [];
+    var skipped  = 0;
+
+    rows.forEach(function (fields, idx) {
+      if (idx === 0 && (fields[0] || '').trim().toLowerCase() === 'title') return; // header
+      var task = csvRowToTask(fields);
+      if (task) { newTasks.push(task); } else { skipped++; }
+    });
+
+    // Assign sort_orders after existing per-level tails
+    var maxByLevel = {};
+    tasks.forEach(function (t) {
+      if (t.sort_order != null && !t.done) {
+        if (!maxByLevel[t.level] || t.sort_order > maxByLevel[t.level])
+          maxByLevel[t.level] = t.sort_order;
+      }
+    });
+    newTasks.forEach(function (t) {
+      maxByLevel[t.level] = (maxByLevel[t.level] || 0) + 1000;
+      t.sort_order = maxByLevel[t.level];
+    });
+
+    // Optimistic add
+    newTasks.forEach(function (t) { tasks.push(t); });
+    importResult = { imported: newTasks.length, skipped: skipped };
+    renderCurrent();
+
+    // Persist and roll back individual failures
+    for (var i = 0; i < newTasks.length; i++) {
+      var taskId = newTasks[i].id;
+      try {
+        await sbInsert(newTasks[i]);
+        hideErr();
+      } catch (_) {
+        showErr();
+        var badIdx = tasks.findIndex(function (t) { return t.id === taskId; });
+        if (badIdx !== -1) tasks.splice(badIdx, 1);
+        importResult.imported--;
+      }
+    }
+
+    renderCurrent();
+    if (importResult.imported > 0) {
+      setTimeout(function () {
+        importOpen   = false;
+        addOpen      = false;
+        importResult = null;
+        updateTabBar();
+        renderCurrent();
+      }, 1500);
+    }
   }
 
   // ── Render: picker panel ───────────────────────────────────────────────
@@ -991,9 +1158,34 @@
         break;
       }
       case 'cancel-add': {
-        addOpen = false;
+        addOpen      = false;
+        importOpen   = false;
+        importResult = null;
         updateTabBar();
         renderCurrent();
+        break;
+      }
+      case 'open-import': {
+        addOpen    = true;
+        importOpen = true;
+        updateTabBar();
+        renderCurrent();
+        setTimeout(function () {
+          var ta = document.querySelector('.import-textarea');
+          if (ta) ta.focus();
+        }, 0);
+        break;
+      }
+      case 'cancel-import': {
+        importOpen   = false;
+        addOpen      = false;
+        importResult = null;
+        updateTabBar();
+        renderCurrent();
+        break;
+      }
+      case 'submit-import': {
+        doImport();
         break;
       }
       case 'submit-add': {
