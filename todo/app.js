@@ -115,6 +115,7 @@
   let editForm    = { title: '', level: 2, size: 'M', cat: 'personal', priority: false, due: '' };
   let importOpen   = false;
   let importResult = null; // { imported: N, skipped: M } after a bulk import
+  let todayView    = false;
 
   // Drag state
   var drag = { id: null, el: null, ghost: null, pid: null, elLeft: 0, elTop: 0, initX: 0, initY: 0, overId: null, overBefore: false, overEl: null, overGroupEl: null, overGroupLevel: null };
@@ -810,6 +811,36 @@
       return;
     }
 
+    // Today view
+    if (todayView) {
+      var todayTasks = tasks.filter(function (t) {
+        return !t.done && t.due && daysUntil(t.due) <= 0;
+      }).sort(function (a, b) {
+        var da = daysUntil(a.due);
+        var db = daysUntil(b.due);
+        return da !== db ? da - db : a.level - b.level;
+      });
+      el.appendChild(h('div', { className: 'today-header' },
+        h('button', { className: 'today-back-btn', 'data-action': 'close-today' }, '← Back'),
+        h('span',  { className: 'today-title' }, "Today's Tasks"),
+      ));
+      if (todayTasks.length === 0) {
+        el.appendChild(h('div', { className: 'empty-state' }, 'Nothing due today. 🎉'));
+      } else {
+        todayTasks.forEach(function (t) { el.appendChild(mkTask(t)); });
+      }
+      return;
+    }
+
+    // Today button
+    var todayCount = tasks.filter(function (t) { return !t.done && t.due && daysUntil(t.due) <= 0; }).length;
+    el.appendChild(
+      h('button', { className: 'today-btn' + (todayCount > 0 ? ' today-btn-urgent' : ''), 'data-action': 'pick-today' },
+        h('span', {}, todayCount > 0 ? '📅 See today’s tasks' : '📅 Nothing due today'),
+        todayCount > 0 ? h('span', { className: 'today-btn-badge' }, todayCount + ' due') : null,
+      )
+    );
+
     // Headspace cards
     el.appendChild(h('p', { className: 'section-label' }, "What's your headspace?"));
     var cards = h('div', { className: 'vibe-cards' });
@@ -1257,6 +1288,16 @@
       case 'pick-time': {
         var tv = value === 'any' ? 'any' : parseInt(value, 10);
         picker.time = picker.time === tv ? null : tv;
+        renderPicker();
+        break;
+      }
+      case 'pick-today': {
+        todayView = true;
+        renderPicker();
+        break;
+      }
+      case 'close-today': {
+        todayView = false;
         renderPicker();
         break;
       }

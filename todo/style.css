@@ -687,6 +687,70 @@ body { min-height: 100vh; padding-bottom: 80px; }
 .sign-out-btn:hover { color: var(--ink); border-color: var(--ink); }
 .sign-out-btn:focus-visible { outline: 2px solid var(--l1); outline-offset: 2px; }
 
+/* ── Today's tasks button & view ──────────────────────────────────────── */
+.today-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 20px;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-sec);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, color 0.15s;
+}
+.today-btn:hover { border-color: var(--l1); color: var(--ink); }
+.today-btn:focus-visible { outline: 2px solid var(--l1); outline-offset: 2px; }
+.today-btn.today-btn-urgent {
+  border-color: var(--urgent);
+  color: var(--urgent);
+  background: var(--urgent-bg);
+}
+.today-btn.today-btn-urgent:hover { border-color: var(--urgent); opacity: 0.85; }
+
+.today-btn-badge {
+  background: var(--urgent);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+
+.today-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.today-back-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--l1);
+  padding: 4px 0;
+  flex-shrink: 0;
+}
+.today-back-btn:focus-visible { outline: 2px solid var(--l1); outline-offset: 2px; }
+
+.today-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
 /* ── Bulk import ──────────────────────────────────────────────────────── */
 .import-link-row {
   margin-top: 12px;

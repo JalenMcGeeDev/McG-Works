@@ -1,5 +1,5 @@
 /* Service Worker – Jalen's To-Dos */
-var CACHE_NAME = 'jt-shell-v1';
+var CACHE_NAME = 'jt-shell-v2';
 
 self.addEventListener('install', function (e) {
   self.skipWaiting();
