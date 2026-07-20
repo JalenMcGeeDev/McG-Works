@@ -1,0 +1,20 @@
+I'm adding tasks to a to-do app. Format them as CSV with this exact structure — one task per row, no extra explanation, just the CSV:
+
+title,level,size,cat,priority,due,description
+
+Rules:
+- title       — plain text (wrap in quotes if it contains a comma)
+- level       — 1 = Locked in (deep focus), 2 = Half-attention (background noise ok), 3 = Autopilot (mindless)
+- size        — S (~15 min), M (~1 hr), L (2+ hrs)
+- cat         — work or personal
+- priority    — true or leave blank
+- due         — YYYY-MM-DD or leave blank
+- description — any extra notes or context (optional, wrap in quotes if it contains a comma)
+
+Example:
+title,level,size,cat,priority,due,description
+Review Q3 report,1,M,work,true,2026-07-25,Check the shared Notion doc first
+Clean the garage,3,L,personal,,,
+Call dentist,2,S,personal,,,Schedule for next week
+
+Now convert the following into that format:

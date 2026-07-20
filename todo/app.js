@@ -110,9 +110,9 @@
   let view    = 'picker';   // 'picker' | 'all'
   let picker  = { level: null, time: null };
   let addOpen = false;
-  let addForm   = { title: '', level: 2, size: 'M', cat: 'personal', priority: false, due: '' };
+  let addForm   = { title: '', level: 2, size: 'M', cat: 'personal', priority: false, due: '', description: '' };
   let editingId   = null;
-  let editForm    = { title: '', level: 2, size: 'M', cat: 'personal', priority: false, due: '' };
+  let editForm    = { title: '', level: 2, size: 'M', cat: 'personal', priority: false, due: '', description: '' };
   let importOpen   = false;
   let importResult = null; // { imported: N, skipped: M } after a bulk import
   let todayView    = false;
@@ -287,9 +287,11 @@
     var ti = document.querySelector(p + '.add-title-input');
     var di = document.querySelector(p + '.due-date-input');
     var pi = document.querySelector(p + '.add-priority-check');
-    if (ti) addForm.title    = ti.value;
-    if (di) addForm.due      = di.value;
-    if (pi) addForm.priority = pi.checked;
+    var xi = document.querySelector(p + '.add-desc-input');
+    if (ti) addForm.title       = ti.value;
+    if (di) addForm.due         = di.value;
+    if (pi) addForm.priority    = pi.checked;
+    if (xi) addForm.description = xi.value;
   }
 
   function syncEditForm() {
@@ -298,9 +300,11 @@
     var ti = document.querySelector(p + '.edit-title-input');
     var di = document.querySelector(p + '.edit-due-input');
     var pi = document.querySelector(p + '.edit-priority-check');
-    if (ti) editForm.title    = ti.value;
-    if (di) editForm.due      = di.value;
-    if (pi) editForm.priority = pi.checked;
+    var xi = document.querySelector(p + '.edit-desc-input');
+    if (ti) editForm.title       = ti.value;
+    if (di) editForm.due         = di.value;
+    if (pi) editForm.priority    = pi.checked;
+    if (xi) editForm.description = xi.value;
   }
 
   // ── Render: edit form (inline task replacement) ────────────────────────
@@ -316,6 +320,13 @@
         h('button', { className: 'add-submit-btn', 'data-action': 'save-edit', 'data-id': task.id }, 'Save'),
         h('button', { className: 'add-cancel-btn', 'data-action': 'cancel-edit' }, 'Cancel'),
       ),
+      h('textarea', {
+        className:    'desc-textarea edit-desc-input',
+        placeholder:  'Description (optional)…',
+        value:        editForm.description || '',
+        'aria-label': 'Task description',
+        rows:         '2',
+      }),
       h('div', { className: 'form-row' },
         h('div', { className: 'chips-label' }, 'Focus level'),
         h('div', { className: 'chips' },
@@ -369,6 +380,13 @@
         h('button', { className: 'add-submit-btn', 'data-action': 'submit-add' }, 'Add'),
         h('button', { className: 'add-cancel-btn', 'data-action': 'cancel-add' }, 'Cancel'),
       ),
+      h('textarea', {
+        className:    'desc-textarea add-desc-input',
+        placeholder:  'Description (optional)…',
+        value:        addForm.description || '',
+        'aria-label': 'Task description',
+        rows:         '2',
+      }),
       h('div', { className: 'form-row' },
         h('div', { className: 'chips-label' }, 'Focus level'),
         h('div', { className: 'chips' },
@@ -459,8 +477,11 @@
 
     var body = h('div', { className: 'task-body' },
       h('span', { className: 'task-title' + (done ? ' done' : '') }, task.title),
-      h.apply(null, ['div', { className: 'task-badges' }].concat(badgeNodes)),
     );
+    if (task.description) {
+      body.appendChild(h('p', { className: 'task-desc' }, task.description));
+    }
+    body.appendChild(h.apply(null, ['div', { className: 'task-badges' }].concat(badgeNodes)));
 
     var edit = h('button', {
       className:    'task-edit',
@@ -688,27 +709,30 @@
     var due = (fields[5] || '').trim();
     if (due && !/^\d{4}-\d{2}-\d{2}$/.test(due)) due = '';
 
+    var description = (fields[6] || '').trim() || null;
+
     return {
-      id:         crypto.randomUUID(),
-      title:      title,
-      level:      level,
-      size:       size,
-      cat:        cat,
-      priority:   priority,
-      due:        due || null,
-      done:       false,
-      created:    Date.now(),
-      sort_order: null,
-      user_id:    session ? session.user.id : null,
+      id:          crypto.randomUUID(),
+      title:       title,
+      level:       level,
+      size:        size,
+      cat:         cat,
+      priority:    priority,
+      due:         due || null,
+      done:        false,
+      created:     Date.now(),
+      sort_order:  null,
+      user_id:     session ? session.user.id : null,
+      description: description,
     };
   }
 
   function mkImportForm() {
     var placeholder = [
-      'title,level,size,cat,priority,due',
-      'Clean the garage,3,L,personal,,',
-      'Review Q3 report,1,M,work,true,2026-07-20',
-      'Call dentist,2,S,personal,,',
+      'title,level,size,cat,priority,due,description',
+      'Clean the garage,3,L,personal,,,',
+      'Review Q3 report,1,M,work,true,2026-07-20,Check the shared doc first',
+      'Call dentist,2,S,personal,,,',
     ].join('\n');
 
     var panel = h('div', { className: 'add-form-panel' },
@@ -963,27 +987,30 @@
     if (!title) return;
     var due      = document.querySelector(p + '.due-date-input')?.value || null;
     var priority = !!document.querySelector(p + '.add-priority-check')?.checked;
+    var description = (document.querySelector(p + '.add-desc-input')?.value || '').trim() || null;
 
     var maxOrder = tasks.reduce(function (m, t) { return (t.sort_order != null && t.level === addForm.level) ? Math.max(m, t.sort_order) : m; }, 0);
     var task = {
-      id:         crypto.randomUUID(),
-      title:      title,
-      level:      addForm.level,
-      size:       addForm.size,
-      cat:        addForm.cat,
-      priority:   priority,
-      due:        due || null,
-      done:       false,
-      created:    Date.now(),
-      sort_order: maxOrder + 1000,
-      user_id:    session ? session.user.id : null,
+      id:          crypto.randomUUID(),
+      title:       title,
+      level:       addForm.level,
+      size:        addForm.size,
+      cat:         addForm.cat,
+      priority:    priority,
+      due:         due || null,
+      done:        false,
+      created:     Date.now(),
+      sort_order:  maxOrder + 1000,
+      user_id:     session ? session.user.id : null,
+      description: description,
     };
 
     tasks.push(task);
     // Reset title/priority/due; keep level/size/cat for batch entry
-    addForm.title    = '';
-    addForm.priority = false;
-    addForm.due      = '';
+    addForm.title       = '';
+    addForm.priority    = false;
+    addForm.due         = '';
+    addForm.description = '';
     renderCurrent();
     setTimeout(function () {
       document.querySelector('#panel-' + view + ' .add-title-input')?.focus();
@@ -1125,14 +1152,15 @@
     var p     = '#panel-' + view + ' .edit-form-card ';
     var title = (document.querySelector(p + '.edit-title-input')?.value || '').trim();
     if (!title) return;
-    var due      = document.querySelector(p + '.edit-due-input')?.value || null;
-    var priority = !!document.querySelector(p + '.edit-priority-check')?.checked;
+    var due         = document.querySelector(p + '.edit-due-input')?.value || null;
+    var priority    = !!document.querySelector(p + '.edit-priority-check')?.checked;
+    var description = (document.querySelector(p + '.edit-desc-input')?.value || '').trim() || null;
 
     var t = tasks.find(function (x) { return x.id === id; });
     if (!t) return;
 
-    var old   = { title: t.title, level: t.level, size: t.size, cat: t.cat, priority: t.priority, due: t.due };
-    var patch = { title: title, level: editForm.level, size: editForm.size, cat: editForm.cat, priority: priority, due: due || null };
+    var old   = { title: t.title, level: t.level, size: t.size, cat: t.cat, priority: t.priority, due: t.due, description: t.description };
+    var patch = { title: title, level: editForm.level, size: editForm.size, cat: editForm.cat, priority: priority, due: due || null, description: description };
 
     Object.assign(t, patch);
     editingId = null;
@@ -1144,7 +1172,7 @@
     } catch (_) {
       Object.assign(t, old);
       editingId = id;
-      editForm  = { title: patch.title, level: patch.level, size: patch.size, cat: patch.cat, priority: patch.priority, due: patch.due || '' };
+      editForm  = { title: patch.title, level: patch.level, size: patch.size, cat: patch.cat, priority: patch.priority, due: patch.due || '', description: patch.description || '' };
       renderCurrent();
       showErr();
     }
@@ -1245,7 +1273,7 @@
         var t = tasks.find(function (x) { return x.id === id; });
         if (!t) break;
         editingId = id;
-        editForm  = { title: t.title, level: t.level, size: t.size, cat: t.cat, priority: t.priority, due: t.due || '' };
+        editForm  = { title: t.title, level: t.level, size: t.size, cat: t.cat, priority: t.priority, due: t.due || '', description: t.description || '' };
         renderCurrent();
         setTimeout(function () {
           document.querySelector('#panel-' + view + ' .edit-title-input')?.focus();

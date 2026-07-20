@@ -1,5 +1,5 @@
 /* Service Worker – Jalen's To-Dos */
-var CACHE_NAME = 'jt-shell-v2';
+var CACHE_NAME = 'jt-shell-v3';
 
 self.addEventListener('install', function (e) {
   self.skipWaiting();
@@ -36,9 +36,18 @@ self.addEventListener('fetch', function (e) {
   // Let Supabase API calls go through unintercepted
   if (e.request.url.includes('supabase.co')) return;
 
-  // Network-first: always try the network, fall back to cache if offline
+  // Network-first: always try the network and update the cache on success,
+  // fall back to cache only when offline
   e.respondWith(
-    fetch(e.request).catch(function () {
+    fetch(e.request).then(function (response) {
+      if (response && response.status === 200) {
+        var clone = response.clone();
+        caches.open(CACHE_NAME).then(function (cache) {
+          cache.put(e.request, clone);
+        });
+      }
+      return response;
+    }).catch(function () {
       return caches.match(e.request);
     })
   );
