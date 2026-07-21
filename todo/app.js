@@ -6,6 +6,7 @@
   const SB_URL = 'https://awccquoyscijmtqtibgr.supabase.co';
   const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3Y2NxdW95c2Npam10cXRpYmdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4MDI0MDUsImV4cCI6MjA4MjM3ODQwNX0.zUBCXRah_oK8P_Q-1sFwZ5altAFUfZMOdBdY-tuXWrE';
   const TABLE  = 'vibecheck_tasks';
+  const VAPID_PUBLIC_KEY = 'BGcVBEqVixCBuHZc0GNLkylrkEq1VwPn4Au9Lnw2b52G_PKZfYfo8LVoRDS8CYIWg07f4lEffAsvrbaB0A-OlHc';
 
   // ── Auth state ─────────────────────────────────────────────────────────
   let session  = null;
@@ -640,6 +641,54 @@
     renderAuth();
   }
 
+  // ── Push notifications ──────────────────────────────────────────────────
+  function vapidKeyToUint8Array(b64url) {
+    var pad = '='.repeat((4 - b64url.length % 4) % 4);
+    var b64 = (b64url + pad).replace(/-/g, '+').replace(/_/g, '/');
+    var raw = atob(b64);
+    var arr = new Uint8Array(raw.length);
+    for (var i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+    return arr;
+  }
+
+  async function subscribeToNotifications() {
+    try {
+      var reg = await navigator.serviceWorker.ready;
+      var sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: vapidKeyToUint8Array(VAPID_PUBLIC_KEY)
+      });
+      var subJson = sub.toJSON();
+      await fetch(SB_URL + '/functions/v1/save-subscription', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: SB_KEY,
+          Authorization: 'Bearer ' + session.access_token
+        },
+        body: JSON.stringify({ endpoint: subJson.endpoint, keys: subJson.keys })
+      });
+      localStorage.setItem('jt_notif_subscribed', '1');
+      document.getElementById('notif-banner').classList.add('hidden');
+    } catch (err) {
+      console.warn('Push subscribe failed:', err);
+    }
+  }
+
+  function setupNotifications() {
+    if (!('Notification' in window) || !('PushManager' in window)) return;
+    if (Notification.permission === 'denied') return;
+    if (localStorage.getItem('jt_notif_dismissed')) return;
+    if (Notification.permission === 'granted' && localStorage.getItem('jt_notif_subscribed')) return;
+    if (Notification.permission === 'granted') {
+      // Already granted — subscribe silently
+      subscribeToNotifications();
+      return;
+    }
+    // Show prompt banner
+    document.getElementById('notif-banner').classList.remove('hidden');
+  }
+
   function startApp() {
     document.getElementById('auth-overlay').hidden = true;
     document.getElementById('app').hidden = false;
@@ -647,6 +696,7 @@
     tasks   = [];
     loading = true;
     renderCurrent();
+    setupNotifications();
     sbLoad().then(function (rows) {
       tasks   = rows;
       loading = false;
@@ -1333,6 +1383,16 @@
       case 'delete':      doDelete(id);   break;
       case 'clear-done':  doClearDone();  break;
       case 'dismiss-error': hideErr();    break;
+      case 'dismiss-notif':
+        document.getElementById('notif-banner').classList.add('hidden');
+        localStorage.setItem('jt_notif_dismissed', '1');
+        break;
+      case 'enable-notif':
+        Notification.requestPermission().then(function (perm) {
+          if (perm === 'granted') subscribeToNotifications();
+          else document.getElementById('notif-banner').classList.add('hidden');
+        });
+        break;
       case 'sign-out':      doSignOut();  break;
     }
   });

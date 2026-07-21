@@ -31,6 +31,32 @@ self.addEventListener('activate', function (e) {
   self.clients.claim();
 });
 
+self.addEventListener('push', function (e) {
+  var data = {};
+  try { data = JSON.parse(e.data.text()); } catch (_) {}
+  e.waitUntil(
+    self.registration.showNotification(data.title || "Jalen's To-Dos", {
+      body:  data.body  || '',
+      icon:  '/todo/icon.svg',
+      badge: '/todo/icon.svg',
+      data:  { url: data.url || '/todo/' }
+    })
+  );
+});
+
+self.addEventListener('notificationclick', function (e) {
+  e.notification.close();
+  var url = (e.notification.data && e.notification.data.url) || '/todo/';
+  e.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (cs) {
+      for (var i = 0; i < cs.length; i++) {
+        if (cs[i].url.indexOf('/todo/') !== -1 && 'focus' in cs[i]) return cs[i].focus();
+      }
+      if (clients.openWindow) return clients.openWindow(url);
+    })
+  );
+});
+
 self.addEventListener('fetch', function (e) {
   if (e.request.method !== 'GET') return;
   // Let Supabase API calls go through unintercepted
