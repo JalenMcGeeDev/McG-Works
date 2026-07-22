@@ -117,6 +117,9 @@
   let importOpen   = false;
   let importResult = null; // { imported: N, skipped: M } after a bulk import
   let todayView    = false;
+  let searchQuery     = '';       // live search filter
+  let allSort         = 'smart'; // sort mode for All Tasks panel
+  let pendingDeleteId = null;    // task id awaiting delete confirm
 
   // Drag state
   var drag = { id: null, el: null, ghost: null, pid: null, elLeft: 0, elTop: 0, initX: 0, initY: 0, overId: null, overBefore: false, overEl: null, overGroupEl: null, overGroupLevel: null };
@@ -219,6 +222,36 @@
       var ao = (a.sort_order != null) ? a.sort_order : score(a) + 1e6;
       var bo = (b.sort_order != null) ? b.sort_order : score(b) + 1e6;
       return ao - bo || a.created - b.created;
+    });
+  }
+
+  function sortedAll(arr) {
+    if (allSort === 'smart') return sorted(arr);
+    return arr.slice().sort(function (a, b) {
+      switch (allSort) {
+        case 'due-asc':
+          if (!a.due && !b.due) return 0;
+          if (!a.due) return 1;
+          if (!b.due) return -1;
+          return a.due < b.due ? -1 : a.due > b.due ? 1 : 0;
+        case 'due-desc':
+          if (!a.due && !b.due) return 0;
+          if (!a.due) return 1;
+          if (!b.due) return -1;
+          return a.due > b.due ? -1 : a.due < b.due ? 1 : 0;
+        case 'priority':
+          if (a.priority && !b.priority) return -1;
+          if (!a.priority && b.priority) return 1;
+          return score(a) - score(b);
+        case 'level-asc':
+          return a.level - b.level || score(a) - score(b);
+        case 'created-desc':
+          return (b.created || 0) - (a.created || 0);
+        case 'created-asc':
+          return (a.created || 0) - (b.created || 0);
+        default:
+          return score(a) - score(b);
+      }
     });
   }
 
@@ -491,12 +524,21 @@
       'data-id':     task.id,
     }, 'Edit');
 
-    var del = h('button', {
-      className:    'task-del',
-      'aria-label': 'Delete task',
-      'data-action': 'delete',
-      'data-id':     task.id,
-    }, 'Delete');
+    var del;
+    if (pendingDeleteId === task.id) {
+      del = h('span', { className: 'task-del-confirm' },
+        h('span', { className: 'task-del-label' }, 'Delete?'),
+        h('button', { className: 'task-del-yes', 'data-action': 'confirm-delete', 'data-id': task.id }, 'Yes'),
+        h('button', { className: 'task-del-no',  'data-action': 'cancel-delete',  'data-id': task.id }, 'No'),
+      );
+    } else {
+      del = h('button', {
+        className:    'task-del',
+        'aria-label': 'Delete task',
+        'data-action': 'delete',
+        'data-id':     task.id,
+      }, 'Delete');
+    }
 
     return h('div', { className: 'task-card' + (done ? ' done' : ''), 'data-id': task.id },
       handle, cb, body, edit, del
@@ -986,17 +1028,53 @@
     el.innerHTML = '';
     el.appendChild(mkAddForm());
 
+    // ── Sort toolbar ───────────────────────────────────────────────────
+    var sortSel = h('select', { className: 'all-sort-select', id: 'all-sort-select' },
+      h('option', { value: 'smart'        }, 'Smart'),
+      h('option', { value: 'created-desc' }, 'Newest first'),
+      h('option', { value: 'created-asc'  }, 'Oldest first'),
+      h('option', { value: 'due-asc'      }, 'Due: Soonest'),
+      h('option', { value: 'due-desc'     }, 'Due: Latest'),
+      h('option', { value: 'priority'     }, 'Priority first'),
+      h('option', { value: 'level-asc'    }, 'Focus level'),
+    );
+    sortSel.value = allSort;
+    sortSel.addEventListener('change', function () {
+      allSort = this.value;
+      renderAll();
+    });
+    el.appendChild(h('div', { className: 'all-toolbar' },
+      h('label', { className: 'all-sort-label', 'for': 'all-sort-select' }, 'Sort:'),
+      sortSel,
+    ));
+
     if (loading) {
       el.appendChild(h('div', { className: 'loading' }, 'Loading your tasks…'));
       return;
     }
 
+    // ── Search mode: flat filtered list ────────────────────────────────
+    if (searchQuery) {
+      var q = searchQuery;
+      var matched = sortedAll(tasks.filter(function (t) {
+        return (t.title && t.title.toLowerCase().includes(q)) ||
+               (t.description && t.description.toLowerCase().includes(q));
+      }));
+      if (matched.length === 0) {
+        el.appendChild(h('p', { className: 'group-empty' }, 'No tasks match "' + searchQuery + '".'));
+      } else {
+        matched.forEach(function (t) { el.appendChild(mkTask(t)); });
+      }
+      return;
+    }
+
+    // ── Normal grouped view ────────────────────────────────────────────
     var open = tasks.filter(function (t) { return !t.done; });
     var done = tasks.filter(function (t) { return t.done; });
 
     [1, 2, 3].forEach(function (n) {
       var lvl   = LEVELS[n];
-      var group = sorted(open.filter(function (t) { return t.level === n; }));
+      var group = sortedAll(open.filter(function (t) { return t.level === n; }));
       var sec   = h('div', { className: 'group-sec', 'data-level': String(n) },
         h('div', { className: 'group-hdr' },
           h('span', { className: 'group-emoji' }, lvl.emoji),
@@ -1090,6 +1168,7 @@
   }
 
   async function doDelete(id) {
+    pendingDeleteId = null;
     var idx = tasks.findIndex(function (x) { return x.id === id; });
     if (idx === -1) return;
     var removed = tasks.splice(idx, 1)[0];
@@ -1240,6 +1319,7 @@
       case 'switch-tab': {
         view = value;
         addOpen = false;
+        pendingDeleteId = null;
         document.getElementById('panel-picker').hidden = view !== 'picker';
         document.getElementById('panel-all').hidden    = view !== 'all';
         updateTabBar();
@@ -1379,8 +1459,16 @@
         renderPicker();
         break;
       }
-      case 'toggle':      doToggle(id);   break;
-      case 'delete':      doDelete(id);   break;
+      case 'toggle':         doToggle(id);   break;
+      case 'delete':
+        pendingDeleteId = id;
+        renderCurrent();
+        break;
+      case 'confirm-delete': doDelete(id);   break;
+      case 'cancel-delete':
+        pendingDeleteId = null;
+        renderCurrent();
+        break;
       case 'clear-done':  doClearDone();  break;
       case 'dismiss-error': hideErr();    break;
       case 'dismiss-notif':
@@ -1535,6 +1623,19 @@
       editingId = null;
       renderCurrent();
     }
+  });
+
+  // ── Search input ───────────────────────────────────────────────────────
+  document.getElementById('search-input').addEventListener('input', function () {
+    searchQuery = this.value.trim().toLowerCase();
+    pendingDeleteId = null;
+    if (searchQuery && view !== 'all') {
+      view = 'all';
+      document.getElementById('panel-picker').hidden = true;
+      document.getElementById('panel-all').hidden    = false;
+      updateTabBar();
+    }
+    renderCurrent();
   });
 
   // ── Bootstrap ─────────────────────────────────────────────────────────
