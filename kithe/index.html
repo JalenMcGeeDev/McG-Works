@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Kithe — Grow on purpose</title>
+  <meta name="description" content="A tracker for qualitative self-growth goals: rate, reflect, and log real moments.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/kithe/style.css">
+  <link rel="manifest" href="/kithe/manifest.json">
+  <meta name="theme-color" content="#6366F1">
+  <link rel="apple-touch-icon" href="/kithe/icon.svg">
+  <link rel="icon" href="/kithe/icon.svg">
+</head>
+<body>
+  <div id="auth-overlay" hidden></div>
+
+  <div class="app" id="app" hidden>
+    <header class="app-header" id="app-header">
+      <div class="app-brand">
+        <img src="/kithe/icon.svg" alt="" class="app-brand-icon">
+        <span class="app-brand-name">Kithe</span>
+      </div>
+      <div id="header-actions" class="header-actions"></div>
+    </header>
+
+    <div id="save-error" class="banner banner-error hidden" role="alert" aria-live="polite">
+      <span>Couldn't save your latest change. Try again in a moment.</span>
+      <button class="banner-close" aria-label="Dismiss" data-action="dismiss-error">×</button>
+    </div>
+
+    <div id="sync-banner" class="banner banner-info hidden" role="status" aria-live="polite">
+      <span>📥 You're offline — changes will sync when you're back online.</span>
+    </div>
+
+    <div id="install-banner" class="banner banner-install hidden" role="status">
+      <span>✨ Add Kithe to your home screen for the fastest check-ins.</span>
+      <div class="banner-actions">
+        <button class="banner-btn" data-action="install-app">Add</button>
+        <button class="banner-close" aria-label="Dismiss" data-action="dismiss-install">×</button>
+      </div>
+    </div>
+
+    <main id="main" tabindex="-1"></main>
+
+    <nav class="tab-bar" id="tab-bar" role="tablist" aria-label="Views">
+      <button class="tab" id="tab-today" role="tab" data-action="nav" data-value="today">
+        <span class="tab-icon">🏠</span><span>Today</span>
+      </button>
+      <button class="tab" id="tab-calendar" role="tab" data-action="nav" data-value="calendar">
+        <span class="tab-icon">📅</span><span>Calendar</span>
+      </button>
+      <button class="tab" id="tab-settings" role="tab" data-action="nav" data-value="settings">
+        <span class="tab-icon">⚙️</span><span>Settings</span>
+      </button>
+    </nav>
+  </div>
+
+  <div id="confetti-layer" aria-hidden="true"></div>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/kithe/sw.js');
+    }
+  </script>
+  <script src="/kithe/app.js"></script>
+</body>
+</html>

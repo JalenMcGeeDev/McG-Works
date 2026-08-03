@@ -1,0 +1,15 @@
+{
+  "name": "Kithe — Grow on purpose",
+  "short_name": "Kithe",
+  "description": "A tracker for qualitative self-growth goals: rate, reflect, and log real moments.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#FAF8F4",
+  "theme_color": "#6366F1",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

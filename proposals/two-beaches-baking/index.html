@@ -1,0 +1,1666 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Two Beaches Baking - Proposal | McG Works</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #0b0f14;
+      color: #e2e8f0;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---------- Access denied overlay ---------- */
+    .access-denied {
+      display: grid;
+      place-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+    .access-denied h1 { font-size: 28px; margin-bottom: 8px; color: #fff; }
+    .access-denied p { opacity: 0.6; margin-bottom: 24px; }
+    .access-denied a {
+      color: #3b82f6;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .access-denied a:hover { text-decoration: underline; }
+
+    /* ---------- Proposal wrapper ---------- */
+    .proposal { display: none; }
+    .proposal.visible { display: block; }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      text-align: center;
+      padding: 72px 24px 48px;
+      background: linear-gradient(180deg, #111827 0%, #0b0f14 100%);
+      border-bottom: 1px solid #1e293b;
+    }
+    .hero .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding: 5px 14px;
+      border-radius: 20px;
+      background: #1e3a5f;
+      color: #60a5fa;
+      margin-bottom: 16px;
+    }
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 44px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -1px;
+    }
+    .hero .tagline {
+      font-size: 18px;
+      opacity: 0.5;
+      margin: 0 0 32px;
+    }
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+    .hero-stat {
+      text-align: center;
+    }
+    .hero-stat .value {
+      display: block;
+      font-size: 28px;
+      font-weight: 800;
+      color: #3b82f6;
+    }
+    .hero-stat .label {
+      font-size: 13px;
+      opacity: 0.5;
+      margin-top: 2px;
+    }
+
+    /* ---------- Confidential banner ---------- */
+    .confidential {
+      max-width: 860px;
+      margin: 28px auto 0;
+      padding: 14px 20px;
+      background: #1c1917;
+      border: 1px solid #44403c;
+      border-radius: 10px;
+      font-size: 13px;
+      color: #d6d3d1;
+      text-align: center;
+    }
+    .confidential span { margin-right: 6px; }
+
+    /* ---------- TOC ---------- */
+    .toc {
+      max-width: 860px;
+      margin: 32px auto;
+      padding: 24px 28px;
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 12px;
+    }
+    .toc h3 {
+      margin: 0 0 12px;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.5;
+    }
+    .toc ol {
+      margin: 0;
+      padding-left: 20px;
+      columns: 2;
+      column-gap: 32px;
+    }
+    .toc li {
+      font-size: 14px;
+      padding: 3px 0;
+      break-inside: avoid;
+    }
+    .toc a {
+      color: #93c5fd;
+      text-decoration: none;
+    }
+    .toc a:hover { text-decoration: underline; }
+
+    /* ---------- Content container ---------- */
+    .content {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ---------- Sections ---------- */
+    .section {
+      margin-top: 40px;
+    }
+    .section-number {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #3b82f6;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 6px;
+    }
+    .section h2 {
+      margin: 0 0 20px;
+      font-size: 26px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .section h3 {
+      margin: 28px 0 12px;
+      font-size: 19px;
+      font-weight: 600;
+      color: #f1f5f9;
+    }
+    .section p {
+      margin: 0 0 14px;
+      font-size: 15px;
+      opacity: 0.85;
+    }
+
+    /* ---------- Cards ---------- */
+    .card {
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-bottom: 16px;
+    }
+    .card h3 {
+      margin: 0 0 12px;
+      font-size: 18px;
+      color: #fff;
+    }
+    .card p, .card ul {
+      font-size: 15px;
+      opacity: 0.85;
+      margin: 0;
+    }
+    .card ul {
+      padding-left: 18px;
+      margin-top: 8px;
+    }
+    .card ul li { padding: 2px 0; }
+
+    /* ---------- Tables ---------- */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 16px 0;
+      border-radius: 10px;
+      border: 1px solid #374151;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    thead th {
+      text-align: left;
+      padding: 12px 16px;
+      background: #1e293b;
+      color: #94a3b8;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #374151;
+    }
+    tbody td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #1e293b;
+      vertical-align: top;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #1e293b44; }
+    td strong { color: #fff; }
+
+    /* ---------- Flow steps ---------- */
+    .flow-step {
+      display: flex;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid #1e293b;
+    }
+    .flow-step:last-child { border-bottom: none; }
+    .flow-num {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #1e3a5f;
+      color: #60a5fa;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .flow-body h4 {
+      margin: 0 0 4px;
+      font-size: 15px;
+      color: #fff;
+    }
+    .flow-body p {
+      margin: 0;
+      font-size: 14px;
+      opacity: 0.7;
+    }
+
+    /* ---------- Callout ---------- */
+    .callout {
+      padding: 16px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      margin: 16px 0;
+      line-height: 1.6;
+    }
+    .callout.warning {
+      background: #1c1917;
+      border: 1px solid #44403c;
+      color: #fbbf24;
+    }
+    .callout.info {
+      background: #0c1929;
+      border: 1px solid #1e3a5f;
+      color: #93c5fd;
+    }
+    .callout.safety {
+      background: #14120b;
+      border: 1px solid #854d0e;
+      color: #fde68a;
+    }
+
+    /* ---------- Pricing highlight ---------- */
+    .pricing-hero {
+      text-align: center;
+      padding: 32px;
+      background: linear-gradient(135deg, #1e3a5f 0%, #1e293b 100%);
+      border: 1px solid #2563eb;
+      border-radius: 14px;
+      margin-bottom: 24px;
+    }
+    .pricing-hero .amount {
+      font-size: 48px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .pricing-hero .amount-label {
+      font-size: 15px;
+      opacity: 0.6;
+      margin-top: 4px;
+    }
+
+    /* ---------- Proposal Note ---------- */
+    .proposal-note {
+      margin-top: 40px;
+      padding: 20px 24px;
+      background: rgba(59,130,246,0.06);
+      border: 1px solid rgba(59,130,246,0.25);
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+    }
+    .proposal-note strong {
+      color: #93c5fd;
+    }
+
+    /* ---------- Signature ---------- */
+    .sig-section {
+      margin-top: 32px;
+      padding: 28px 28px 24px;
+      background: #111827;
+      border: 1px solid #1e3a5f;
+      border-radius: 14px;
+    }
+    .sig-section h3 {
+      margin: 0 0 6px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+    .sig-intro {
+      margin: 0 0 20px;
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+    .sig-field { margin-bottom: 14px; }
+    .sig-field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #94a3b8;
+      margin-bottom: 6px;
+    }
+    .sig-input {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      color: #e2e8f0;
+      font-size: 15px;
+      padding: 10px 14px;
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .sig-input:focus { border-color: #3b82f6; }
+    .sig-agree {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      color: #94a3b8;
+      margin: 18px 0 20px;
+      line-height: 1.5;
+    }
+    .sig-agree input[type="checkbox"] {
+      margin-top: 2px;
+      accent-color: #3b82f6;
+      flex-shrink: 0;
+    }
+    .sig-btn {
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 12px 28px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .sig-btn:hover:not(:disabled) { background: #1d4ed8; }
+    .sig-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .sig-status {
+      display: block;
+      margin-top: 12px;
+      font-size: 13px;
+    }
+    .sig-status.error { color: #ef4444; }
+    .sig-status.info  { color: #94a3b8; }
+    .sig-signed-badge {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 20px;
+      background: rgba(34,197,94,0.08);
+      border: 1px solid rgba(34,197,94,0.3);
+      border-radius: 10px;
+    }
+    .sig-badge-text strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 700;
+      color: #4ade80;
+      margin-bottom: 2px;
+    }
+    .sig-badge-text span {
+      font-size: 13px;
+      color: #86efac;
+    }
+
+    /* ---------- CTA ---------- */
+    .cta-section {
+      text-align: center;
+      padding: 48px 24px;
+      margin-top: 40px;
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 14px;
+    }
+    .cta-section h2 {
+      margin: 0 0 8px;
+      font-size: 26px;
+      color: #fff;
+    }
+    .cta-section p {
+      margin: 0;
+      font-size: 15px;
+      opacity: 0.6;
+    }
+
+    /* ---------- Sub-section headings ---------- */
+    .sub-heading {
+      font-size: 16px;
+      font-weight: 700;
+      color: #94a3b8;
+      margin: 24px 0 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ---------- Comments ---------- */
+    .comment-form-wrap {
+      margin: 20px 0 28px;
+    }
+    .comment-form, .reply-form {
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .reply-form {
+      margin-top: 12px;
+      background: #1a2332;
+    }
+    .comment-form-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .comment-input {
+      flex: 1;
+      min-width: 160px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-family: inherit;
+      border: 1px solid #374151;
+      border-radius: 8px;
+      background: #111827;
+      color: #fff;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .comment-input:focus { border-color: #3b82f6; }
+    .mcg-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .mcg-toggle input[type="checkbox"] {
+      accent-color: #3b82f6;
+      width: 16px;
+      height: 16px;
+    }
+    .mcg-toggle-label {
+      font-size: 13px;
+      color: #94a3b8;
+      white-space: nowrap;
+    }
+    .mcg-key-row {
+      margin-bottom: 10px;
+    }
+    .mcg-key-row .comment-input {
+      max-width: 260px;
+    }
+    .comment-textarea {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 14px;
+      font-family: inherit;
+      border: 1px solid #374151;
+      border-radius: 8px;
+      background: #111827;
+      color: #fff;
+      outline: none;
+      resize: vertical;
+      min-height: 60px;
+      transition: border-color 0.2s;
+    }
+    .comment-textarea:focus { border-color: #3b82f6; }
+    .comment-form-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .comment-submit {
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      border: none;
+      border-radius: 8px;
+      background: #3b82f6;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .comment-submit:hover { background: #2563eb; }
+    .comment-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    .comment-cancel {
+      padding: 10px 16px;
+      font-size: 14px;
+      font-family: inherit;
+      border: 1px solid #374151;
+      border-radius: 8px;
+      background: transparent;
+      color: #94a3b8;
+      cursor: pointer;
+    }
+    .comment-cancel:hover { border-color: #60a5fa; color: #fff; }
+    .comment-status {
+      font-size: 13px;
+      color: #94a3b8;
+    }
+    .comments-list {
+      margin-top: 8px;
+    }
+    .comments-loading {
+      font-size: 14px;
+      opacity: 0.5;
+      text-align: center;
+      padding: 20px;
+    }
+    .comment-thread {
+      margin-bottom: 16px;
+    }
+    .comment-bubble {
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 12px;
+      padding: 16px 20px;
+    }
+    .comment-bubble.mcg {
+      border-color: #1e3a5f;
+      background: #111d2e;
+    }
+    .comment-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+    .comment-author {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .comment-badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: #1e3a5f;
+      color: #60a5fa;
+    }
+    .comment-time {
+      font-size: 12px;
+      color: #64748b;
+      margin-left: auto;
+    }
+    .comment-text {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #cbd5e1;
+      margin: 0;
+      white-space: pre-wrap;
+    }
+    .comment-actions {
+      margin-top: 8px;
+    }
+    .reply-btn {
+      font-size: 13px;
+      font-family: inherit;
+      color: #60a5fa;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+    .reply-btn:hover { text-decoration: underline; }
+    .comment-replies {
+      margin-left: 28px;
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border-left: 2px solid #1e293b;
+      padding-left: 16px;
+    }
+    .comment-replies .comment-bubble {
+      padding: 12px 16px;
+    }
+    .no-comments {
+      text-align: center;
+      padding: 32px 20px;
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 12px;
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 32px; }
+      .hero-stats { gap: 24px; }
+      .toc ol { columns: 1; }
+      .content { padding: 0 16px 60px; }
+      .card { padding: 20px; }
+      table { font-size: 13px; }
+      thead th, tbody td { padding: 10px 12px; }
+      .comment-replies { margin-left: 16px; padding-left: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Shown when access is not verified -->
+  <div class="access-denied" id="accessDenied">
+    <div>
+      <h1>Access Required</h1>
+      <p id="accessMsg">You need a valid access code to view this proposal.</p>
+      <a href="/proposals/">Enter Access Code &rarr;</a>
+      <br><br>
+      <button id="retryBtn" style="display:none;padding:10px 24px;font-size:14px;border:1px solid #374151;border-radius:8px;background:#1f2937;color:#fff;cursor:pointer;" onclick="init()">Retry Verification</button>
+    </div>
+  </div>
+
+  <!-- Proposal content - only shown after verification -->
+  <div class="proposal" id="proposalContent">
+
+    <!-- ========== HERO ========== -->
+    <div class="hero">
+      <span class="badge">Website Proposal</span>
+      <h1>Two Beaches Baking</h1>
+      <p class="tagline">Prepared by McG Works LLC &middot; July 2026</p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="value">$825</span>
+          <span class="label">Total Investment</span>
+        </div>
+        <div class="hero-stat">
+          <span class="value">TBD</span>
+          <span class="label">Delivery Timeline</span>
+        </div>
+        <div class="hero-stat">
+          <span class="value">1 Build</span>
+          <span class="label">No Phases</span>
+        </div>
+      </div>
+      <div class="confidential">
+        <span>⚠️</span> This document is confidential and prepared exclusively for the Two Beaches Baking client. Contents may not be shared with third parties without written consent from McG Works LLC.
+      </div>
+    </div>
+
+    <!-- ========== TOC ========== -->
+    <nav class="toc">
+      <h3>Contents</h3>
+      <ol>
+        <li><a href="#s1">Executive Summary</a></li>
+        <li><a href="#s2">Project Goals &amp; Success Criteria</a></li>
+        <li><a href="#s3">Site Visitors &amp; Content Roles</a></li>
+        <li><a href="#s4">Site Structure &amp; How It Works</a></li>
+        <li><a href="#s5">Scope &amp; Delivery</a></li>
+        <li><a href="#s6">Functional Requirements</a></li>
+        <li><a href="#s7">Recipe Page Anatomy</a></li>
+        <li><a href="#s8">Non-Functional Requirements</a></li>
+        <li><a href="#s9">Legal &amp; Content Safeguards</a></li>
+        <li><a href="#s10">Technology Approach</a></li>
+        <li><a href="#s11">Pricing</a></li>
+        <li><a href="#s12">Ongoing Support &amp; Care Plan</a></li>
+        <li><a href="#s13">Assumptions &amp; Open Decisions</a></li>
+        <li><a href="#s14">Next Steps</a></li>
+      </ol>
+    </nav>
+
+    <div class="content">
+
+      <!-- ========== 1. EXECUTIVE SUMMARY ========== -->
+      <div class="section" id="s1">
+        <span class="section-number">Section 1</span>
+        <h2>Executive Summary</h2>
+        <p>Two Beaches Baking is a food, drink, and storytelling brand built around real recipes and the stories behind them, from two former reporters and longtime friends who cook, bake, and write. This proposal covers the design and build of a website that gives Two Beaches Baking a permanent home for their recipes and blog content, independent of Instagram and Facebook, with the discovery, sharing, and monetization features that established recipe and food blogs rely on.</p>
+        <p>The site is organized around two core content types, <strong>Recipes</strong> and <strong>Blog posts</strong>, plus supporting pages (<strong>About</strong>, <strong>Contact</strong>, and a <strong>Home</strong> page that highlights featured content). Every recipe page pairs a narrative "story" section (the backstory, memory, or context Two Beaches Baking is known for) with a structured, printable recipe card, including a <strong>Jump to Recipe</strong> button so time-pressed visitors can skip straight to the ingredients and steps, and a <strong>print/PDF export</strong> option so visitors can save or print recipes for their own kitchen.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Stakeholder</th><th>Value Delivered</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Site Visitor / Home Cook</strong></td><td>Finds recipes and stories easily, can jump straight to a recipe, print or save it as a PDF, create a free account to save/favorite recipes, and follow along on social</td></tr>
+              <tr><td><strong>Two Beaches Baking Admin (Site Owner)</strong></td><td>A branded, self-owned home for their content; simple tools to publish recipes and blog posts without touching code; a foundation for growing an audience and future monetization</td></tr>
+              <tr><td><strong>McG Works LLC</strong></td><td>A clean, well-scoped build that showcases food/lifestyle site work</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ========== 2. PROJECT GOALS ========== -->
+      <div class="section" id="s2">
+        <span class="section-number">Section 2</span>
+        <h2>Project Goals &amp; Success Criteria</h2>
+        <div class="card">
+          <ul>
+            <li>Give Two Beaches Baking a professional, on-brand website that reflects the "adventurous home cooks / former reporters who love a good story" voice.</li>
+            <li>Make it easy for visitors to find, read, and use recipes, including printing or exporting them for offline use.</li>
+            <li>Support the storytelling format Two Beaches Baking is built on: every recipe has a narrative section, not just a bare ingredient list.</li>
+            <li>Let visitors create a free account so they can save/favorite recipes and build their own personal recipe box on the site, encouraging repeat visits.</li>
+            <li>Give the Two Beaches Baking Admin a content management system they can use themselves, without a developer, to publish new recipes and blog posts.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ========== 3. SITE VISITORS & CONTENT ROLES ========== -->
+      <div class="section" id="s3">
+        <span class="section-number">Section 3</span>
+        <h2>Site Visitors &amp; Content Roles</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Role</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Site Visitor (Guest)</strong></td><td>Browses recipes and blog posts, searches/filters content, prints or downloads recipes, shares content to social media. No account required.</td></tr>
+              <tr><td><strong>Registered Visitor (Account Holder)</strong></td><td>Creates a free account (email login) to save/favorite recipes and access a personal "My Recipes" page. Everything a Guest can do, plus saved recipes persist across visits/devices.</td></tr>
+              <tr><td><strong>Site Admin / Editor</strong> (Two Beaches Baking Admin)</td><td>Publishes and edits recipes and blog posts, manages categories/tags, uploads photos, moderates comments (if enabled), manages the About/Contact pages, and views visit statistics in the admin dashboard.</td></tr>
+              <tr><td><strong>McG Works LLC</strong></td><td>Builds and delivers the site, provides training on the CMS, and is available for post-launch support per the terms in Section 12.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ========== 4. SITE STRUCTURE & HOW IT WORKS ========== -->
+      <div class="section" id="s4">
+        <span class="section-number">Section 4</span>
+        <h2>Site Structure &amp; How It Works</h2>
+
+        <h3>4.1 Core Pages</h3>
+        <div class="card">
+          <ul>
+            <li><strong>Home</strong>: Featured/recent recipes and blog posts, brand intro, links to social channels.</li>
+            <li><strong>Recipes</strong>: Browsable, filterable index of all recipes (by category, e.g., breakfast, dinner, dessert, drinks; and by tag, e.g., beach-friendly, make-ahead, gluten-free).</li>
+            <li><strong>Blog</strong>: Browsable index of blog/story posts, separate from (but cross-linked with) recipes.</li>
+            <li><strong>About</strong>: Two Beaches Baking's story, photos, brand voice ("adventurous home cooks in NC, former reporters who love a good story").</li>
+            <li><strong>Contact</strong>: Simple contact form and/or email, plus social links.</li>
+            <li><strong>Individual Recipe Page</strong>: Story + recipe card (see Section 7).</li>
+            <li><strong>Individual Blog Post Page</strong>: Standard blog post template with images, categories/tags, and related content.</li>
+          </ul>
+        </div>
+
+        <h3>4.2 Visitor Flow</h3>
+        <div class="card">
+          <div class="flow-step">
+            <div class="flow-num">1</div>
+            <div class="flow-body">
+              <h4>Discover the Site</h4>
+              <p>Visitor lands on the site via Google search, Pinterest, Instagram link, or direct visit.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">2</div>
+            <div class="flow-body">
+              <h4>Browse or Search</h4>
+              <p>Visitor browses the Recipes or Blog page, or searches for a specific recipe/topic.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">3</div>
+            <div class="flow-body">
+              <h4>Read the Story or Jump to the Recipe</h4>
+              <p>Visitor opens a recipe page, reads the story, or taps Jump to Recipe to go straight to the card.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">4</div>
+            <div class="flow-body">
+              <h4>Print, Save, or Share</h4>
+              <p>Visitor can print the recipe, download it as a PDF, or share it to social media/Pinterest.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">5</div>
+            <div class="flow-body">
+              <h4>Save to an Account</h4>
+              <p>Visitor can create a free account (or log in) to save the recipe to their personal "My Recipes" page for later.</p>
+            </div>
+          </div>
+        </div>
+
+        <h3>4.3 Site Owner (Admin) Flow</h3>
+        <div class="card">
+          <div class="flow-step">
+            <div class="flow-num">1</div>
+            <div class="flow-body">
+              <h4>Log Into the Dashboard</h4>
+              <p>The Two Beaches Baking Admin logs into the CMS admin dashboard.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">2</div>
+            <div class="flow-body">
+              <h4>Create a Recipe</h4>
+              <p>Creates a new recipe using a recipe template: story/intro, ingredients, instructions, notes/tips, photos, prep/cook time, servings, category/tags.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">3</div>
+            <div class="flow-body">
+              <h4>Create a Blog Post</h4>
+              <p>Creates a new blog post using a standard post editor: title, body, photos, category/tags.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">4</div>
+            <div class="flow-body">
+              <h4>Publish or Save as Draft</h4>
+              <p>Publishes, schedules, or saves the recipe or post as a draft.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">5</div>
+            <div class="flow-body">
+              <h4>Manage Existing Content</h4>
+              <p>Manages existing content (edit, update photos, reorganize categories) at any time.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">6</div>
+            <div class="flow-body">
+              <h4>Check Visit Statistics</h4>
+              <p>Checks the admin dashboard for visit statistics (traffic over time and top recipes/posts) to see what's resonating with readers.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== 5. SCOPE & DELIVERY ========== -->
+      <div class="section" id="s5">
+        <span class="section-number">Section 5</span>
+        <h2>Scope &amp; Delivery</h2>
+        <div class="card">
+          <h3>Scope of Work</h3>
+          <p>Site architecture, custom design/theme styling, Home/About/Contact pages, Recipes hub + individual recipe template (story + printable/PDF recipe card + jump to recipe), Blog hub + individual post template, search &amp; filtering, social integration, mobile responsive design, basic SEO setup, CMS training.</p>
+        </div>
+        <p><strong>Timeline:</strong> To be confirmed at kickoff.</p>
+
+        <h3>5.1 Change Requests During the Build</h3>
+        <div class="card">
+          <ul>
+            <li>Section 6 below defines exactly what's included in this build. Anything requested during the engagement that isn't on that list is handled as a <strong>Change Request</strong> rather than assumed into scope, so the project stays on budget and on schedule for both sides.</li>
+            <li><strong>Small asks</strong> (roughly under 30 minutes of work) may be absorbed at McG Works LLC's discretion at no charge.</li>
+            <li><strong>Anything larger</strong> gets a quick estimate (time and cost) from McG Works LLC and requires the client's written approval (email is fine) before work begins.</li>
+            <li>If a request would push the delivery timeline, McG Works LLC will flag that before starting the work, not after the date slips.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ========== 6. FUNCTIONAL REQUIREMENTS ========== -->
+      <div class="section" id="s6">
+        <span class="section-number">Section 6</span>
+        <h2>Functional Requirements</h2>
+
+        <h3>6.1 Recipes</h3>
+        <div class="card">
+          <ul>
+            <li>Recipe index page with browse/filter by category (e.g., Breakfast, Mains, Desserts, Drinks) and tags (e.g., quick, make-ahead, beach food, gluten-free).</li>
+            <li>Individual recipe template with:
+              <ul>
+                <li>Story/backstory section (freeform rich text + photos)</li>
+                <li><strong>Jump to Recipe</strong> button/link that scrolls straight to the recipe card</li>
+                <li>Structured, printable recipe card: title, photo, prep/cook/total time, servings (with serving-size adjustment if desired, see open decisions), ingredient list, step-by-step instructions, notes/tips</li>
+                <li><strong>Print</strong> button and <strong>Export/Download as PDF</strong> button</li>
+                <li>Recipe categories and tags</li>
+                <li>Related recipes module ("You might also like")</li>
+              </ul>
+            </li>
+            <li>Recipe schema/structured data (Recipe rich snippet markup) so recipes are eligible for Google recipe search features and rich Pinterest pins.</li>
+            <li>Recipe card designed to look good when pinned to Pinterest (clear, on-brand recipe image).</li>
+          </ul>
+        </div>
+
+        <h3>6.2 Blog</h3>
+        <div class="card">
+          <ul>
+            <li>Blog index page with category/tag filtering and pagination.</li>
+            <li>Individual blog post template: title, hero image, body content (rich text, embedded images), categories/tags, related posts.</li>
+            <li>Optional: comments on blog posts (see Section 13 open decisions).</li>
+          </ul>
+        </div>
+
+        <h3>6.3 About &amp; Contact</h3>
+        <div class="card">
+          <ul>
+            <li>About page with founder bios/photos and the Two Beaches Baking brand story.</li>
+            <li>Contact page with a simple form (name, email, message) that emails the site owners, plus links to Instagram/Facebook/Threads.</li>
+          </ul>
+        </div>
+
+        <h3>6.4 Accounts &amp; Saved Recipes</h3>
+        <div class="card">
+          <ul>
+            <li>Free visitor account creation via email/password (and optionally Google/Facebook login).</li>
+            <li>"Save" or "favorite" button on every recipe card (and optionally on blog posts).</li>
+            <li>Personal "My Recipes" / "My Saved Recipes" dashboard page showing everything the visitor has saved, with the ability to remove items.</li>
+            <li>Basic account management: password reset, update email, delete account.</li>
+            <li>Saved recipes persist across devices as long as the visitor is logged in (not just stored locally in their browser).</li>
+          </ul>
+        </div>
+
+        <h3>6.5 Site-Wide Features</h3>
+        <div class="card">
+          <ul>
+            <li>Global search across recipes and blog posts.</li>
+            <li>Category/tag taxonomy shared (or separately managed) across recipes and blog.</li>
+            <li>Social sharing buttons (Pinterest, Facebook, Instagram link, email) on every recipe and blog post.</li>
+            <li>Instagram feed embed (pulls recent posts from @twobeachesbaking onto the site).</li>
+            <li>Mobile-responsive design across all pages and templates.</li>
+          </ul>
+        </div>
+
+        <h3>6.6 Admin Dashboard &amp; Site Analytics</h3>
+        <div class="card">
+          <ul>
+            <li>Private, login-protected admin dashboard (separate from the public site) for the Two Beaches Baking Admin to manage content and check on how the site is doing.</li>
+            <li>Content management: create/edit/publish/unpublish recipes and blog posts, manage categories/tags, upload photos.</li>
+            <li>Visit statistics visible right in the dashboard, without needing a separate analytics account, including:
+              <ul>
+                <li>Total site visits/page views over time (day/week/month view)</li>
+                <li>Top-performing recipes and blog posts (by save count)</li>
+              </ul>
+            </li>
+            <li>User account list (registered visitors), for basic oversight, not for the client to view individual user activity beyond aggregate stats.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ========== 7. RECIPE PAGE ANATOMY ========== -->
+      <div class="section" id="s7">
+        <span class="section-number">Section 7</span>
+        <h2>Recipe Page Anatomy (Story + Recipe Card)</h2>
+        <p>Every recipe page is built around the two-part structure Two Beaches Baking is known for: a story up top, a usable recipe below.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Section</th><th>Purpose</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Story / Backstory</strong></td><td>Freeform narrative: memory, context, tips, why the recipe matters. Supports photos, formatting, and personality. This is what separates a Two Beaches Baking recipe from a generic recipe listing.</td></tr>
+              <tr><td><strong>Jump to Recipe</strong></td><td>A button placed near the top of the story that scrolls the visitor straight down to the recipe card, standard practice on recipe blogs and expected by most visitors.</td></tr>
+              <tr><td><strong>Recipe Card</strong></td><td>Structured, consistently formatted block: title, photo, prep/cook/total time, yield/servings, ingredient list, numbered instructions, and optional notes. Visually distinct from the story section (bordered card, print-friendly layout).</td></tr>
+              <tr><td><strong>Print / PDF Export</strong></td><td>Buttons on the recipe card that generate a clean, printable version (and a downloadable PDF) with just the recipe (no story, ads, or site navigation) so it's easy to use in the kitchen or save for later.</td></tr>
+              <tr><td><strong>Notes &amp; Tips</strong></td><td>Optional callouts for substitutions, storage instructions, or make-ahead tips.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ========== 8. NON-FUNCTIONAL REQUIREMENTS ========== -->
+      <div class="section" id="s8">
+        <span class="section-number">Section 8</span>
+        <h2>Non-Functional Requirements</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Area</th><th>Requirement</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Platform</strong></td><td>Responsive website, fully functional on desktop, tablet, and mobile</td></tr>
+              <tr><td><strong>Content Management</strong></td><td>The Two Beaches Baking Admin can independently create/edit recipes and blog posts without developer involvement</td></tr>
+              <tr><td><strong>Performance</strong></td><td>Fast page load times, optimized images (especially important for a photo-heavy food site)</td></tr>
+              <tr><td><strong>Accessibility</strong></td><td>Reasonable accessibility basics: alt text fields, readable contrast, keyboard-navigable menus</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ========== 9. LEGAL & CONTENT SAFEGUARDS ========== -->
+      <div class="section" id="s9">
+        <span class="section-number">Section 9</span>
+        <h2>Legal &amp; Content Safeguards</h2>
+        <div class="card">
+          <ul>
+            <li><strong>Ownership:</strong> Upon final payment, the client owns the website, its content, design, and (where applicable) source files/CMS installation. McG Works LLC retains no ongoing rights to the delivered site.</li>
+            <li><strong>Recipe/content accuracy:</strong> McG Works LLC is a website design/development provider and is not responsible for the accuracy of recipe content, ingredient/allergen information, or nutritional claims published by the client. The client is responsible for any allergen or dietary disclaimers they wish to display.</li>
+            <li><strong>Third-party services:</strong> Any third-party tools integrated (Vercel, Supabase, Resend, Instagram embed, analytics, future ad networks) are governed by those providers' own terms; the client is responsible for maintaining those accounts after handoff, including any usage-based costs if free-tier limits are exceeded (see Section 10).</li>
+            <li><strong>Privacy:</strong> A privacy policy and cookie notice will be included at launch to cover analytics, account signup, and any future advertising cookies.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ========== 10. TECHNOLOGY APPROACH ========== -->
+      <div class="section" id="s10">
+        <span class="section-number">Section 10</span>
+        <h2>Technology Approach</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Layer</th><th>Approach</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Website/Frontend</strong></td><td>Custom-built site (Next.js) hosted on Vercel</td></tr>
+              <tr><td><strong>Backend, Database &amp; Auth</strong></td><td>Supabase: database, visitor account authentication (saved recipes), and file storage for recipe/blog photos</td></tr>
+              <tr><td><strong>Admin Dashboard</strong></td><td>Custom-built, login-protected admin dashboard (hosted alongside the main site) for managing recipes, blog posts, and viewing visit statistics, built specifically for Two Beaches Baking rather than an off-the-shelf CMS plugin</td></tr>
+              <tr><td><strong>Recipe Functionality</strong></td><td>Custom-built recipe card component: story + card layout, Jump to Recipe, print/PDF export, and recipe schema markup for Google/Pinterest</td></tr>
+              <tr><td><strong>Accounts &amp; Saved Recipes</strong></td><td>Supabase Auth (email/password, optionally Google/Facebook login) with saved recipes stored per account in the Supabase database</td></tr>
+              <tr><td><strong>Site Analytics</strong></td><td>Lightweight, privacy-friendly analytics (e.g., Vercel Analytics or Plausible) feeding visit/traffic data into the admin dashboard</td></tr>
+              <tr><td><strong>Transactional Email</strong></td><td>Resend for account-related emails (e.g., signup confirmation, password reset)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout info">
+          <strong>Free tier now, usage-based cost as you grow:</strong> Vercel, Supabase, and Resend all offer generous free tiers, and this site is expected to run on those free tiers at launch, meaning no hosting/database/email cost to the client at the start. However, all three are usage-based: if traffic, storage (photos), bandwidth, database size, or transactional email volume grow enough (a very good problem to have, since it means the site is getting real traffic and readers), one or more may require upgrading to a paid plan. Typical starting paid tiers for Vercel and Supabase run in the $20–$25/month range each; Resend's paid tiers typically start lower (roughly $20/month once free email volume is exceeded). McG Works LLC will flag proactively if usage is approaching free-tier limits so this is never a surprise bill.
+        </div>
+      </div>
+
+      <!-- ========== 11. PRICING ========== -->
+      <div class="section" id="s11">
+        <span class="section-number">Section 11</span>
+        <h2>Pricing</h2>
+
+        <div class="pricing-hero">
+          <div class="amount">$825</div>
+          <div class="amount-label">Total Fixed Investment: Website Build</div>
+        </div>
+
+        <h3>Payment Schedule</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Milestone</th><th>Amount &amp; Trigger</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Kickoff</strong></td><td>$225, due at project kickoff</td></tr>
+              <tr><td><strong>Milestone 1</strong></td><td>$300, due at a working, usable demo</td></tr>
+              <tr><td><strong>Final Handoff</strong></td><td>$300, due at site launch and full handoff</td></tr>
+              <tr><td><strong>Total</strong></td><td><strong>$825</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>At launch, the client owns the complete site: hosting, admin access, and all credentials transfer to them (see Section 12 for what happens after that, including an optional ongoing care plan).</p>
+
+        <h3>Ongoing Costs After Launch</h3>
+        <div class="card">
+          <ul>
+            <li>Vercel + Supabase hosting/database ($0/month at launch on free tiers; usage-based, may grow to roughly $20–$25/month each if traffic/storage exceeds free-tier limits, unless the client opts into the 360 Care Plan in Section 12)</li>
+            <li>Domain renewal (if not already owned)</li>
+            <li>Resend (email delivery): free tier covers a generous monthly email volume; scales to a paid plan if send volume grows significantly (similar usage-based model to Vercel/Supabase, see Section 10)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ========== 12. ONGOING SUPPORT & CARE PLAN ========== -->
+      <div class="section" id="s12">
+        <span class="section-number">Section 12</span>
+        <h2>Ongoing Support &amp; Website Services Plan</h2>
+
+        <h3>12.1 Post-Launch Warranty (Included)</h3>
+        <div class="card">
+          <p>McG Works LLC includes a <strong>90-day post-launch warranty</strong> covering bug fixes related to the delivered scope at no additional cost, provided no other developer modifies the site during that period.</p>
+        </div>
+
+        <h3>12.2 Optional: McG Works 360 Care Plan ($99/month)</h3>
+        <p>At launch, McG Works LLC will offer Two Beaches Baking the option to continue on as their ongoing website provider through the McG Works 360 Care Plan for $99/month, so the Two Beaches Baking Admin never has to think about the technical side of the site. This is optional and does not need to be decided as part of this proposal; it's presented at handoff, once the site is live and the client has a feel for what upkeep actually looks like.</p>
+
+        <p class="sub-heading">Hosting &amp; Infrastructure</p>
+        <div class="card">
+          <ul>
+            <li>Vercel + Supabase accounts monitored and managed by McG Works</li>
+            <li>Domain management assistance (domain itself typically stays registered in the client's name)</li>
+            <li>SSL certificate management/renewal (handled automatically by Vercel in most cases)</li>
+            <li>Usage monitoring: McG Works tracks Vercel/Supabase usage against free-tier limits and handles any required upgrade to a paid tier if traffic/storage growth requires it; client is notified before any cost increase, not surprised by a bill</li>
+          </ul>
+        </div>
+
+        <p class="sub-heading">Security &amp; Reliability</p>
+        <div class="card">
+          <ul>
+            <li>Automated backups of the Supabase database, with restore capability if something breaks</li>
+            <li>Security monitoring</li>
+            <li>Uptime monitoring with alerts</li>
+            <li>Spam/comment protection maintenance</li>
+          </ul>
+        </div>
+
+        <p class="sub-heading">Maintenance</p>
+        <div class="card">
+          <ul>
+            <li>Ongoing code updates, dependency/security patches, and bug fixes</li>
+            <li>Periodic site health checks (broken links, image optimization, page speed checks)</li>
+          </ul>
+        </div>
+
+        <p class="sub-heading">Content &amp; Design Support</p>
+        <div class="card">
+          <ul>
+            <li>2 hours/month of included content updates (e.g., publishing help, minor text/photo swaps, category cleanup)</li>
+            <li>Small design tweaks within existing templates (not full redesigns)</li>
+            <li>Priority email/support response time (within 1 business day)</li>
+          </ul>
+        </div>
+
+        <p class="sub-heading">Reporting &amp; Check-ins</p>
+        <div class="card">
+          <ul>
+            <li>Quarterly site health/traffic summary</li>
+            <li>Direct point of contact at McG Works for questions, rather than an hourly-billed help desk</li>
+          </ul>
+        </div>
+
+        <p class="sub-heading">Terms</p>
+        <div class="card">
+          <ul>
+            <li>Contract term: 3-month minimum, then month-to-month, cancellable with 30 days' written notice after the minimum term.</li>
+            <li>Requests beyond the included monthly minutes are billed at a discounted plan-member hourly rate.</li>
+            <li>New feature builds (e.g., ad network integration, e-commerce, major redesign) are scoped and quoted separately.</li>
+            <li>If the client cancels, McG Works LLC will provide a full transition within 7 days.</li>
+          </ul>
+        </div>
+
+        <h3>12.3 If the Client Prefers Neither Plan: On-Demand Changes</h3>
+        <div class="card">
+          <p>If the client doesn't want the monthly 360 Care Plan, any work after the warranty period is billed as on-demand. For example: new page templates, design tweaks, new plugin integrations, ad network setup, help adding recipe schema/nutrition calculators, seasonal redesign refreshes, and similar requests.</p>
+        </div>
+      </div>
+
+      <!-- ========== 13. ASSUMPTIONS & OPEN DECISIONS ========== -->
+      <div class="section" id="s13">
+        <span class="section-number">Section 13</span>
+        <h2>Assumptions &amp; Open Decisions</h2>
+
+        <h3>Assumptions</h3>
+        <div class="card">
+          <ul>
+            <li>Recipes and blog posts are the two primary content types; both are manageable by the client without developer help via a custom-built admin dashboard.</li>
+            <li>The site is custom-built (Next.js on Vercel, Supabase for database/auth) rather than a WordPress/off-the-shelf CMS, to support the custom recipe card, accounts, and analytics dashboard as one integrated system.</li>
+            <li>Vercel and Supabase are expected to run on their free tiers at launch ($0/month); the client understands that usage-based growth (traffic, storage, database size) may require upgrading to paid tiers over time (see Section 10 and Section 11).</li>
+            <li>Client will supply their own recipe content, photos, and About page bios/photos (or McG Works LLC can advise on photography needs).</li>
+            <li>Free visitor accounts (for saving/favoriting recipes) are included in this engagement; there is no paid membership, paywalled content, or e-commerce/ad network integration.</li>
+            <li>Client will own/purchase their domain; Vercel/Supabase account ownership is addressed in Section 12.</li>
+          </ul>
+        </div>
+
+        <h3>Open Decisions (to finalize at kickoff)</h3>
+        <div class="card">
+          <ul>
+            <li>Recipe categories and tags: confirm the initial list (course, cuisine, dietary, occasion, etc.)</li>
+            <li>Whether comments will be enabled on recipes and/or blog posts</li>
+            <li>Whether recipes should support serving-size scaling (i.e., visitor adjusts servings and ingredient amounts auto-scale)</li>
+            <li>Whether nutrition information will be displayed (and if so, whether it's manually entered or auto-calculated)</li>
+            <li>Whether the Vercel/Supabase accounts are set up under the client's own billing (recommended for ownership) or under McG Works' accounts (simpler if going with the 360 Care Plan)</li>
+            <li>Analytics tool choice for the admin dashboard (e.g., Vercel Analytics vs. Plausible)</li>
+            <li>Whether "print/PDF export" should also allow the visitor to hide/show photos, or strip to text-only</li>
+            <li>Whether account creation should be email/password only, or also support "Continue with Google/Facebook" social login</li>
+          </ul>
+        </div>
+
+        <h3>Future Potential Capabilities (Post-Launch, Not in This Scope)</h3>
+        <div class="card">
+          <ul>
+            <li>Ad network integration once traffic thresholds are met</li>
+            <li>Affiliate link/product recommendation blocks (e.g., Amazon affiliate cookware links)</li>
+            <li>Recipe ratings/reviews with visitor-submitted star ratings</li>
+            <li>Expanded recipe box features (meal planning, shopping list generation, recipe collections/folders)</li>
+            <li>Cookbook or merchandise sales page</li>
+            <li>Multi-author support if the blog expands beyond the Two Beaches Baking Admin</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ========== 14. NEXT STEPS ========== -->
+      <div class="section" id="s14">
+        <span class="section-number">Section 14</span>
+        <h2>Next Steps</h2>
+        <div class="card">
+          <div class="flow-step">
+            <div class="flow-num">1</div>
+            <div class="flow-body">
+              <h4>Sign Proposal &amp; Submit Kickoff Deposit ($225)</h4>
+              <p>Confirm scope alignment and initiate the engagement.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">2</div>
+            <div class="flow-body">
+              <h4>Kickoff Call</h4>
+              <p>Resolve the open decisions in Section 13 and align on the delivery timeline.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">3</div>
+            <div class="flow-body">
+              <h4>Build with Progress Updates</h4>
+              <p>Regular check-ins throughout the build, with a working, usable demo at Milestone 1.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">4</div>
+            <div class="flow-body">
+              <h4>Launch &amp; Handoff</h4>
+              <p>Site goes live, full ownership transfers to the client, and admin training is provided.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== PROPOSAL NOTE ========== -->
+      <div class="proposal-note">
+        <strong>Please Note:</strong> Review this proposal thoroughly, then use the signature section below to formally sign and move forward. A signed copy will be emailed to both parties.
+      </div>
+
+      <!-- ========== SIGNATURE ========== -->
+      <div id="signature-section" class="sig-section" style="display:none;">
+        <h3>Sign This Proposal</h3>
+        <p class="sig-intro">Sign below to move forward. A signed copy of this proposal will be emailed to you and the McG Works team.</p>
+        <div id="sigForm">
+          <div class="sig-field">
+            <label for="sigName">Full Name</label>
+            <input type="text" id="sigName" class="sig-input" placeholder="Your full name" autocomplete="name" />
+          </div>
+          <div class="sig-field">
+            <label for="sigEmail">Email Address</label>
+            <input type="email" id="sigEmail" class="sig-input" placeholder="your@email.com" autocomplete="email" />
+          </div>
+          <label class="sig-agree">
+            <input type="checkbox" id="sigAgree" />
+            I have read and agree to the terms in this proposal. By typing my name and clicking "Sign Proposal," I am providing a legally binding electronic signature under the ESIGN Act.
+          </label>
+          <button class="sig-btn" id="sigBtn">Sign Proposal</button>
+          <span class="sig-status info" id="sigStatus"></span>
+        </div>
+        <div id="sigBadge" style="display:none;">
+          <div class="sig-signed-badge">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+            <div class="sig-badge-text">
+              <strong>Proposal Signed</strong>
+              <span id="sigTimestamp"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== CTA ========== -->
+      <div class="cta-section">
+        <h2>Ready to move forward?</h2>
+        <p><a href="mailto:Jalen@mcg-works.com" style="color:#3b82f6;text-decoration:none;font-weight:600;">Contact McG Works</a> to schedule your kickoff and start building the site.</p>
+      </div>
+
+      <!-- ========== COMMENTS ========== -->
+      <div class="section" id="comments-section">
+        <span class="section-number">Discussion</span>
+        <h2>Comments &amp; Feedback</h2>
+        <p>Leave questions, feedback, or requested changes directly on this proposal.</p>
+
+        <!-- Comment form -->
+        <div class="comment-form-wrap" id="commentFormWrap">
+          <div class="comment-form">
+            <div class="comment-form-row">
+              <input type="text" id="commentName" class="comment-input" placeholder="Your name" />
+              <label class="mcg-toggle">
+                <input type="checkbox" id="mcgToggle" />
+                <span class="mcg-toggle-label">McG Works Team</span>
+              </label>
+            </div>
+            <div class="mcg-key-row" id="mcgKeyRow" style="display:none;">
+              <input type="password" id="mcgKey" class="comment-input" placeholder="Team passphrase" />
+            </div>
+            <textarea id="commentBody" class="comment-textarea" placeholder="Write a comment…" rows="3"></textarea>
+            <div class="comment-form-actions">
+              <button class="comment-submit" id="commentSubmit">Post Comment</button>
+              <span class="comment-status" id="commentStatus"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reply form (hidden, cloned into threads) -->
+        <template id="replyFormTemplate">
+          <div class="reply-form">
+            <div class="comment-form-row">
+              <input type="text" class="comment-input reply-name" placeholder="Your name" />
+              <label class="mcg-toggle">
+                <input type="checkbox" class="reply-mcg-toggle" />
+                <span class="mcg-toggle-label">McG Works Team</span>
+              </label>
+            </div>
+            <div class="mcg-key-row reply-mcg-key-row" style="display:none;">
+              <input type="password" class="comment-input reply-mcg-key" placeholder="Team passphrase" />
+            </div>
+            <textarea class="comment-textarea reply-body" placeholder="Write a reply…" rows="2"></textarea>
+            <div class="comment-form-actions">
+              <button class="comment-submit reply-submit">Post Reply</button>
+              <button class="comment-cancel reply-cancel">Cancel</button>
+              <span class="comment-status reply-status"></span>
+            </div>
+          </div>
+        </template>
+
+        <!-- Comments list -->
+        <div id="commentsList" class="comments-list">
+          <p class="comments-loading" id="commentsLoading">Loading comments…</p>
+        </div>
+      </div>
+
+    </div><!-- .content -->
+  </div><!-- .proposal -->
+
+<script>
+    /**
+     * EDGE FUNCTION CONFIG
+     * --------------------
+     * Replace with your Supabase project's Edge Function URL.
+     * Format: https://<project-ref>.supabase.co/functions/v1
+     */
+    const FUNCTIONS_BASE = 'https://awccquoyscijmtqtibgr.supabase.co/functions/v1';
+    const PROPOSAL_ID    = 'two-beaches-baking';
+
+    const storedCode = sessionStorage.getItem('mcg_proposal_access');
+
+    async function init() {
+      if (FUNCTIONS_BASE === 'YOUR_SUPABASE_FUNCTIONS_URL') return;
+      if (!storedCode) {
+        console.warn('[McG] No access code in session.');
+        return;
+      }
+
+      try {
+        console.log('[McG] Verifying access…');
+        const res = await fetch(FUNCTIONS_BASE + '/verify-code', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: storedCode })
+        });
+
+        if (!res.ok) {
+          const errText = await res.text();
+          console.error('[McG] Verify response not ok:', res.status, errText);
+          document.getElementById('accessMsg').textContent = 'Verification failed (' + res.status + '). Try again or re-enter your code.';
+          document.getElementById('retryBtn').style.display = 'inline-block';
+          return;
+        }
+
+        const result = await res.json();
+
+        if (result.valid && result.proposal_path === PROPOSAL_ID) {
+          document.getElementById('accessDenied').style.display = 'none';
+          document.getElementById('proposalContent').classList.add('visible');
+          if (result.client_name) sessionStorage.setItem('mcg_proposal_client_name', result.client_name);
+          initComments();
+          initSignature();
+        } else {
+          console.warn('[McG] Verification mismatch:', result);
+          document.getElementById('accessMsg').textContent = 'Code not recognised for this proposal. Please re-enter.';
+          document.getElementById('retryBtn').style.display = 'inline-block';
+        }
+      } catch (err) {
+        console.error('[McG] Verification error:', err);
+        document.getElementById('accessMsg').textContent = 'Connection error. Please check your network and try again.';
+        document.getElementById('retryBtn').style.display = 'inline-block';
+      }
+    }
+
+    init();
+
+    // =====================
+    // COMMENTS VIA EDGE FN
+    // =====================
+    async function apiFetch(action, extra = {}) {
+      const res = await fetch(FUNCTIONS_BASE + '/comments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, proposal_id: PROPOSAL_ID, code: storedCode, ...extra })
+      });
+      return res.json();
+    }
+
+    async function initComments() {
+      if (FUNCTIONS_BASE === 'YOUR_SUPABASE_FUNCTIONS_URL') return;
+      await loadComments();
+      setupMainForm();
+      // Poll for new comments every 15 seconds
+      setInterval(loadComments, 15000);
+    }
+
+    function setupMainForm() {
+      const mcgToggle = document.getElementById('mcgToggle');
+      const mcgKeyRow = document.getElementById('mcgKeyRow');
+      mcgToggle.addEventListener('change', () => {
+        mcgKeyRow.style.display = mcgToggle.checked ? 'block' : 'none';
+      });
+
+      document.getElementById('commentSubmit').addEventListener('click', async () => {
+        const name = document.getElementById('commentName').value.trim();
+        const body = document.getElementById('commentBody').value.trim();
+        const isMcg = mcgToggle.checked;
+        const key = document.getElementById('mcgKey')?.value?.trim();
+        const status = document.getElementById('commentStatus');
+
+        if (!name || !body) {
+          status.textContent = 'Name and comment are required.';
+          status.style.color = '#ef4444';
+          return;
+        }
+        document.getElementById('commentSubmit').disabled = true;
+        status.textContent = 'Posting…';
+        status.style.color = '#94a3b8';
+
+        const result = await apiFetch('create', {
+          parent_id: null,
+          author_name: name,
+          is_mcg: isMcg,
+          mcg_passphrase: isMcg ? key : undefined,
+          content: body
+        });
+
+        if (result.error) {
+          status.textContent = result.error || 'Error posting comment. Try again.';
+          status.style.color = '#ef4444';
+        } else {
+          document.getElementById('commentBody').value = '';
+          status.textContent = '';
+          await loadComments();
+        }
+        document.getElementById('commentSubmit').disabled = false;
+      });
+    }
+
+    async function loadComments() {
+      const result = await apiFetch('list');
+      const container = document.getElementById('commentsList');
+
+      if (result.error) {
+        container.innerHTML = '<p class="comments-loading">Error loading comments.</p>';
+        return;
+      }
+
+      const data = result.comments || [];
+
+      if (data.length === 0) {
+        container.innerHTML = '<div class="no-comments">No comments yet. Be the first to leave feedback!</div>';
+        return;
+      }
+
+      const parents = data.filter(c => !c.parent_id);
+      const replies = data.filter(c => c.parent_id);
+      const replyMap = {};
+      replies.forEach(r => {
+        if (!replyMap[r.parent_id]) replyMap[r.parent_id] = [];
+        replyMap[r.parent_id].push(r);
+      });
+
+      container.innerHTML = parents.map(comment => `
+        <div class="comment-thread" data-id="${comment.id}">
+          ${renderBubble(comment)}
+          <div class="comment-actions">
+            <button class="reply-btn" onclick="showReplyForm('${comment.id}')">Reply</button>
+          </div>
+          <div class="comment-replies" id="replies-${comment.id}">
+            ${(replyMap[comment.id] || []).map(r => renderBubble(r)).join('')}
+          </div>
+          <div id="reply-form-${comment.id}"></div>
+        </div>
+      `).join('');
+    }
+
+    function renderBubble(c) {
+      const time = new Date(c.created_at).toLocaleDateString('en-US', {
+        month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit'
+      });
+      return `
+        <div class="comment-bubble ${c.is_mcg ? 'mcg' : ''}">
+          <div class="comment-header">
+            <span class="comment-author">${escHtml(c.author_name)}</span>
+            ${c.is_mcg ? '<span class="comment-badge">McG Works</span>' : ''}
+            <span class="comment-time">${time}</span>
+          </div>
+          <p class="comment-text">${escHtml(c.content)}</p>
+        </div>
+      `;
+    }
+
+    function showReplyForm(parentId) {
+      const target = document.getElementById('reply-form-' + parentId);
+      if (target.querySelector('.reply-form')) return;
+
+      const template = document.getElementById('replyFormTemplate');
+      const clone = template.content.cloneNode(true);
+      target.appendChild(clone);
+
+      const form = target.querySelector('.reply-form');
+      const mcgToggle = form.querySelector('.reply-mcg-toggle');
+      const mcgKeyRow = form.querySelector('.reply-mcg-key-row');
+
+      mcgToggle.addEventListener('change', () => {
+        mcgKeyRow.style.display = mcgToggle.checked ? 'block' : 'none';
+      });
+
+      form.querySelector('.reply-cancel').addEventListener('click', () => {
+        form.remove();
+      });
+
+      form.querySelector('.reply-submit').addEventListener('click', async () => {
+        const name = form.querySelector('.reply-name').value.trim();
+        const body = form.querySelector('.reply-body').value.trim();
+        const isMcg = mcgToggle.checked;
+        const key = form.querySelector('.reply-mcg-key')?.value?.trim();
+        const status = form.querySelector('.reply-status');
+
+        if (!name || !body) {
+          status.textContent = 'Name and reply are required.';
+          status.style.color = '#ef4444';
+          return;
+        }
+        const btn = form.querySelector('.reply-submit');
+        btn.disabled = true;
+        status.textContent = 'Posting…';
+        status.style.color = '#94a3b8';
+
+        const result = await apiFetch('create', {
+          parent_id: parentId,
+          author_name: name,
+          is_mcg: isMcg,
+          mcg_passphrase: isMcg ? key : undefined,
+          content: body
+        });
+
+        if (result.error) {
+          status.textContent = result.error || 'Error posting reply. Try again.';
+          status.style.color = '#ef4444';
+          btn.disabled = false;
+        } else {
+          form.remove();
+          await loadComments();
+        }
+      });
+    }
+
+    // =======================
+    // SIGNATURE VIA EDGE FN
+    // =======================
+    async function initSignature() {
+      const section = document.getElementById('signature-section');
+      if (!section) return;
+
+      // Check if already signed
+      try {
+        const checkRes = await fetch(FUNCTIONS_BASE + '/sign-proposal', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'check', code: storedCode, proposal_id: PROPOSAL_ID })
+        });
+        const checkData = await checkRes.json();
+        if (checkData.signed) {
+          showSignedBadge(checkData.signed_at);
+          section.style.display = 'block';
+          return;
+        }
+      } catch (e) {
+        console.warn('[McG] Signature check error:', e);
+      }
+
+      section.style.display = 'block';
+
+      document.getElementById('sigBtn').addEventListener('click', async () => {
+        const name   = document.getElementById('sigName').value.trim();
+        const email  = document.getElementById('sigEmail').value.trim();
+        const agree  = document.getElementById('sigAgree').checked;
+        const status = document.getElementById('sigStatus');
+        const btn    = document.getElementById('sigBtn');
+
+        if (!name) { setStatus(status, 'Please enter your full name.', 'error'); return; }
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          setStatus(status, 'Please enter a valid email address.', 'error'); return;
+        }
+        if (!agree) { setStatus(status, 'Please check the agreement box to proceed.', 'error'); return; }
+
+        btn.disabled = true;
+        setStatus(status, 'Submitting signature\u2026', 'info');
+
+        try {
+          const signRes = await fetch(FUNCTIONS_BASE + '/sign-proposal', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'sign',
+              code: storedCode,
+              proposal_id: PROPOSAL_ID,
+              client_name: name,
+              client_email: email
+            })
+          });
+          const signData = await signRes.json();
+          if (signData.error) {
+            setStatus(status, signData.error, 'error');
+            btn.disabled = false;
+            return;
+          }
+          showSignedBadge(signData.signed_at);
+        } catch (err) {
+          console.error('[McG] Sign error:', err);
+          setStatus(status, 'Network error. Please try again.', 'error');
+          btn.disabled = false;
+        }
+      });
+    }
+
+    function showSignedBadge(signedAt) {
+      document.getElementById('sigForm').style.display  = 'none';
+      document.getElementById('sigBadge').style.display = 'block';
+      if (signedAt) {
+        const formatted = new Date(signedAt).toLocaleDateString('en-US', {
+          month: 'long', day: 'numeric', year: 'numeric',
+          hour: 'numeric', minute: '2-digit'
+        });
+        document.getElementById('sigTimestamp').textContent = 'Signed on ' + formatted;
+      }
+    }
+
+    function setStatus(el, message, type) {
+      el.textContent = message;
+      el.className   = 'sig-status ' + (type || 'info');
+    }
+
+    function escHtml(str) {
+      const d = document.createElement('div');
+      d.textContent = str;
+      return d.innerHTML;
+    }
+  </script>
+</body>
+</html>
