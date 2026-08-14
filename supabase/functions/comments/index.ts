@@ -6,6 +6,7 @@
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { corsHeaders } from '../_shared/cors.ts'
+import { escapeLikePattern } from '../_shared/like.ts'
 
 Deno.serve(async (req) => {
   // Handle CORS preflight
@@ -37,7 +38,7 @@ Deno.serve(async (req) => {
       const { data: codeData } = await supabase
         .from('proposal_codes')
         .select('proposal_path')
-        .ilike('code', code)
+        .ilike('code', escapeLikePattern(code))
         .eq('proposal_path', proposal_id)
         .eq('is_active', true)
         .maybeSingle()
@@ -83,7 +84,7 @@ Deno.serve(async (req) => {
       const { data: codeData } = await supabase
         .from('proposal_codes')
         .select('proposal_path')
-        .ilike('code', code)
+        .ilike('code', escapeLikePattern(code))
         .eq('proposal_path', proposal_id)
         .eq('is_active', true)
         .maybeSingle()

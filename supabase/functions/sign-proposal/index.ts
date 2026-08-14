@@ -6,6 +6,7 @@
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { corsHeaders } from '../_shared/cors.ts'
+import { escapeLikePattern } from '../_shared/like.ts'
 
 const JALEN_EMAIL = 'Jalen@mcg-works.com'
 const FROM_ADDRESS = 'McG Works Proposals <proposals@mcg-works.com>'
@@ -39,7 +40,7 @@ Deno.serve(async (req) => {
       const { data: codeData } = await supabase
         .from('proposal_codes')
         .select('proposal_path')
-        .ilike('code', code)
+        .ilike('code', escapeLikePattern(code))
         .eq('proposal_path', proposal_id)
         .eq('is_active', true)
         .maybeSingle()
@@ -54,7 +55,7 @@ Deno.serve(async (req) => {
       const { data: sig } = await supabase
         .from('proposal_signatures')
         .select('signed_at, client_name')
-        .ilike('code', code)
+        .ilike('code', escapeLikePattern(code))
         .maybeSingle()
 
       return new Response(
@@ -90,7 +91,7 @@ Deno.serve(async (req) => {
       const { data: codeData } = await supabase
         .from('proposal_codes')
         .select('proposal_path, client_name')
-        .ilike('code', code)
+        .ilike('code', escapeLikePattern(code))
         .eq('proposal_path', proposal_id)
         .eq('is_active', true)
         .maybeSingle()
@@ -106,7 +107,7 @@ Deno.serve(async (req) => {
       const { data: existingSig } = await supabase
         .from('proposal_signatures')
         .select('id')
-        .ilike('code', code)
+        .ilike('code', escapeLikePattern(code))
         .maybeSingle()
 
       if (existingSig) {

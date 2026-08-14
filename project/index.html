@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>McG Works — Project Board</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #0b0f14;
+      color: #e2e8f0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---------- Gate ---------- */
+    #gate {
+      display: grid;
+      place-items: center;
+      height: 100vh;
+    }
+    .gate-card {
+      width: 90%;
+      max-width: 480px;
+      padding: 40px 32px;
+      border-radius: 16px;
+      background: #1f2937;
+      border: 1px solid #374151;
+      text-align: center;
+    }
+    .gate-card h1 { margin: 0 0 6px; font-size: 32px; letter-spacing: -0.5px; }
+    .gate-card .subtitle { margin: 0 0 32px; font-size: 15px; opacity: 0.6; }
+    .gate-card label {
+      display: block; text-align: left; font-size: 13px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 1px; opacity: 0.5; margin-bottom: 8px;
+    }
+    .code-input {
+      width: 100%; padding: 14px 16px; font-size: 20px; font-family: 'Courier New', monospace;
+      letter-spacing: 3px; text-transform: uppercase; text-align: center;
+      border: 2px solid #374151; border-radius: 10px; background: #111827; color: #fff;
+      outline: none; transition: border-color 0.2s;
+    }
+    .code-input:focus { border-color: #3b82f6; }
+    .code-input.error { border-color: #ef4444; animation: shake 0.4s ease; }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+    .submit-btn {
+      margin-top: 16px; width: 100%; padding: 14px; font-size: 16px; font-weight: 600;
+      border: none; border-radius: 10px; background: #3b82f6; color: #fff; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .submit-btn:hover { background: #2563eb; }
+    .error-msg { margin-top: 14px; font-size: 14px; color: #ef4444; min-height: 20px; }
+
+    /* ---------- Board ---------- */
+    #board { display: none; }
+    .board-header {
+      padding: 24px 24px 16px;
+      border-bottom: 1px solid #1e293b;
+      background: linear-gradient(180deg, #111827 0%, #0b0f14 100%);
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    }
+    .board-header h1 { margin: 0 0 4px; font-size: 24px; color: #fff; }
+    .board-header p { margin: 0; opacity: 0.5; font-size: 14px; }
+    .header-actions { display: flex; gap: 8px; }
+    .logout-btn {
+      padding: 8px 14px; border-radius: 8px; border: 1px solid #374151;
+      background: #1f2937; color: #e2e8f0; font-size: 13px; cursor: pointer; white-space: nowrap;
+    }
+    .logout-btn:hover { background: #374151; }
+
+    /* ---------- Activity log ---------- */
+    .activity-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 10;
+    }
+    .activity-overlay.visible { display: block; }
+    .activity-panel {
+      position: fixed; top: 0; right: 0; bottom: 0; width: 360px; max-width: 90%;
+      background: #111827; border-left: 1px solid #1e293b; z-index: 11;
+      transform: translateX(100%); transition: transform 0.2s ease; display: flex; flex-direction: column;
+    }
+    .activity-panel.visible { transform: translateX(0); }
+    .activity-panel-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; border-bottom: 1px solid #1e293b;
+    }
+    .activity-panel-header h3 { margin: 0; font-size: 15px; color: #fff; }
+    .activity-list { flex: 1; overflow-y: auto; padding: 12px 20px; }
+    .activity-item { padding: 10px 0; border-bottom: 1px solid #1e293b; font-size: 13px; }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-item .activity-title { font-weight: 600; color: #fff; }
+    .activity-item .activity-detail { opacity: 0.7; margin: 2px 0; }
+    .activity-item .activity-time { opacity: 0.45; font-size: 11.5px; }
+
+    /* ---------- Notification settings modal ---------- */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+      z-index: 20; place-items: center;
+    }
+    .modal-overlay.visible { display: grid; }
+    .modal-card {
+      width: 90%; max-width: 420px; background: #1f2937; border: 1px solid #374151;
+      border-radius: 14px; padding: 24px;
+    }
+    .modal-card h3 { margin: 0 0 16px; font-size: 17px; color: #fff; }
+    .modal-card label {
+      display: block; font-size: 12px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 1px; opacity: 0.5; margin-bottom: 6px;
+    }
+    .modal-card input[type="email"] {
+      width: 100%; padding: 10px 12px; margin-bottom: 16px; border: 2px solid #374151;
+      border-radius: 8px; background: #111827; color: #fff; font-size: 14px; outline: none;
+    }
+    .modal-card input[type="email"]:focus { border-color: #3b82f6; }
+    .toggle-row {
+      display: flex; align-items: flex-start; gap: 10px; margin-bottom: 14px; font-size: 13.5px;
+    }
+    .toggle-row input { margin-top: 3px; }
+    .toggle-row .toggle-desc { opacity: 0.55; font-size: 12px; margin-top: 2px; }
+    .modal-actions { display: flex; gap: 8px; margin-top: 4px; }
+    .modal-status { font-size: 12.5px; margin-left: 4px; align-self: center; opacity: 0.7; }
+
+    .columns {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(260px, 1fr));
+      gap: 16px;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    @media (max-width: 800px) {
+      .columns { grid-template-columns: 1fr; }
+    }
+    .column {
+      background: #111827;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 12px;
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+    }
+    .column h2 {
+      font-size: 13px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.6;
+      margin: 4px 8px 12px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .column h2 .count {
+      background: #1e293b; padding: 1px 8px; border-radius: 10px; font-size: 12px;
+    }
+    .card-list { flex: 1; min-height: 80px; }
+    .card {
+      background: #1f2937; border: 1px solid #374151; border-radius: 10px;
+      padding: 12px 14px; margin-bottom: 10px; cursor: default;
+    }
+    .card.client-owned { cursor: grab; border-left: 3px solid #3b82f6; }
+    .card.mcg-owned { border-left: 3px solid #6b7280; opacity: 0.92; }
+    .card.sortable-ghost { opacity: 0.4; }
+    .card-title { font-weight: 600; font-size: 14px; color: #fff; margin: 0 0 4px; }
+    .card-desc { font-size: 13px; opacity: 0.65; margin: 0 0 8px; white-space: pre-wrap; }
+    .card-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .badge {
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+      padding: 2px 8px; border-radius: 20px;
+    }
+    .badge.client { background: #1e3a5f; color: #60a5fa; }
+    .badge.mcg { background: #312e1e; color: #d4a94a; }
+    .card-actions { display: flex; gap: 6px; }
+    .icon-btn {
+      background: none; border: none; color: #9ca3af; cursor: pointer; font-size: 13px;
+      padding: 2px 6px; border-radius: 6px;
+    }
+    .icon-btn:hover { background: #374151; color: #fff; }
+
+    .edit-form { margin-top: 8px; display: none; }
+    .edit-form.visible { display: block; }
+    .edit-form input, .edit-form textarea {
+      width: 100%; margin-bottom: 6px; padding: 8px; border-radius: 6px;
+      border: 1px solid #374151; background: #111827; color: #fff; font-family: inherit; font-size: 13px;
+    }
+    .edit-form .form-actions { display: flex; gap: 6px; }
+    .small-btn {
+      font-size: 12px; padding: 6px 10px; border-radius: 6px; border: none; cursor: pointer;
+    }
+    .small-btn.save { background: #3b82f6; color: #fff; }
+    .small-btn.cancel { background: #374151; color: #e2e8f0; }
+
+    .comments-toggle {
+      font-size: 12px; opacity: 0.5; margin-top: 8px; cursor: pointer; user-select: none;
+    }
+    .comments-toggle:hover { opacity: 0.8; }
+    .comments-panel { display: none; margin-top: 8px; border-top: 1px solid #374151; padding-top: 8px; }
+    .comments-panel.visible { display: block; }
+    .comment {
+      font-size: 12.5px; margin-bottom: 6px; padding: 6px 8px; background: #111827; border-radius: 6px;
+    }
+    .comment .author { font-weight: 700; color: #93c5fd; }
+    .comment.mcg .author { color: #d4a94a; }
+    .comment-form textarea {
+      width: 100%; font-size: 12.5px; padding: 6px 8px; border-radius: 6px;
+      border: 1px solid #374151; background: #111827; color: #fff; font-family: inherit; resize: vertical;
+    }
+    .comment-form { margin-top: 6px; }
+    .comment-status { font-size: 11px; opacity: 0.5; margin-left: 6px; }
+  </style>
+</head>
+<body>
+
+  <div id="gate">
+    <div class="gate-card">
+      <h1>McG Works</h1>
+      <p class="subtitle">Project Board</p>
+      <label for="accessCode">Enter your access code</label>
+      <input type="text" id="accessCode" class="code-input" placeholder="XXXX-XXXX" autocomplete="off" spellcheck="false" autofocus />
+      <button class="submit-btn" id="submitBtn">View Board</button>
+      <p class="error-msg" id="errorMsg"></p>
+    </div>
+  </div>
+
+  <div id="board">
+    <div class="board-header">
+      <div>
+        <h1 id="clientName">Project Board</h1>
+        <p>Drag your cards between columns, leave notes on any card.</p>
+      </div>
+      <div class="header-actions">
+        <button class="logout-btn" id="notifyBtn">Email Updates</button>
+        <button class="logout-btn" id="activityBtn">Activity Log</button>
+        <button class="logout-btn" id="logoutBtn">Log Out</button>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="column" data-status="todo">
+        <h2>To Do <span class="count" id="count-todo">0</span></h2>
+        <div class="card-list" id="list-todo"></div>
+      </div>
+      <div class="column" data-status="doing">
+        <h2>Doing <span class="count" id="count-doing">0</span></h2>
+        <div class="card-list" id="list-doing"></div>
+      </div>
+      <div class="column" data-status="done">
+        <h2>Done <span class="count" id="count-done">0</span></h2>
+        <div class="card-list" id="list-done"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="activity-overlay" id="activityOverlay"></div>
+  <div class="activity-panel" id="activityPanel">
+    <div class="activity-panel-header">
+      <h3>Activity Log</h3>
+      <button class="icon-btn" id="closeActivityBtn">✕</button>
+    </div>
+    <div class="activity-list" id="activityList">Loading…</div>
+  </div>
+
+  <div class="modal-overlay" id="notifyOverlay">
+    <div class="modal-card">
+      <h3>Email Updates</h3>
+      <label for="notifyEmail">Your email</label>
+      <input type="email" id="notifyEmail" placeholder="you@example.com" />
+      <div class="toggle-row">
+        <input type="checkbox" id="notifyNewTask" />
+        <div>
+          <div>New task created for you</div>
+          <div class="toggle-desc">Get an email whenever McG Works adds a task assigned to you.</div>
+        </div>
+      </div>
+      <div class="toggle-row">
+        <input type="checkbox" id="notifyTaskMoved" />
+        <div>
+          <div>Task status changes</div>
+          <div class="toggle-desc">Get an email whenever a task moves between To Do, Doing, and Done.</div>
+        </div>
+      </div>
+      <div class="toggle-row">
+        <input type="checkbox" id="notifyComment" />
+        <div>
+          <div>New comments</div>
+          <div class="toggle-desc">Get an email whenever McG Works leaves a comment on a task.</div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="small-btn save" id="notifySaveBtn">Save</button>
+        <button class="small-btn cancel" id="notifyCancelBtn">Cancel</button>
+        <span class="modal-status" id="notifyStatus"></span>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
+  <script>
+    const FUNCTIONS_BASE = 'https://awccquoyscijmtqtibgr.supabase.co/functions/v1';
+
+    const gateEl = document.getElementById('gate');
+    const boardEl = document.getElementById('board');
+    const codeInput = document.getElementById('accessCode');
+    const submitBtn = document.getElementById('submitBtn');
+    const errorMsg = document.getElementById('errorMsg');
+
+    let proposalId = null;
+    let accessCode = null;
+    let tasksById = new Map();
+    let pollTimer = null;
+    let tasksReqToken = 0;
+    let activeDrags = 0;
+    let moveQueue = Promise.resolve();
+
+    async function handleSubmit() {
+      const raw = codeInput.value.trim().toUpperCase();
+      if (!raw) { showError('Please enter your access code.'); return; }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Checking…';
+
+      try {
+        const res = await fetch(FUNCTIONS_BASE + '/verify-code', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: raw })
+        });
+        const result = await res.json();
+
+        if (result.valid && result.proposal_path) {
+          accessCode = raw;
+          proposalId = result.proposal_path;
+          sessionStorage.setItem('mcg_project_access', raw);
+          sessionStorage.setItem('mcg_project_path', proposalId);
+          showBoard();
+        } else {
+          showError('Invalid code. Please check and try again.');
+        }
+      } catch {
+        showError('Connection error. Please try again.');
+      }
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'View Board';
+    }
+
+    function showError(msg) {
+      errorMsg.textContent = msg;
+      codeInput.classList.add('error');
+      setTimeout(() => codeInput.classList.remove('error'), 400);
+    }
+
+    submitBtn.addEventListener('click', handleSubmit);
+    codeInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') handleSubmit();
+      errorMsg.textContent = '';
+    });
+
+    // ---- restore session ----
+    (function tryRestore() {
+      const storedCode = sessionStorage.getItem('mcg_project_access');
+      const storedPath = sessionStorage.getItem('mcg_project_path');
+      if (storedCode && storedPath) {
+        accessCode = storedCode;
+        proposalId = storedPath;
+        showBoard();
+      }
+    })();
+
+    function showBoard() {
+      gateEl.style.display = 'none';
+      boardEl.style.display = 'block';
+      loadTasks();
+      setupSortable();
+      pollTimer = setInterval(loadTasks, 15000);
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      sessionStorage.removeItem('mcg_project_access');
+      sessionStorage.removeItem('mcg_project_path');
+      clearInterval(pollTimer);
+      accessCode = null;
+      proposalId = null;
+      codeInput.value = '';
+      boardEl.style.display = 'none';
+      gateEl.style.display = 'grid';
+    });
+
+    const activityPanel = document.getElementById('activityPanel');
+    const activityOverlay = document.getElementById('activityOverlay');
+
+    function openActivity() {
+      activityPanel.classList.add('visible');
+      activityOverlay.classList.add('visible');
+      loadEvents();
+    }
+    function closeActivity() {
+      activityPanel.classList.remove('visible');
+      activityOverlay.classList.remove('visible');
+    }
+    document.getElementById('activityBtn').addEventListener('click', openActivity);
+    document.getElementById('closeActivityBtn').addEventListener('click', closeActivity);
+    activityOverlay.addEventListener('click', closeActivity);
+
+    const STATUS_LABELS = { todo: 'To Do', doing: 'Doing', done: 'Done' };
+
+    async function loadEvents() {
+      const listEl = document.getElementById('activityList');
+      listEl.textContent = 'Loading…';
+      const result = await apiFetch('list_events');
+      if (result.error || result.message || !result.events) { listEl.textContent = 'Failed to load activity log.'; return; }
+      listEl.innerHTML = result.events.length
+        ? result.events.map(eventHtml).join('')
+        : '<p style="opacity:0.5;font-size:12px;">No activity yet.</p>';
+    }
+
+    function eventHtml(e) {
+      const time = new Date(e.created_at).toLocaleString();
+      const detail = e.event_type === 'created'
+        ? `Created in ${STATUS_LABELS[e.to_status] || e.to_status}`
+        : `Moved ${STATUS_LABELS[e.from_status] || e.from_status} → ${STATUS_LABELS[e.to_status] || e.to_status}`;
+      return `
+        <div class="activity-item">
+          <div class="activity-title">${escHtml(e.task_title)}</div>
+          <div class="activity-detail">${detail} · ${escHtml(e.actor)}</div>
+          <div class="activity-time">${escHtml(time)}</div>
+        </div>`;
+    }
+
+    const notifyOverlay = document.getElementById('notifyOverlay');
+    const notifyStatus = document.getElementById('notifyStatus');
+
+    async function openNotifySettings() {
+      notifyOverlay.classList.add('visible');
+      notifyStatus.textContent = '';
+      const result = await apiFetch('get_subscription');
+      const sub = (result && result.subscription) || {};
+      document.getElementById('notifyEmail').value = sub.email || '';
+      document.getElementById('notifyNewTask').checked = !!sub.notify_new_task;
+      document.getElementById('notifyTaskMoved').checked = !!sub.notify_task_moved;
+      document.getElementById('notifyComment').checked = !!sub.notify_comment;
+    }
+    function closeNotifySettings() {
+      notifyOverlay.classList.remove('visible');
+    }
+    document.getElementById('notifyBtn').addEventListener('click', openNotifySettings);
+    document.getElementById('notifyCancelBtn').addEventListener('click', closeNotifySettings);
+
+    document.getElementById('notifySaveBtn').addEventListener('click', async () => {
+      const email = document.getElementById('notifyEmail').value.trim();
+      if (!email) { notifyStatus.textContent = 'Email is required.'; return; }
+      notifyStatus.textContent = 'Saving…';
+      const result = await apiFetch('update_subscription', {
+        email,
+        notify_new_task: document.getElementById('notifyNewTask').checked,
+        notify_task_moved: document.getElementById('notifyTaskMoved').checked,
+        notify_comment: document.getElementById('notifyComment').checked,
+      });
+      if (result.error) { notifyStatus.textContent = 'Failed to save.'; return; }
+      notifyStatus.textContent = 'Saved!';
+      setTimeout(closeNotifySettings, 700);
+    });
+
+    async function apiFetch(action, extra = {}) {
+      const res = await fetch(FUNCTIONS_BASE + '/project-tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, proposal_id: proposalId, code: accessCode, ...extra })
+      });
+      return res.json();
+    }
+
+    async function loadTasks() {
+      if (activeDrags > 0) return;
+      const token = ++tasksReqToken;
+      const result = await apiFetch('list');
+      if (token !== tasksReqToken) return; // a newer request already superseded this one
+      if (result.error || result.message || !result.tasks) return;
+      document.getElementById('clientName').textContent = (result.client_name || proposalId) + ' — Project Board';
+      tasksById = new Map(result.tasks.map((t) => [t.id, t]));
+      renderColumns(result.tasks);
+    }
+
+    function renderColumns(tasks) {
+      const openComments = new Set(
+        [...document.querySelectorAll('.comments-panel.visible')].map((el) => el.closest('.card').dataset.id)
+      );
+
+      ['todo', 'doing', 'done'].forEach((status) => {
+        const list = document.getElementById('list-' + status);
+        const items = tasks.filter((t) => t.status === status).sort((a, b) => a.sort_order - b.sort_order);
+        document.getElementById('count-' + status).textContent = items.length;
+        list.innerHTML = items.map((t) => cardHtml(t, openComments.has(t.id))).join('');
+      });
+
+      document.querySelectorAll('.card').forEach((card) => {
+        const id = card.dataset.id;
+        card.querySelector('.edit-btn')?.addEventListener('click', () => toggleEdit(id));
+        card.querySelector('.save-btn')?.addEventListener('click', () => saveEdit(id));
+        card.querySelector('.cancel-btn')?.addEventListener('click', () => toggleEdit(id, false));
+        card.querySelector('.comments-toggle').addEventListener('click', () => toggleComments(id));
+        card.querySelector('.comment-submit')?.addEventListener('click', () => postComment(id));
+        if (openComments.has(id)) loadComments(id);
+      });
+    }
+
+    function cardHtml(t, commentsOpen) {
+      const isClientCard = t.assignee === 'client';
+      return `
+        <div class="card ${isClientCard ? 'client-owned' : 'mcg-owned'}" data-id="${t.id}">
+          <p class="card-title">${escHtml(t.title)}</p>
+          ${t.description ? `<p class="card-desc">${escHtml(t.description)}</p>` : ''}
+          <div class="card-meta">
+            <span class="badge ${isClientCard ? 'client' : 'mcg'}">${isClientCard ? 'Your task' : 'McG Works'}</span>
+            <div class="card-actions">
+              ${isClientCard ? '<button class="icon-btn edit-btn">Edit</button>' : ''}
+            </div>
+          </div>
+          <div class="edit-form" id="edit-${t.id}">
+            <input type="text" class="edit-title" value="${escAttr(t.title)}" />
+            <textarea class="edit-desc" rows="2">${escHtml(t.description || '')}</textarea>
+            <div class="form-actions">
+              <button class="small-btn save save-btn">Save</button>
+              <button class="small-btn cancel cancel-btn">Cancel</button>
+            </div>
+          </div>
+          <div class="comments-toggle">💬 Comments</div>
+          <div class="comments-panel ${commentsOpen ? 'visible' : ''}" id="comments-${t.id}">
+            <div class="comments-list">Loading…</div>
+            <div class="comment-form">
+              <textarea class="comment-body" rows="2" placeholder="Add a note…"></textarea>
+              <button class="small-btn save comment-submit">Post</button>
+              <span class="comment-status"></span>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function toggleEdit(id, show) {
+      const el = document.getElementById('edit-' + id);
+      if (show === false) { el.classList.remove('visible'); return; }
+      el.classList.toggle('visible');
+    }
+
+    async function saveEdit(id) {
+      const el = document.getElementById('edit-' + id);
+      const title = el.querySelector('.edit-title').value.trim();
+      const description = el.querySelector('.edit-desc').value.trim();
+      if (!title) return;
+      await apiFetch('update_card', { task_id: id, title, description });
+      toggleEdit(id, false);
+      loadTasks();
+    }
+
+    function toggleComments(id) {
+      const panel = document.getElementById('comments-' + id);
+      panel.classList.toggle('visible');
+      if (panel.classList.contains('visible')) loadComments(id);
+    }
+
+    async function loadComments(id) {
+      const panel = document.getElementById('comments-' + id);
+      if (!panel) return;
+      const result = await apiFetch('list_comments', { task_id: id });
+      const listEl = panel.querySelector('.comments-list');
+      if (result.error) { listEl.textContent = 'Failed to load comments.'; return; }
+      listEl.innerHTML = result.comments.length
+        ? result.comments.map((c) => `
+            <div class="comment ${c.is_mcg ? 'mcg' : ''}">
+              <span class="author">${escHtml(c.author_name)}</span> — ${escHtml(c.content)}
+            </div>`).join('')
+        : '<p style="opacity:0.5;font-size:12px;">No comments yet.</p>';
+    }
+
+    async function postComment(id) {
+      const panel = document.getElementById('comments-' + id);
+      const textarea = panel.querySelector('.comment-body');
+      const statusEl = panel.querySelector('.comment-status');
+      const content = textarea.value.trim();
+      if (!content) return;
+      statusEl.textContent = 'Posting…';
+      const result = await apiFetch('create_comment', { task_id: id, content });
+      if (result.error) { statusEl.textContent = 'Failed.'; return; }
+      textarea.value = '';
+      statusEl.textContent = '';
+      loadComments(id);
+    }
+
+    function setupSortable() {
+      ['todo', 'doing', 'done'].forEach((status) => {
+        const list = document.getElementById('list-' + status);
+        Sortable.create(list, {
+          group: 'board',
+          animation: 150,
+          filter: '.mcg-owned',
+          emptyInsertThreshold: 30,
+          swapThreshold: 0.65,
+          fallbackTolerance: 3,
+          onMove: (evt) => !evt.dragged.classList.contains('mcg-owned'),
+          onStart: () => { activeDrags++; },
+          onEnd: (evt) => {
+            const newStatus = evt.to.closest('.column').dataset.status;
+            const id = evt.item.dataset.id;
+            const newIndex = evt.newIndex;
+            // Chain onto moveQueue so overlapping drags hit the server in the order they happened,
+            // not the order their responses happen to arrive back in.
+            moveQueue = moveQueue
+              .then(() => apiFetch('move_card', { task_id: id, new_status: newStatus, new_sort_order: newIndex }))
+              .finally(() => {
+                activeDrags = Math.max(0, activeDrags - 1);
+                if (activeDrags === 0) loadTasks();
+              });
+          }
+        });
+      });
+    }
+
+    function escHtml(s) {
+      return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+    function escAttr(s) { return escHtml(s); }
+  </script>
+</body>
+</html>

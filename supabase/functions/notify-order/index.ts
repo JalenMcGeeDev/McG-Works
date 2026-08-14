@@ -107,7 +107,7 @@ Deno.serve(async (req) => {
       </table>
       ${msgLine}
       <div style="margin-top:1.75rem;padding-top:1.25rem;border-top:1px solid #e8dcc8;text-align:center">
-        <a href="https://mcg.works/jalenswoodshop/admin" style="display:inline-block;background:#3d2f20;color:#fff;text-decoration:none;padding:.65rem 1.5rem;border-radius:40px;font-size:.88rem;font-weight:700">Open Admin Panel</a>
+        <a href="https://mcg-works.com/jalenswoodshop/admin" style="display:inline-block;background:#3d2f20;color:#fff;text-decoration:none;padding:.65rem 1.5rem;border-radius:40px;font-size:.88rem;font-weight:700">Open Admin Panel</a>
       </div>
     </div>
   </div>
@@ -122,8 +122,8 @@ Deno.serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'orders@mcg.works',
-        to:   ['jalen@mcg.works'],
+        from: 'orders@mcg-works.com',
+        to:   ['jalen@mcg-works.com'],
         subject,
         html,
       }),
