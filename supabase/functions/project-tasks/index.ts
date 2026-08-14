@@ -489,6 +489,9 @@ Deno.serve(async (req) => {
       <div style="font-size:1.2rem;font-weight:700;color:#fff">McG Works</div>
     </div>
     <div style="padding:1.75rem;color:#e2e8f0;white-space:pre-wrap;font-size:.95rem;line-height:1.6">${bodyHtml}</div>
+    <div style="padding:0 1.75rem 1.75rem">
+      <a href="https://www.mcg-works.com/project" style="display:inline-block;background:#3b82f6;color:#fff;text-decoration:none;padding:.65rem 1.5rem;border-radius:8px;font-size:.88rem;font-weight:700">View Your Project</a>
+    </div>
   </div>
 </body>
 </html>`

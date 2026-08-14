@@ -177,6 +177,19 @@
     .modal-card input:focus, .modal-card textarea:focus { border-color: #3b82f6; }
     .modal-actions { display: flex; gap: 8px; margin-top: 4px; align-items: center; }
     .modal-status { font-size: 12.5px; margin-left: 4px; align-self: center; opacity: 0.7; }
+    .invite-body-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .invite-body-header label { margin-bottom: 0; }
+    .link-btn {
+      background: none; border: none; color: #3b82f6; font-size: 12px; font-weight: 600;
+      cursor: pointer; padding: 0; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .link-btn:hover { text-decoration: underline; }
+    .invite-preview-frame {
+      display: none; width: 100%; height: 260px; margin-bottom: 16px; border: 2px solid #374151;
+      border-radius: 8px; background: #0b0f14;
+    }
+    .invite-preview-frame.visible { display: block; }
+    #inviteBody.hidden-while-previewing { display: none; }
   </style>
 </head>
 <body>
@@ -235,8 +248,12 @@
       <input type="email" id="inviteTo" placeholder="client@example.com" />
       <label for="inviteSubject">Subject</label>
       <input type="text" id="inviteSubject" />
-      <label for="inviteBody">Body</label>
+      <div class="invite-body-header">
+        <label for="inviteBody">Body</label>
+        <button type="button" class="link-btn" id="invitePreviewToggle">View HTML</button>
+      </div>
       <textarea id="inviteBody" rows="9"></textarea>
+      <iframe id="invitePreviewFrame" class="invite-preview-frame" title="Email preview"></iframe>
       <div class="modal-actions">
         <button class="small-btn save" id="inviteSendBtn">Send</button>
         <button class="small-btn cancel" id="inviteCancelBtn">Cancel</button>
@@ -423,13 +440,17 @@
       const clientName = project?.client_name || currentProposalId;
       const code = project?.code || '';
       document.getElementById('inviteTo').value = '';
-      document.getElementById('inviteSubject').value = 'McG Works is inviting you to view your project';
+      document.getElementById('inviteSubject').value = 'McG Works Project Review Board';
       document.getElementById('inviteBody').value =
         `Hi ${clientName} team!\n\n` +
         `Jalen here from McG Works. We'd like to invite you to view your McG Works project board! On this board, you can track progress with your project, see what's been done, see what we need from you, and add comments.\n\n` +
-        `To view the project, visit https://mcg-works.com/project. Your project access code is the same as your proposal code: ${code}\n\n` +
+        `Your project access code is the same as your proposal code: ${code}\n\n` +
         `Excited to continue working together!\nJalen`;
       inviteStatus.textContent = '';
+      invitePreviewing = false;
+      invitePreviewFrame.classList.remove('visible');
+      document.getElementById('inviteBody').classList.remove('hidden-while-previewing');
+      invitePreviewToggle.textContent = 'View HTML';
       inviteOverlay.classList.add('visible');
     }
     function closeInvite() {
@@ -437,6 +458,48 @@
     }
     document.getElementById('inviteBtn').addEventListener('click', openInvite);
     document.getElementById('inviteCancelBtn').addEventListener('click', closeInvite);
+
+    // Mirrors the HTML the admin_send_invite Edge Function actually sends
+    function buildInviteEmailHtml(bodyText) {
+      const bodyHtml = escHtml(bodyText).replace(
+        /(https?:\/\/[^\s<]+)/g,
+        '<a href="$1" style="color:#3b82f6">$1</a>'
+      );
+      return `<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;background:#0b0f14;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+  <div style="max-width:520px;margin:2rem auto;background:#111827;border-radius:12px;overflow:hidden;border:1px solid #1e293b">
+    <div style="padding:1.5rem 1.75rem;border-bottom:1px solid #1e293b">
+      <div style="font-size:1.2rem;font-weight:700;color:#fff">McG Works</div>
+    </div>
+    <div style="padding:1.75rem;color:#e2e8f0;white-space:pre-wrap;font-size:.95rem;line-height:1.6">${bodyHtml}</div>
+    <div style="padding:0 1.75rem 1.75rem">
+      <a href="https://www.mcg-works.com/project" style="display:inline-block;background:#3b82f6;color:#fff;text-decoration:none;padding:.65rem 1.5rem;border-radius:8px;font-size:.88rem;font-weight:700">View Your Project</a>
+    </div>
+  </div>
+</body>
+</html>`;
+    }
+
+    const invitePreviewFrame = document.getElementById('invitePreviewFrame');
+    const invitePreviewToggle = document.getElementById('invitePreviewToggle');
+    const inviteBodyField = document.getElementById('inviteBody');
+    let invitePreviewing = false;
+
+    invitePreviewToggle.addEventListener('click', () => {
+      invitePreviewing = !invitePreviewing;
+      if (invitePreviewing) {
+        invitePreviewFrame.srcdoc = buildInviteEmailHtml(inviteBodyField.value);
+        invitePreviewFrame.classList.add('visible');
+        inviteBodyField.classList.add('hidden-while-previewing');
+        invitePreviewToggle.textContent = 'Edit';
+      } else {
+        invitePreviewFrame.classList.remove('visible');
+        inviteBodyField.classList.remove('hidden-while-previewing');
+        invitePreviewToggle.textContent = 'View HTML';
+      }
+    });
 
     document.getElementById('inviteSendBtn').addEventListener('click', async () => {
       const to_email = document.getElementById('inviteTo').value.trim();
