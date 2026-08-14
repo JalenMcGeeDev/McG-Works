@@ -122,7 +122,7 @@ Deno.serve(async (req) => {
         await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: { Authorization: `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ from: 'projects@mcg-works.com', to: [sub.email], subject, html }),
+          body: JSON.stringify({ from: 'McG Works - Your Project <projects@mcg-works.com>', to: [sub.email], subject, html }),
         })
       } catch {
         // Non-fatal — never block the underlying action if email fails
@@ -496,7 +496,7 @@ Deno.serve(async (req) => {
         const res = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: { Authorization: `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ from: 'projects@mcg-works.com', to: [to_email], subject, html }),
+          body: JSON.stringify({ from: 'McG Works - Your Project <projects@mcg-works.com>', to: [to_email], subject, html }),
         })
 
         if (!res.ok) return denied(500, 'Failed to send invite email')
