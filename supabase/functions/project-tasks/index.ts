@@ -473,6 +473,12 @@ Deno.serve(async (req) => {
         const resendKey = Deno.env.get('RESEND_API_KEY')
         if (!resendKey) return denied(500, 'Email is not configured')
 
+        // Escape first, then linkify — safe since URL characters survive HTML-escaping untouched
+        const bodyHtml = escapeHtml(emailBody).replace(
+          /(https?:\/\/[^\s<]+)/g,
+          '<a href="$1" style="color:#3b82f6">$1</a>'
+        )
+
         const html = `
 <!DOCTYPE html>
 <html>
@@ -482,7 +488,7 @@ Deno.serve(async (req) => {
     <div style="padding:1.5rem 1.75rem;border-bottom:1px solid #1e293b">
       <div style="font-size:1.2rem;font-weight:700;color:#fff">McG Works</div>
     </div>
-    <div style="padding:1.75rem;color:#e2e8f0;white-space:pre-wrap;font-size:.95rem;line-height:1.6">${escapeHtml(emailBody)}</div>
+    <div style="padding:1.75rem;color:#e2e8f0;white-space:pre-wrap;font-size:.95rem;line-height:1.6">${bodyHtml}</div>
   </div>
 </body>
 </html>`
