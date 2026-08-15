@@ -513,7 +513,15 @@
       h('span', { className: 'task-title' + (done ? ' done' : '') }, task.title),
     );
     if (task.description) {
+      var isLong = task.description.length > 100 || task.description.includes('\n');
       body.appendChild(h('p', { className: 'task-desc' }, task.description));
+      if (isLong) {
+        body.appendChild(h('button', {
+          className:    'desc-toggle-btn',
+          'data-action': 'toggle-desc',
+          'data-id':     task.id,
+        }, 'Show more'));
+      }
     }
     body.appendChild(h.apply(null, ['div', { className: 'task-badges' }].concat(badgeNodes)));
 
@@ -1457,6 +1465,12 @@
       case 'close-today': {
         todayView = false;
         renderPicker();
+        break;
+      }
+      case 'toggle-desc': {
+        var descEl = btn.closest('.task-card').querySelector('.task-desc');
+        var expanded = descEl.classList.toggle('expanded');
+        btn.textContent = expanded ? 'Show less' : 'Show more';
         break;
       }
       case 'toggle':         doToggle(id);   break;
