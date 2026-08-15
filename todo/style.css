@@ -455,6 +455,7 @@ body { min-height: 100vh; padding-bottom: 80px; }
   display: block;
   -webkit-line-clamp: unset;
   overflow: visible;
+  white-space: pre-wrap;
 }
 .desc-toggle-btn {
   background: none;

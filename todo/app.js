@@ -513,8 +513,12 @@
       h('span', { className: 'task-title' + (done ? ' done' : '') }, task.title),
     );
     if (task.description) {
-      var isLong = task.description.length > 100 || task.description.includes('\n');
-      body.appendChild(h('p', { className: 'task-desc' }, task.description));
+      var isLong = task.description.length > 120 || task.description.includes('\n');
+      // Collapse whitespace for preview so -webkit-line-clamp clips reliably
+      var previewText = isLong ? task.description.replace(/\s+/g, ' ').trim() : task.description;
+      var descEl = h('p', { className: 'task-desc' }, previewText);
+      if (isLong) descEl.dataset.full = task.description;
+      body.appendChild(descEl);
       if (isLong) {
         body.appendChild(h('button', {
           className:    'desc-toggle-btn',
@@ -1470,6 +1474,11 @@
       case 'toggle-desc': {
         var descEl = btn.closest('.task-card').querySelector('.task-desc');
         var expanded = descEl.classList.toggle('expanded');
+        if (expanded && descEl.dataset.full) {
+          descEl.textContent = descEl.dataset.full;
+        } else if (descEl.dataset.full) {
+          descEl.textContent = descEl.dataset.full.replace(/\s+/g, ' ').trim();
+        }
         btn.textContent = expanded ? 'Show less' : 'Show more';
         break;
       }
